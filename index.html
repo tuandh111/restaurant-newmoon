@@ -166,12 +166,44 @@
 			});
 		}
 
-		function validateEmail(email) {
-			return /^[a-zA-Z0-9._%+-]+@newmoon\.vn$/.test(email);
+		// Validate email chi tiết, trả về mảng lỗi
+		function validateEmailDetailed(email) {
+			const errors = [];
+			if (!email) {
+				errors.push("Email cannot be empty.");
+			} else {
+				const basicEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+				if (!basicEmailRegex.test(email)) {
+					errors.push("Email format is invalid.");
+					return;
+				}
+				if (!email.endsWith("@newmoon.vn")) {
+					errors.push("Email must end with @newmoon.vn.");
+					return;
+				}
+			}
+			return errors;
 		}
 
-		function validatePassword(password) {
-			return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
+		// Validate password chi tiết, trả về mảng lỗi
+		function validatePasswordDetailed(password) {
+			const errors = [];
+			if (password.length < 8) {
+				errors.push(" - Password must be at least 8 characters.");
+			}
+			if (!/[a-z]/.test(password)) {
+				errors.push(" - Password must contain at least one lowercase letter.");
+			}
+			if (!/[A-Z]/.test(password)) {
+				errors.push(" - Password must contain at least one uppercase letter.");
+			}
+			if (!/\d/.test(password)) {
+				errors.push(" - Password must contain at least one digit.");
+			}
+			if (!/[\W_]/.test(password)) {
+				errors.push(" - Password must contain at least one special character.");
+			}
+			return errors;
 		}
 
 		function setValidationStyle(input, isValid) {
@@ -192,11 +224,13 @@
 		}
 
 		emailInput.addEventListener("input", () => {
-			setValidationStyle(emailInput, validateEmail(emailInput.value.trim()));
+			const emailErrors = validateEmailDetailed(emailInput.value.trim());
+			setValidationStyle(emailInput, emailErrors.length === 0);
 		});
 
 		passwordInput.addEventListener("input", () => {
-			setValidationStyle(passwordInput, validatePassword(passwordInput.value));
+			const passwordErrors = validatePasswordDetailed(passwordInput.value);
+			setValidationStyle(passwordInput, passwordErrors.length === 0);
 		});
 
 		let isToastShowing = false;
@@ -206,27 +240,36 @@
 			const password = passwordInput.value;
 			const rememberMe = rememberCheckbox.checked;
 
-			const isEmailValid = validateEmail(email);
-			const isPasswordValid = validatePassword(password);
+			const emailErrors = validateEmailDetailed(email);
+			const passwordErrors = validatePasswordDetailed(password);
 			const selectedRole = document.querySelector('input[name="options"]:checked');
 
-			setValidationStyle(emailInput, isEmailValid);
-			setValidationStyle(passwordInput, isPasswordValid);
+			setValidationStyle(emailInput, emailErrors.length === 0);
+			setValidationStyle(passwordInput, passwordErrors.length === 0);
 
 			if (!selectedRole) {
 				toastr.error("Please select your role: Manager or Employee", "Missing Role");
 				return;
 			}
 
-			if (!isEmailValid) {
-				toastr.error("Email must end with @newmoon.vn", "Invalid Email");
+			if (emailErrors.length > 0) {
+				toastr.error(emailErrors.join("<br>"), "Invalid Email", {
+					timeOut: 5000,
+					extendedTimeOut: 2000,
+					escapeHtml: false // cho phép xuống dòng HTML
+				});
 				return;
 			}
 
-			if (!isPasswordValid) {
-				toastr.error("Password must be at least 8 characters and include uppercase, lowercase, digit, and special character", "Invalid Password");
+			if (passwordErrors.length > 0) {
+				toastr.error(passwordErrors.join("<br> "), "Invalid Password", {
+					timeOut: 5000,
+					extendedTimeOut: 2000,
+					escapeHtml: false
+				});
 				return;
 			}
+
 
 			const role = selectedRole.id; // admin or user
 
@@ -277,8 +320,12 @@
 				emailInput.value = localStorage.getItem("rememberEmail") || "";
 				passwordInput.value = localStorage.getItem("rememberPassword") || "";
 				rememberCheckbox.checked = true;
-				setValidationStyle(emailInput, validateEmail(emailInput.value.trim()));
-				setValidationStyle(passwordInput, validatePassword(passwordInput.value));
+
+				const emailErrors = validateEmailDetailed(emailInput.value.trim());
+				setValidationStyle(emailInput, emailErrors.length === 0);
+
+				const passwordErrors = validatePasswordDetailed(passwordInput.value);
+				setValidationStyle(passwordInput, passwordErrors.length === 0);
 
 				const savedRole = localStorage.getItem("rememberRole");
 				if (savedRole) {
@@ -287,6 +334,7 @@
 				}
 			}
 		});
+
 	</script>
 
 </body>
