@@ -174,11 +174,11 @@
 			} else {
 				const basicEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 				if (!basicEmailRegex.test(email)) {
-					errors.push("Email format is invalid.");
+					errors.push(" - Email format is invalid.");
 					return;
 				}
 				if (!email.endsWith("@newmoon.vn")) {
-					errors.push("Email must end with @newmoon.vn.");
+					errors.push(" - Email must end with @newmoon.vn.");
 					return;
 				}
 			}
