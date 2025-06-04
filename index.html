@@ -35,7 +35,8 @@
 	<div class="login-header box-shadow">
 		<div class="container-fluid d-flex justify-content-between align-items-center">
 			<div class="brand-logo">
-				<a href="login.html"><img src="vendors/images/image.png" alt="" style="height: 70px;" /></a>
+				<a href="index.html"><img src="vendors/images/image.png" alt=""
+						style="height: 70px;width: 240px;" /></a>
 			</div>
 			<div class="login-menu">
 				<!-- <ul>
@@ -122,191 +123,191 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-<script>
-	// DOM references
-	const emailInput = document.querySelector('input[placeholder="Email"]');
-	const passwordInput = document.querySelector('input[placeholder="Password"]');
-	const rememberCheckbox = document.getElementById("customCheck1");
-	const loginButton = document.getElementById("login-btn");
-	const togglePasswordIcon = document.getElementById("toggle-password-icon");
+	<script>
+		// DOM references
+		const emailInput = document.querySelector('input[placeholder="Email"]');
+		const passwordInput = document.querySelector('input[placeholder="Password"]');
+		const rememberCheckbox = document.getElementById("customCheck1");
+		const loginButton = document.getElementById("login-btn");
+		const togglePasswordIcon = document.getElementById("toggle-password-icon");
 
-	// Trạng thái đang xử lý
-	let isLoggingIn = false;
+		// Trạng thái đang xử lý
+		let isLoggingIn = false;
 
-	// Mocked user credentials
-	const mockUsers = [
-		{ email: "drnguyenht@newmoon.vn", password: "Manager@123", role: "admin" },
-		{ email: "tuandh@newmoon.vn", password: "Employee@123", role: "user" },
-		{ email: "manager2@newmoon.vn", password: "Admin#456", role: "admin" },
-		{ email: "employee2@newmoon.vn", password: "User#456", role: "user" }
-	];
+		// Mocked user credentials
+		const mockUsers = [
+			{ email: "drnguyenht@newmoon.vn", password: "Manager@123", role: "admin" },
+			{ email: "tuandh@newmoon.vn", password: "Employee@123", role: "user" },
+			{ email: "manager2@newmoon.vn", password: "Admin#456", role: "admin" },
+			{ email: "employee2@newmoon.vn", password: "User#456", role: "user" }
+		];
 
-	// Giả lập API login
-	function fakeApiLogin(email, password) {
-		return new Promise((resolve, reject) => {
-			setTimeout(() => {
-				const user = mockUsers.find(u => u.email === email && u.password === password);
-				user ? resolve(user) : reject("Incorrect email or password.");
-			}, 500);
-		});
-	}
-
-	// Validate email
-	function validateEmail(email) {
-		const errors = [];
-		if (!email) {
-			errors.push("Email cannot be empty.");
-		} else {
-			const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-			if (!regex.test(email)) errors.push(" - Email format is invalid.");
-			if (!email.endsWith("@newmoon.vn")) errors.push(" - Email must end with @newmoon.vn.");
-		}
-		return errors;
-	}
-
-	// Validate password
-	function validatePassword(password) {
-		const errors = [];
-		if (password.length < 8) errors.push(" - Password must be at least 8 characters.");
-		if (!/[a-z]/.test(password)) errors.push(" - Password must contain at least one lowercase letter.");
-		if (!/[A-Z]/.test(password)) errors.push(" - Password must contain at least one uppercase letter.");
-		if (!/\d/.test(password)) errors.push(" - Password must contain at least one digit.");
-		if (!/[\W_]/.test(password)) errors.push(" - Password must contain at least one special character.");
-		return errors;
-	}
-
-	// Apply border color
-	function applyValidationStyle(input, isValid) {
-		input.style.border = `2px solid ${isValid ? '#0abf30' : 'red'}`;
-	}
-
-	// Toggle password visibility
-	function togglePasswordVisibility() {
-		const isPassword = passwordInput.type === "password";
-		passwordInput.type = isPassword ? "text" : "password";
-		togglePasswordIcon.classList.toggle("fa-eye", isPassword);
-		togglePasswordIcon.classList.toggle("fa-eye-slash", !isPassword);
-	}
-
-	// Show toastr
-	function showToastr(type, message, title = "", allowHtml = false) {
-		toastr[type](message, title, {
-			timeOut: 3000,
-			extendedTimeOut: 1000,
-			escapeHtml: !allowHtml,
-			onHidden: () => { isLoggingIn = false; } // Reset sau khi toastr ẩn
-		});
-	}
-
-	// Ghi nhớ thông tin nếu cần
-	function handleRememberMe(isRemembered, email, password, role) {
-		if (isRemembered) {
-			localStorage.setItem("rememberMe", "true");
-			localStorage.setItem("rememberEmail", email);
-			localStorage.setItem("rememberPassword", password);
-			localStorage.setItem("rememberRole", role);
-		} else {
-			localStorage.clear();
-		}
-	}
-
-	// Tải lại thông tin từ localStorage
-	function populateFormFromStorage() {
-		if (localStorage.getItem("rememberMe") === "true") {
-			emailInput.value = localStorage.getItem("rememberEmail") || "";
-			passwordInput.value = localStorage.getItem("rememberPassword") || "";
-			rememberCheckbox.checked = true;
-
-			const role = localStorage.getItem("rememberRole");
-			if (role) {
-				document.getElementById(role).checked = true;
-				document.getElementById("label-" + role)?.classList.add("active");
-			}
-			applyValidationStyle(emailInput, validateEmail(emailInput.value.trim()).length === 0);
-			applyValidationStyle(passwordInput, validatePassword(passwordInput.value).length === 0);
-		}
-	}
-
-	// Xử lý đăng nhập
-	function handleLogin() {
-		if (isLoggingIn) return;
-		isLoggingIn = true;
-
-		const email = emailInput.value.trim();
-		const password = passwordInput.value;
-		const rememberMe = rememberCheckbox.checked;
-		const selectedRoleInput = document.querySelector('input[name="options"]:checked');
-		const role = selectedRoleInput?.id;
-
-		const emailErrors = validateEmail(email);
-		const passwordErrors = validatePassword(password);
-
-		applyValidationStyle(emailInput, emailErrors.length === 0);
-		applyValidationStyle(passwordInput, passwordErrors.length === 0);
-
-		if (!role) {
-			showToastr("error", "Please select your role: Manager or Employee", "Missing Role");
-			return;
-		}
-
-		if (emailErrors.length > 0) {
-			showToastr("error", emailErrors.join("<br>"), "Invalid Email", true);
-			return;
-		}
-
-		if (passwordErrors.length > 0) {
-			showToastr("error", passwordErrors.join("<br>"), "Invalid Password", true);
-			return;
-		}
-
-		fakeApiLogin(email, password)
-			.then(user => {
-				if (user.role !== role) {
-					showToastr("error", "You have selected the wrong role. Please choose again!", "Wrong Role");
-					return;
-				}
-
-				handleRememberMe(rememberMe, email, password, role);
-				toastr.clear(); // xóa tất cả toastr cũ nếu còn tồn tại
-
-				toastr.success(`Login successful as ${role === "admin" ? "Manager" : "Employee"}! Redirecting...`, "Success", {
-					onHidden: () => {
-						const redirectUrl = role === "admin" ? "manager-dashboard.html" : "employee-dashboard.html";
-						window.location.href = redirectUrl;
-					}
-				});
-			})
-			.catch(err => {
-				showToastr("error", err, "Login Failed");
+		// Giả lập API login
+		function fakeApiLogin(email, password) {
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					const user = mockUsers.find(u => u.email === email && u.password === password);
+					user ? resolve(user) : reject("Incorrect email or password.");
+				}, 500);
 			});
-	}
+		}
 
-	// Sự kiện input
-	emailInput.addEventListener("input", () => {
-		const errors = validateEmail(emailInput.value.trim());
-		applyValidationStyle(emailInput, errors.length === 0);
-	});
+		// Validate email
+		function validateEmail(email) {
+			const errors = [];
+			if (!email) {
+				errors.push("Email cannot be empty.");
+			} else {
+				const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+				if (!regex.test(email)) errors.push(" - Email format is invalid.");
+				if (!email.endsWith("@newmoon.vn")) errors.push(" - Email must end with @newmoon.vn.");
+			}
+			return errors;
+		}
 
-	passwordInput.addEventListener("input", () => {
-		const errors = validatePassword(passwordInput.value);
-		applyValidationStyle(passwordInput, errors.length === 0);
-	});
+		// Validate password
+		function validatePassword(password) {
+			const errors = [];
+			if (password.length < 8) errors.push(" - Password must be at least 8 characters.");
+			if (!/[a-z]/.test(password)) errors.push(" - Password must contain at least one lowercase letter.");
+			if (!/[A-Z]/.test(password)) errors.push(" - Password must contain at least one uppercase letter.");
+			if (!/\d/.test(password)) errors.push(" - Password must contain at least one digit.");
+			if (!/[\W_]/.test(password)) errors.push(" - Password must contain at least one special character.");
+			return errors;
+		}
 
-	loginButton.addEventListener("click", handleLogin);
-	togglePasswordIcon?.addEventListener("click", togglePasswordVisibility);
+		// Apply border color
+		function applyValidationStyle(input, isValid) {
+			input.style.border = `2px solid ${isValid ? '#0abf30' : 'red'}`;
+		}
 
-	// Cấu hình toastr
-	toastr.options = {
-		closeButton: true,
-		progressBar: true,
-		positionClass: "toast-top-right",
-		timeOut: "3000",
-		extendedTimeOut: "1000",
-	};
+		// Toggle password visibility
+		function togglePasswordVisibility() {
+			const isPassword = passwordInput.type === "password";
+			passwordInput.type = isPassword ? "text" : "password";
+			togglePasswordIcon.classList.toggle("fa-eye", isPassword);
+			togglePasswordIcon.classList.toggle("fa-eye-slash", !isPassword);
+		}
 
-	// Khởi tạo
-	window.addEventListener("DOMContentLoaded", populateFormFromStorage);
-</script>
+		// Show toastr
+		function showToastr(type, message, title = "", allowHtml = false) {
+			toastr[type](message, title, {
+				timeOut: 3000,
+				extendedTimeOut: 1000,
+				escapeHtml: !allowHtml,
+				onHidden: () => { isLoggingIn = false; } // Reset sau khi toastr ẩn
+			});
+		}
+
+		// Ghi nhớ thông tin nếu cần
+		function handleRememberMe(isRemembered, email, password, role) {
+			if (isRemembered) {
+				localStorage.setItem("rememberMe", "true");
+				localStorage.setItem("rememberEmail", email);
+				localStorage.setItem("rememberPassword", password);
+				localStorage.setItem("rememberRole", role);
+			} else {
+				localStorage.clear();
+			}
+		}
+
+		// Tải lại thông tin từ localStorage
+		function populateFormFromStorage() {
+			if (localStorage.getItem("rememberMe") === "true") {
+				emailInput.value = localStorage.getItem("rememberEmail") || "";
+				passwordInput.value = localStorage.getItem("rememberPassword") || "";
+				rememberCheckbox.checked = true;
+
+				const role = localStorage.getItem("rememberRole");
+				if (role) {
+					document.getElementById(role).checked = true;
+					document.getElementById("label-" + role)?.classList.add("active");
+				}
+				applyValidationStyle(emailInput, validateEmail(emailInput.value.trim()).length === 0);
+				applyValidationStyle(passwordInput, validatePassword(passwordInput.value).length === 0);
+			}
+		}
+
+		// Xử lý đăng nhập
+		function handleLogin() {
+			if (isLoggingIn) return;
+			isLoggingIn = true;
+
+			const email = emailInput.value.trim();
+			const password = passwordInput.value;
+			const rememberMe = rememberCheckbox.checked;
+			const selectedRoleInput = document.querySelector('input[name="options"]:checked');
+			const role = selectedRoleInput?.id;
+
+			const emailErrors = validateEmail(email);
+			const passwordErrors = validatePassword(password);
+
+			applyValidationStyle(emailInput, emailErrors.length === 0);
+			applyValidationStyle(passwordInput, passwordErrors.length === 0);
+
+			if (!role) {
+				showToastr("error", "Please select your role: Manager or Employee", "Missing Role");
+				return;
+			}
+
+			if (emailErrors.length > 0) {
+				showToastr("error", emailErrors.join("<br>"), "Invalid Email", true);
+				return;
+			}
+
+			if (passwordErrors.length > 0) {
+				showToastr("error", passwordErrors.join("<br>"), "Invalid Password", true);
+				return;
+			}
+
+			fakeApiLogin(email, password)
+				.then(user => {
+					if (user.role !== role) {
+						showToastr("error", "You have selected the wrong role. Please choose again!", "Wrong Role");
+						return;
+					}
+
+					handleRememberMe(rememberMe, email, password, role);
+					toastr.clear(); // xóa tất cả toastr cũ nếu còn tồn tại
+
+					toastr.success(`Login successful as ${role === "admin" ? "Manager" : "Employee"}! Redirecting...`, "Success", {
+						onHidden: () => {
+							const redirectUrl = role === "admin" ? "manager-dashboard.html" : "employee-dashboard.html";
+							window.location.href = redirectUrl;
+						}
+					});
+				})
+				.catch(err => {
+					showToastr("error", err, "Login Failed");
+				});
+		}
+
+		// Sự kiện input
+		emailInput.addEventListener("input", () => {
+			const errors = validateEmail(emailInput.value.trim());
+			applyValidationStyle(emailInput, errors.length === 0);
+		});
+
+		passwordInput.addEventListener("input", () => {
+			const errors = validatePassword(passwordInput.value);
+			applyValidationStyle(passwordInput, errors.length === 0);
+		});
+
+		loginButton.addEventListener("click", handleLogin);
+		togglePasswordIcon?.addEventListener("click", togglePasswordVisibility);
+
+		// Cấu hình toastr
+		toastr.options = {
+			closeButton: true,
+			progressBar: true,
+			positionClass: "toast-top-right",
+			timeOut: "3000",
+			extendedTimeOut: "1000",
+		};
+
+		// Khởi tạo
+		window.addEventListener("DOMContentLoaded", populateFormFromStorage);
+	</script>
 
 
 
