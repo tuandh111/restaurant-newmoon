@@ -1,0 +1,58 @@
+//
+// card.scss
+//
+
+.card {
+    margin-bottom: $spacer * 1.25;
+    transition: all .35s;
+    box-shadow: $box-shadow;
+
+    &::before {
+        content: "";
+        z-index: -1;
+        box-shadow: $box-shadow;
+        height: 100%;
+        background-color: $card-bg;
+        border: 1px solid $card-border-color;
+        position: absolute;
+        border-radius: $card-border-radius;
+        left: 10px;
+        right: 10px;
+        top: 0;
+        margin-top: .65rem;
+    }
+}
+
+.card-link+.card-link {
+    margin-left: $card-spacer-x;
+    margin-right: 0;
+}
+
+.card-drop {
+    font-size: $h4-font-size;
+    line-height: 0;
+    color: inherit;
+}
+
+.card-height-100 {
+    height: calc(100% - #{$spacer});
+}
+
+
+// Card title / Card Header
+.card-title,
+.card-header {
+    margin-top: 0;
+}
+
+.card-title {
+    font-weight: $font-weight-semibold;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.sub-header {
+    font-size: $font-size-base;
+    margin-bottom: $spacer;
+    color: $text-muted;
+}

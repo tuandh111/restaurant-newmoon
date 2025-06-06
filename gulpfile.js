@@ -1,233 +1,259 @@
-var autoprefixer, browserSync, concat, config, gulp, imagemin, path, plumber, rename, sass, streamqueue, uglify,changed,reload, cleanCSS;
+const { series, src, dest, parallel, watch } = require("gulp");
+const autoprefixer = require("gulp-autoprefixer");
+const browsersync = require("browser-sync");
+const CleanCSS = require("gulp-clean-css");
+const concat = require("gulp-concat");
+const fileinclude = require("gulp-file-include");
+const del = require("del");
+const newer = require("gulp-newer");
+const rename = require("gulp-rename");
+const sourcemaps = require("gulp-sourcemaps");
+const sass = require("gulp-sass")(require("sass"));
+const uglify = require("gulp-uglify");
+const npmdist = require("gulp-npm-dist");
+const rtlcss = require("gulp-rtlcss");
 
-gulp = require('gulp');
-sass = require('gulp-sass');
-csso = require('gulp-csso');
-plumber = require('gulp-plumber');
-rename = require('gulp-rename');
-autoprefixer = require('gulp-autoprefixer');
-concat = require('gulp-concat');
-uglify = require('gulp-uglify');
-imagemin = require('gulp-imagemin');
-streamqueue = require('streamqueue');
-browserSync = require('browser-sync').create();
-changed = require('gulp-changed');
-reload = browserSync.reload;
-cleanCSS = require('gulp-clean-css');
+const paths = {
+    baseSrc: "src/",                // source directory
+    baseDist: "dist/",              // build directory
+    baseDistAssets: "dist/assets/", // build assets directory
+    baseSrcAssets: "src/assets/",   // source assets directory
 
-config = {
-	nodeDir: './node_modules/'
+    plugin: {
+        styles: [
+            "./node_modules/dropzone/dist/min/dropzone.min.css",
+            "./node_modules/flatpickr/dist/flatpickr.css",
+            "./node_modules/swiper/swiper-bundle.min.css",
+            "./node_modules/sweetalert2/dist/sweetalert2.min.css",
+            "./node_modules/choices.js/public/assets/styles/choices.min.css",
+            "./node_modules/nouislider/dist/nouislider.min.css",
+            "./node_modules/multi.js/dist/multi.min.css",
+            "./node_modules/quill/dist/quill.core.css",
+            "./node_modules/quill/dist/quill.bubble.css",
+            "./node_modules/quill/dist/quill.snow.css",
+        ],
+
+        scripts: [
+            "./node_modules/bootstrap/dist/js/bootstrap.bundle.js",
+            "./node_modules/simplebar/dist/simplebar.min.js",
+            "./node_modules/gumshoejs/dist/gumshoe.polyfills.js",
+            "./node_modules/apexcharts/dist/apexcharts.min.js",
+            "./node_modules/prismjs/prism.js",
+            "./node_modules/prismjs/plugins/normalize-whitespace/prism-normalize-whitespace.js",
+            "./node_modules/toastify-js/src/toastify.js",
+            "./node_modules/dragula/dist/dragula.js",
+            "./node_modules/vanilla-wizard/dist/js/wizard.min.js",
+            "./node_modules/clipboard/dist/clipboard.min.js",
+            "./node_modules/moment/moment.js",
+            "./node_modules/dropzone/dist/min/dropzone.min.js",
+            "./node_modules/flatpickr/dist/flatpickr.js",
+            "./node_modules/swiper/swiper-bundle.min.js",
+            "./node_modules/rater-js/index.js",
+            "./node_modules/sweetalert2/dist/sweetalert2.min.js",
+            "./node_modules/inputmask/dist/inputmask.min.js",
+            "./node_modules/choices.js/public/assets/scripts/choices.min.js",
+            "./node_modules/nouislider/dist/nouislider.min.js",
+            "./node_modules/multi.js/dist/multi.min.js",
+            "./node_modules/quill/dist/quill.min.js",
+            "./node_modules/wnumb/wNumb.min.js",
+            "./node_modules/iconify-icon/dist/iconify-icon.min.js",
+        ]
+    },
+
 };
 
-var path = {
-	styles: [
-		'src/styles/theme.css',
-		'src/styles/style.css',
-		'src/styles/media.css'
-	],
-	corestyle: [
-		'src/plugins/bootstrap/bootstrap.min.css',
-		'src/plugins/malihu-custom-scrollbar-plugin-master/jquery.mCustomScrollbar.css',
-		'src/plugins/bootstrap-wysihtml5-master/bootstrap-wysihtml5.css',
-		'src/plugins/air-datepicker/dist/css/datepicker.css',
-		'src/plugins/timedropper/timedropper.css',
-		'src/plugins/highlight.js/src/styles/solarized-dark.css',
-		'src/plugins/select2/dist/css/select2.css',
-		'src/plugins/bootstrap-select/bootstrap-select.min.css'
-	],
-	icon_styles: [
-		'src/fonts/dropways/dropways.css',
-		'src/fonts/font-awesome/css/font-awesome.css',
-		'src/fonts/foundation-icons/foundation-icons.css',
-		'src/fonts/ionicons-master/css/ionicons.css',
-		'src/fonts/themify-icons/themify-icons.css'
-	],
-	scripts: [
-		'src/scripts/setting.js'
-	],
-	core: [
-		'src/scripts/jquery.min.js',
-		'src/plugins/bootstrap/popper.min.js',
-		'src/plugins/bootstrap/bootstrap.min.js',
-		'src/scripts/moment.js',
-		'src/plugins/malihu-custom-scrollbar-plugin-master/jquery.mCustomScrollbar.js',
-		'src/plugins/wysihtml5-master/dist/wysihtml5-0.3.0.js',
-		'src/plugins/bootstrap-wysihtml5-master/bootstrap-wysihtml5.js',
-		'src/plugins/air-datepicker/dist/js/datepicker.js',
-		'src/plugins/air-datepicker/dist/js/i18n/datepicker.en.js',
-		'src/plugins/timedropper/timedropper.js',
-		'src/plugins/highlight.js/src/highlight.pack.js',
-		'src/plugins/select2/dist/js/select2.full.js',
-		'src/plugins/bootstrap-select/bootstrap-select.min.js',
-		'src/scripts/clipboard.min.js',
-	],
-	fonts: [
-		'src/fonts/dropways/*.*',
-		'src/fonts/font-awesome/fonts/*.*',
-		'src/fonts/foundation-icons/*.*',
-		'src/fonts/ionicons-master/fonts/*.*',
-		'src/fonts/themify-icons/fonts/*.*',
-		'src/fonts/**/*.*',
-	],
-	images: 'src/images/**/*.*',
-	php: ['*.html'],
+const plugins = function () {
+
+    const outcss = paths.baseDistAssets + "css/";
+
+    src(paths.plugin.styles)
+        .pipe(concat("vendor.min.css"))
+        .pipe(CleanCSS())
+        .pipe(dest(outcss));
+
+    const outjs = paths.baseDistAssets + "js/";
+
+    src(paths.plugin.scripts)
+        .pipe(concat("vendor.js"))
+        .pipe(dest(outjs))
+        .pipe(uglify())
+        .pipe(rename({ suffix: ".min" }))
+        .pipe(dest(outjs));
+
+    const out = paths.baseDistAssets + "vendor/";
+    return src(npmdist(), { base: "./node_modules" })
+        .pipe(rename(function (path) {
+            path.dirname = path.dirname.replace(/\/dist/, '').replace(/\\dist/, '');
+        }))
+        .pipe(dest(out));
 };
 
-gulp.task('styles', function() {
-	var stream;
-	stream = streamqueue({
-		objectMode: true
-	});
-	stream.queue(gulp.src(path.styles));
-	return stream.done()
-					.pipe(plumber())
-					.pipe(csso())
-					.pipe(autoprefixer({browsers: ['last 2 versions'],cascade: false}))
-					.pipe(concat('style.css'))
-					.pipe(gulp.dest('vendors/styles/'))
-					.pipe(cleanCSS())
-					.pipe(rename({suffix: '.min'}))
-					.pipe(plumber.stop())
-					.pipe(gulp.dest('vendors/styles/'))
-					.pipe(browserSync.reload({stream: true}));
-});
 
-gulp.task('corestyle', function() {
-	var stream;
-	stream = streamqueue({
-		objectMode: true
-	});
-	stream.queue(gulp.src(path.corestyle));
-	return stream.done()
-					.pipe(plumber())
-					.pipe(sass())
-					.pipe(autoprefixer({browsers: ['last 2 versions'],cascade: false}))
-					.pipe(concat('core.css'))
-					.pipe(gulp.dest('vendors/styles/'))
-					.pipe(cleanCSS())
-					.pipe(rename({suffix: '.min'}))
-					.pipe(plumber.stop())
-					.pipe(gulp.dest('vendors/styles/'))
-					.pipe(browserSync.reload({stream: true}));
-});
+const clean = function (done) {
+    del.sync(paths.baseDist, done());
+};
 
-gulp.task('icon_styles', function() {
-	var stream;
-	stream = streamqueue({
-		objectMode: true
-	});
-	stream.queue(gulp.src(path.icon_styles));
-	return stream.done()
-					.pipe(plumber())
-					.pipe(sass())
-					.pipe(autoprefixer({browsers: ['last 2 versions'],cascade: false}))
-					.pipe(concat('icon-font.css'))
-					.pipe(gulp.dest('vendors/styles/'))
-					.pipe(cleanCSS())
-					.pipe(rename({suffix: '.min'}))
-					.pipe(plumber.stop())
-					.pipe(gulp.dest('vendors/styles/'))
-					.pipe(browserSync.reload({stream: true}));
-});
+const html = function () {
+    const srcPath = paths.baseSrc + "/";
+    const out = paths.baseDist;
+    return src([
+        srcPath + "*.html",
+        srcPath + "*.ico", // favicon
+        srcPath + "*.png",
+    ])
+        .pipe(
+            fileinclude({
+                prefix: "@@",
+                basepath: "@file",
+                indent: true,
+            })
+        )
+        .pipe(dest(out));
+};
+
+const data = function () {
+    const out = paths.baseDistAssets + "data/";
+    return src([paths.baseSrcAssets + "data/**/*"])
+        .pipe(dest(out));
+};
+
+const fonts = function () {
+    const out = paths.baseDistAssets + "fonts/";
+    return src([paths.baseSrcAssets + "fonts/**/*"])
+        .pipe(newer(out))
+        .pipe(dest(out));
+};
+
+const images = function () {
+    var out = paths.baseDistAssets + "images";
+    return src(paths.baseSrcAssets + "images/**/*")
+        .pipe(newer(out))
+        .pipe(dest(out));
+};
 
 
-gulp.task('scripts', function() {
-	var stream;
-	stream = streamqueue({
-		objectMode: true
-	});
-	stream.queue(gulp.src(path.scripts));
-    return stream.done()
-                    .pipe(plumber())
-                    .pipe(concat('script.js'))
-                    .pipe(gulp.dest('vendors/scripts/'))
-                    .pipe(rename({suffix: '.min'}))
-                    .pipe(uglify()).pipe(plumber.stop())
-                    .pipe(gulp.dest('vendors/scripts/'))
-                    .pipe(browserSync.reload({stream: true}));
-});
+const javascript = function () {
+    const out = paths.baseDistAssets + "js/";
 
-gulp.task('core', function() {
-	var stream;
-	stream = streamqueue({
-		objectMode: true
-	});
-	stream.queue(gulp.src(path.core));
-    return stream.done()
-                    .pipe(plumber())
-                    .pipe(concat('core.js'))
-                    .pipe(gulp.dest('vendors/scripts/'))
-                    .pipe(rename({suffix: '.min'}))
-                    .pipe(uglify()).pipe(plumber.stop())
-                    .pipe(gulp.dest('vendors/scripts/'))
-                    .pipe(browserSync.reload({stream: true}));
-});
+    src([paths.baseSrcAssets + "js/app.js", paths.baseSrcAssets + "js/layout.js"])
+        .pipe(concat("app.js"))
+        .pipe(dest(out))
+        .pipe(uglify())
+        .pipe(rename({ suffix: ".min" }))
+        .pipe(dest(out))
 
-gulp.task('php', function() {
-	var stream;
-	stream = streamqueue({
-		objectMode: true
-	});
-	stream.queue(gulp.src(path.php));
-    return stream.done()
-                    .pipe(browserSync.reload({stream: true}));
-});
+    src([paths.baseSrcAssets + "js/config.js"])
+        .pipe(dest(out))
+        .pipe(uglify())
+        .pipe(rename({ suffix: ".min" }))
+        .pipe(dest(out));
 
-gulp.task('fonts', function() {
-	var stream;
-	stream = streamqueue({
-		objectMode: true
-	});
-	stream.queue(gulp.src(path.fonts));
-    return stream.done()
-                    .pipe(gulp.dest('vendors/fonts/'));
-});
 
-gulp.task('images', function() {
-	var stream;
-	stream = streamqueue({
-		objectMode: true
-	});
-	stream.queue(gulp.src(path.images));
-	return stream.done().pipe(changed('vendors/images/')).pipe(imagemin({
-		optimizationLevel: 3,
-		progressive: true,
-		interlaced: true,
-		svgoPlugins: [
-			{
-				removeViewBox: false
-			}
-		]
-	})).pipe(gulp.dest('vendors/images/'));
-});
+    return src([paths.baseSrcAssets + "js/**/*", '!' + paths.baseSrcAssets + "js/app.js", '!' + paths.baseSrcAssets + "js/layout.js", '!' + paths.baseSrcAssets + "js/config.js"])
+        .pipe(uglify())
+        .pipe(dest(out));
 
-gulp.task('connect-sync', function (done) {
-	browserSync.reload();
-	done();
-    browserSync.init({
-      proxy: 'localhost/deskapp', // Change this value to match your local URL.
-	    socket: {
-	      domain: 'localhost:3000'
-	    }
-	});
-	gulp.watch("*.html").on("change", reload);
-	gulp.watch("src/styles/**/*.css").on("change", reload);
-	gulp.watch("src/plugins/**/*.css").on("change", reload);
-});
+};
 
-gulp.task('watch', function(){
-	gulp.watch("src/styles/**/*.*", gulp.series('styles'));
-	gulp.watch("src/styles/**/*.*", gulp.series('corestyle'));
-	gulp.watch("src/fonts/**/*", gulp.series('fonts'));
-	gulp.watch("src/scripts/**/*.js", gulp.series('scripts'));
-	gulp.watch("src/core/**/*.js", gulp.series('core'));
-});
+const scss = function () {
+    const out = paths.baseDistAssets + "css/";
 
-gulp.task('default', gulp.series(gulp.parallel(['styles'], 'corestyle', 'fonts', 'scripts', 'core', 'icon_styles', ['connect-sync']), function(){
-	gulp.watch("src/styles/**/*.css", gulp.series('styles'));
-	gulp.watch("src/fonts/**/*", gulp.series('fonts'));
-	gulp.watch("src/styles/**/*.*", gulp.series('corestyle'));
-	gulp.watch("src/scripts/**/*.js", gulp.series('scripts'));
-	gulp.watch("src/scripts/**/*.js", gulp.series('core'));
-	gulp.watch("src/fonts/**/*.*", gulp.series('icon_styles'));
-}));
+    src(paths.baseSrcAssets + "scss/app.scss")
+        .pipe(sourcemaps.init())
+        .pipe(sass.sync().on('error', sass.logError)) // scss to css
+        .pipe(
+            autoprefixer({
+                overrideBrowserslist: ["last 2 versions"],
+            })
+        )
+        .pipe(dest(out))
+        .pipe(CleanCSS())
+        .pipe(rename({ suffix: ".min" }))
+        .pipe(sourcemaps.write("./"))
+        .pipe(dest(out));
+
+    // generate rtl
+    return src(paths.baseSrcAssets + "scss/app.scss")
+        .pipe(sourcemaps.init())
+        .pipe(sass.sync().on('error', sass.logError)) // scss to css
+        .pipe(
+            autoprefixer({
+                overrideBrowserslist: ["last 2 versions"],
+            })
+        )
+        .pipe(rtlcss())
+        .pipe(rename({ suffix: "-rtl" }))
+        .pipe(dest(out))
+        .pipe(CleanCSS())
+        .pipe(rename({ suffix: ".min" }))
+        .pipe(sourcemaps.write("./"))
+        .pipe(dest(out));
+};
+
+const icons = function () {
+    const out = paths.baseDistAssets + "css/";
+    return src(paths.baseSrcAssets + "scss/icons.scss")
+        .pipe(sourcemaps.init())
+        .pipe(sass.sync().on('error', sass.logError)) // scss to css
+        .pipe(
+            autoprefixer({
+                overrideBrowserslist: ["last 2 versions"],
+            })
+        )
+        .pipe(dest(out))
+        .pipe(CleanCSS())
+        .pipe(rename({ suffix: ".min" }))
+        .pipe(sourcemaps.write("./"))
+        .pipe(dest(out));
+};
+
+
+// Live Browser loading
+const initBrowserSync = function (done) {
+    const startPath = "/index.html";
+    browsersync.init({
+        startPath: startPath,
+        server: {
+            baseDir: paths.baseDist,
+            middleware: [
+                function (req, res, next) {
+                    req.method = "GET";
+                    next();
+                },
+            ],
+        },
+    });
+    done();
+}
+
+const reloadBrowserSync = function (done) {
+    browsersync.reload();
+    done();
+}
+
+// File Watch Task
+function watchFiles() {
+    watch(paths.baseSrc + "**/*.html", series(html, reloadBrowserSync));
+    watch(paths.baseSrcAssets + "data/**/*", series(data, reloadBrowserSync));
+    watch(paths.baseSrcAssets + "fonts/**/*", series(fonts, reloadBrowserSync));
+    watch(paths.baseSrcAssets + "images/**/*", series(images, reloadBrowserSync));
+    watch(paths.baseSrcAssets + "js/**/*", series(javascript, reloadBrowserSync));
+    watch([paths.baseSrcAssets + "scss/icons/*.scss", paths.baseSrcAssets + "scss/icons.scss"], series(icons, reloadBrowserSync));
+    watch([paths.baseSrcAssets + "scss/**/*.scss", "!" + paths.baseSrcAssets + "scss/icons.scss"], series(scss, reloadBrowserSync));
+}
+
+// Production Tasks
+exports.default = series(
+    clean,
+    html,
+    parallel(plugins, fonts, images, javascript, scss, icons),
+    parallel(watchFiles, initBrowserSync)
+);
+
+// Build Tasks
+exports.build = series(
+    clean,
+    html,
+    plugins,
+    parallel(fonts, images, javascript, scss, icons)
+);
