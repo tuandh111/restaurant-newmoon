@@ -28,7 +28,27 @@
      <!-- Theme Config js (Require in all Page) -->
      <script src="assets/js/config.min.js"></script>
 
+     <!-- DataTables -->
+     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+
+     <!-- Buttons -->
+     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css" />
+
+     <!-- Responsive -->
      <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" />
+
+
+
+
+     <!-- Toastr CSS -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-toastr/2.1.1/angular-toastr.min.css" />
+
+     <!-- AngularJS -->
+     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+     <!-- Toastr JS -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-toastr/2.1.1/angular-toastr.tpls.min.js"></script>
+
 
 </head>
 
@@ -931,17 +951,17 @@
                     <div class="row">
                          <div class="col-12">
                               <div class="page-title-box">
-                                   <h4 class="mb-0">Employee</h4>
+                                   <h4 class="mb-0">Role</h4>
                                    <ol class="breadcrumb mb-0">
                                         <li class="breadcrumb-item"><a href="javascript: void(0);">Table</a></li>
-                                        <li class="breadcrumb-item active">Employee</li>
+                                        <li class="breadcrumb-item active">Role</li>
                                    </ol>
                               </div>
                          </div>
                     </div>
                     <!-- ========== Page Title End ========== -->
 
-                    <div class="row">
+                    <div class="row" ng-app="myApp" ng-controller="RoleController">
 
                          <div class="col-xl-12">
                               <div class="container my-4">
@@ -950,91 +970,108 @@
                                              <h5 class="mb-0">Role Information Form</h5>
                                         </div>
                                         <div class="card-body">
-                                             <form id="userForm" class="row g-3 needs-validation" novalidate>
-                                                  <!-- User Information -->
+                                             <form name="userForm" ng-submit="submitForm()" novalidate
+                                                  class="row g-3 needs-validation">
                                                   <div class="col-12 col-md-6 mb-3">
-                                                       <label for="firstName" class="form-label">First Name</label>
+                                                       <label for="firstName" class="form-label">Role Name</label>
                                                        <input type="text" class="form-control" id="firstName"
-                                                            placeholder="Enter first name" required>
-                                                  </div>
-
-                                                  <div class="col-12 col-md-6 mb-3">
-                                                       <label for="lastName" class="form-label">Last Name</label>
-                                                       <input type="text" class="form-control" id="lastName"
-                                                            placeholder="Enter last name" required>
+                                                            ng-model="role.roleName" required>
                                                   </div>
 
                                                   <div class="col-12 col-md-12 mb-12">
                                                        <label for="description" class="form-label">Description</label>
                                                        <textarea class="form-control" id="description" rows="4"
-                                                            placeholder="Enter description"></textarea>
+                                                            ng-model="role.description"
+                                                            placeholder="Description"></textarea>
                                                   </div>
+
                                                   <div class="col-12 col-md-6 mb-3">
                                                        <input type="checkbox" id="activateAccount"
-                                                            name="activateAccount" />
+                                                            name="activateAccount" ng-model="role.activateAccount" />
                                                        <label for="activateAccount">Activate your account</label>
                                                   </div>
 
-                                                  <!-- Address: Province/City -->
-
-
                                                   <div class="col-12">
-                                                       <button class="btn btn-primary" type="submit">Add</button>
+                                                       <button class="btn btn-primary" type="submit">
+                                                            <iconify-icon icon="mdi:plus-circle-outline"
+                                                                 class="me-1"></iconify-icon>
+                                                            Add new
+                                                       </button>
                                                   </div>
                                              </form>
-
 
                                         </div>
                                         <hr class="my-0" />
                                         <div class="card-body">
-                                             <div class="py-3">
-                                                  <table id="example" class="display nowrap" style="width:100%">
+                                             <div class="py-3 table-responsive">
+                                                  <table id="roleTable"
+                                                       class="table table-striped table-bordered nowrap"
+                                                       style="width:100%">
                                                        <thead>
                                                             <tr>
-                                                                 <th>ID</th>
+                                                                 <th>STT</th>
                                                                  <th>Name</th>
-                                                                 <th>Email</th>
+                                                                 <th>Description</th>
+                                                                 <th>Status</th>
                                                                  <th>Setting</th>
-                                                                 <th>Company</th>
-
+                                                                 <th>Actions</th>
                                                             </tr>
                                                        </thead>
                                                        <tbody>
-                                                            <tr>
-                                                                 <td>11</td>
-                                                                 <td>Alice</td>
-                                                                 <td>alice@example.com</td>
-                                                                 <td> <button
-                                                                           class="btn btn-sm btn-primary me-1 view-btn"
-                                                                           data-bs-toggle="modal"
-                                                                           data-bs-target="#viewModal1">
-                                                                           <i class="bi bi-eye me-1"></i> Edit
-                                                                      </button></td>
+                                                            <tr ng-repeat="role in roles">
+                                                                 <td>{{ $index + 1 }}</td>
+                                                                 <td>{{ role.roleName }}</td>
+                                                                 <td>{{ role.description }}</td>
 
+                                                                 <!-- Status: circle icon with color -->
                                                                  <td>
-                                                                      <button
-                                                                           class="btn btn-sm btn-primary me-1 view-btn"
-                                                                           data-bs-toggle="modal"
-                                                                           data-bs-target="#viewModal">
-                                                                           <i class="bi bi-eye me-1"></i> View
-                                                                      </button>
-                                                                      <button
-                                                                           class="btn btn-sm btn-warning me-1 edit-btn"
-                                                                           data-bs-toggle="modal"
-                                                                           data-bs-target="#editModal">
-                                                                           <i class="bi bi-pencil me-1"></i> Edit
-                                                                      </button>
-                                                                      <button class="btn btn-sm btn-danger delete-btn">
-                                                                           <i class="bi bi-trash me-1"></i> Delete
+                                                                      <button class="btn rounded-circle p-0"
+                                                                           ng-class="role.deleted ? 'btn-secondary' : 'btn-success'"
+                                                                           style="width: 20px; height: 20px;">
                                                                       </button>
                                                                  </td>
+
+                                                                 <!-- Setting button -->
+                                                                 <td>
+                                                                      <button class="btn btn-sm btn-warning"
+                                                                           data-bs-toggle="modal"
+                                                                           data-bs-target="#viewModal1">
+                                                                           <iconify-icon icon="mdi:account-cog"
+                                                                                class="me-1"></iconify-icon> Setting
+                                                                      </button>
+                                                                 </td>
+
+                                                                 <!-- Actions: View / Edit / Delete -->
+                                                                 <td>
+                                                                      <div class="d-flex flex-nowrap">
+                                                                           <button class="btn btn-sm btn-info me-1"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#viewModal"
+                                                                                ng-click="viewRole(role)">
+                                                                                <iconify-icon icon="mdi:eye"
+                                                                                     class="me-1"></iconify-icon> View
+                                                                           </button>
+                                                                           <button class="btn btn-sm btn-primary me-1"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#editModal"
+                                                                                ng-click="editRole(role)">
+                                                                                <iconify-icon icon="mdi:pencil"
+                                                                                     class="me-1"></iconify-icon> Edit
+                                                                           </button>
+                                                                           <button class="btn btn-sm btn-danger"
+                                                                                ng-click="deleteRole(role.roleId)">
+                                                                                <iconify-icon icon="mdi:trash-can"
+                                                                                     class="me-1"></iconify-icon> Delete
+                                                                           </button>
+                                                                      </div>
+                                                                 </td>
                                                             </tr>
-                                                            <!-- Copy các dòng trên để thêm nhân viên khác -->
                                                        </tbody>
+
                                                        <!-- View Modal -->
                                                        <div class="modal fade" id="viewModal1" tabindex="-1"
                                                             aria-labelledby="viewModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog modal-lg">
+                                                            <div class="modal-dialog modal-xl">
                                                                  <div class="modal-content">
                                                                       <div class="modal-header">
                                                                            <h1 class="modal-title fs-5"
@@ -1047,178 +1084,277 @@
 
                                                                            <!-- Column headers -->
                                                                            <div class="row fw-bold mb-2">
-                                                                                <div class="col-4">Function</div>
-                                                                                <div class="col-2 text-center">Add</div>
-                                                                                <div class="col-2 text-center">Edit
+                                                                                <div class="col-6">Function</div>
+                                                                                <div class="col-1 text-center">Add</div>
+                                                                                <div class="col-1 text-center">Edit
                                                                                 </div>
-                                                                                <div class="col-2 text-center">Delete
+                                                                                <div class="col-1 text-center">Delete
                                                                                 </div>
-                                                                                <div class="col-2 text-center">View
+                                                                                <div class="col-1 text-center">View
                                                                                 </div>
+                                                                                <div class="col-1 text-center">Approve
+                                                                                </div>
+                                                                                <div class="col-1 text-center">Export
+                                                                                </div>
+
                                                                            </div>
 
                                                                            <!-- Rows of functions -->
                                                                            <div class="row align-items-center mb-2">
-                                                                                <div class="col-4">Employee Management
+                                                                                <div class="col-6">Employee Management
                                                                                 </div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="add_employee" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="edit_employee" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="delete_employee" />
                                                                                 </div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="view_employee"
                                                                                           checked /></div>
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="approve_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="export_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
                                                                            </div>
 
                                                                            <div class="row align-items-center mb-2">
-                                                                                <div class="col-4">Project Management
+                                                                                <div class="col-6">Project Management
                                                                                 </div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="add_project" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="edit_project" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="delete_project" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="view_project" checked />
                                                                                 </div>
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="approve_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="export_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
                                                                            </div>
 
                                                                            <div class="row align-items-center mb-2">
-                                                                                <div class="col-4">Customer Management
+                                                                                <div class="col-6">Customer Management
                                                                                 </div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="add_customer" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="edit_customer" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="delete_customer" />
                                                                                 </div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="view_customer"
                                                                                           checked /></div>
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="approve_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="export_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
                                                                            </div>
 
                                                                            <div class="row align-items-center mb-2">
-                                                                                <div class="col-4">Invoice Management
+                                                                                <div class="col-6">Invoice Management
                                                                                 </div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="add_invoice" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="edit_invoice" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="delete_invoice" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="view_invoice" checked />
                                                                                 </div>
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="approve_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="export_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
                                                                            </div>
 
                                                                            <div class="row align-items-center mb-2">
-                                                                                <div class="col-4">Product Management
+                                                                                <div class="col-6">Product Management
                                                                                 </div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="add_product" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="edit_product" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="delete_product" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="view_product" checked />
                                                                                 </div>
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="approve_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="export_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
                                                                            </div>
 
                                                                            <div class="row align-items-center mb-2">
-                                                                                <div class="col-4">Report Management
+                                                                                <div class="col-6">Report Management
                                                                                 </div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="add_report" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="edit_report" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="delete_report" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="view_report" checked />
                                                                                 </div>
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="approve_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="export_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
                                                                            </div>
 
                                                                            <div class="row align-items-center mb-2">
-                                                                                <div class="col-4">System Management
+                                                                                <div class="col-6">System Management
                                                                                 </div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="add_system" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="edit_system" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="delete_system" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="view_system" checked />
                                                                                 </div>
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="approve_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="export_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
                                                                            </div>
 
                                                                            <div class="row align-items-center mb-2">
-                                                                                <div class="col-4">Role Management</div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-6">Role Management</div>
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="add_role" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="edit_role" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="delete_role" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
                                                                                           name="view_role" checked />
                                                                                 </div>
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="approve_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          name="export_employee" />
+                                                                                </div> <!-- ✅ Thêm -->
                                                                            </div>
 
                                                                            <div class="row align-items-center mb-2">
-                                                                                <div class="col-4">User Management</div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                <div class="col-6">User Management</div>
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
-                                                                                          name="add_user" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                          ng-model="permissions.add_user" />
+                                                                                </div>
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
-                                                                                          name="edit_user" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                          ng-model="permissions.edit_user" />
+                                                                                </div>
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
-                                                                                          name="delete_user" /></div>
-                                                                                <div class="col-2 text-center"><input
+                                                                                          ng-model="permissions.delete_user" />
+                                                                                </div>
+                                                                                <div class="col-1 text-center"><input
                                                                                           type="checkbox"
-                                                                                          name="view_user" checked />
+                                                                                          ng-model="permissions.view_user" />
+                                                                                </div>
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          ng-model="permissions.approve_employee" />
+                                                                                </div>
+                                                                                <div class="col-1 text-center"><input
+                                                                                          type="checkbox"
+                                                                                          ng-model="permissions.export_employee" />
                                                                                 </div>
                                                                            </div>
+
+                                                                           <div class="col-12 d-flex gap-2">
+                                                                                <button class="btn btn-primary"
+                                                                                     type="submit">
+                                                                                     <iconify-icon
+                                                                                          icon="mdi:plus-circle-outline"
+                                                                                          class="me-1"></iconify-icon>
+                                                                                     Save
+                                                                                </button>
+                                                                                <button class="btn btn-secondary"
+                                                                                     type="button" id="btnClear"
+                                                                                     ng-click="clearPermissions()">
+                                                                                     <iconify-icon
+                                                                                          icon="mdi:close-circle-outline"
+                                                                                          class="me-1"></iconify-icon>
+                                                                                     Clear
+                                                                                </button>
+                                                                           </div>
+
 
                                                                       </div>
                                                                  </div>
@@ -1231,27 +1367,28 @@
                                                                  <div class="modal-content">
                                                                       <div class="modal-header">
                                                                            <h1 class="modal-title fs-5"
-                                                                                id="viewModalLabel">View Employee</h1>
+                                                                                id="viewModalLabel">
+                                                                                View role: {{ selectedRole.roleName }}
+                                                                           </h1>
+
                                                                            <button type="button" class="btn-close"
                                                                                 data-bs-dismiss="modal"
                                                                                 aria-label="Close"></button>
                                                                       </div>
                                                                       <div class="modal-body">
-                                                                           <!-- Nội dung hiển thị nhân viên -->
-                                                                           <p><strong>Name:</strong> Alice</p>
-                                                                           <p><strong>Email:</strong> alice@example.com
-                                                                           </p>
-                                                                           <p><strong>Position:</strong> Software
-                                                                                Engineer</p>
-                                                                           <p><strong>Company:</strong> ABC Company</p>
-                                                                           <p><strong>Country:</strong> United States
-                                                                           </p>
+                                                                           <!-- Nội dung hiển thị role đã chọn -->
+                                                                           <p><strong>Role Name:</strong> {{
+                                                                                selectedRole.roleName }}</p>
+                                                                           <p><strong>Description:</strong> {{
+                                                                                selectedRole.description }}</p>
                                                                       </div>
+
                                                                  </div>
                                                             </div>
                                                        </div>
 
                                                        <!-- Edit Modal -->
+                                                       <!-- Modal chỉnh sửa nhân viên -->
                                                        <div class="modal fade" id="editModal" tabindex="-1"
                                                             aria-labelledby="editModalLabel" aria-hidden="true">
                                                             <div class="modal-dialog">
@@ -1263,38 +1400,37 @@
                                                                                 data-bs-dismiss="modal"
                                                                                 aria-label="Close"></button>
                                                                       </div>
+
                                                                       <div class="modal-body">
                                                                            <!-- Form sửa nhân viên -->
-                                                                           <form>
+                                                                           <form ng-submit="saveEdit()">
                                                                                 <div class="mb-3">
                                                                                      <label
                                                                                           class="form-label">Name</label>
                                                                                      <input type="text"
                                                                                           class="form-control"
-                                                                                          value="Alice">
+                                                                                          ng-model="editedRole.roleName"
+                                                                                          required>
                                                                                 </div>
                                                                                 <div class="mb-3">
                                                                                      <label
-                                                                                          class="form-label">Email</label>
-                                                                                     <input type="email"
+                                                                                          class="form-label">Description</label>
+                                                                                     <textarea rows="4"
                                                                                           class="form-control"
-                                                                                          value="alice@example.com">
+                                                                                          ng-model="editedRole.description"
+                                                                                          required></textarea>
                                                                                 </div>
-                                                                                <div class="mb-3">
-                                                                                     <label
-                                                                                          class="form-label">Position</label>
-                                                                                     <input type="text"
-                                                                                          class="form-control"
-                                                                                          value="Software Engineer">
-                                                                                </div>
+
                                                                                 <button type="submit"
-                                                                                     class="btn btn-primary">Save
+                                                                                     class="btn btn-primary"
+                                                                                     ng-click="saveEdit()">Save
                                                                                      changes</button>
                                                                            </form>
                                                                       </div>
                                                                  </div>
                                                             </div>
                                                        </div>
+
 
                                                   </table>
 
@@ -1322,10 +1458,10 @@
                     <div class="container-fluid">
                          <div class="row">
                               <div class="col-12 text-center">
-                                   <script>document.write(new Date().getFullYear())</script> &copy; Raydar. Crafted by
+                                   <script>document.write(new Date().getFullYear())</script> &copy; Dang Hoang Tuan
                                    <iconify-icon icon="solar:hearts-bold-duotone"
                                         class="fs-18 align-middle text-danger"></iconify-icon> <a href=""
-                                        class="fw-bold footer-text" target="_blank">Techzaa</a>
+                                        class="fw-bold footer-text" target="_blank">Newmoon</a>
                               </div>
                          </div>
                     </div>
@@ -1353,26 +1489,31 @@
 
      <!-- jQuery CDN -->
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-     <script src="assets/js/admin/employeeController.js"></script>
      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+     <script src="assets/js/admin/role-controller.js"></script>
 
 
 
+     <!-- jQuery -->
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-
-     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
-     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css" />
-
-     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+     <!-- DataTables core -->
      <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+     <!-- Buttons extension -->
      <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
      <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
      <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+
+     <!-- Export dependencies -->
      <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+     <!-- Responsive extension -->
      <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
+
 
 
 
