@@ -29,10 +29,46 @@
      <script src="assets/js/config.min.js"></script>
 
      <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" />
+     <style>
+          .toast-container {
+               position: fixed;
+               top: 20px;
+               right: 20px;
+               z-index: 1050;
+          }
 
+          .toast {
+               min-width: 250px;
+               margin-bottom: 10px;
+               padding: 15px 20px;
+               border-radius: 4px;
+               color: white;
+               font-weight: 600;
+               box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+               opacity: 0.9;
+               transition: opacity 0.5s ease;
+          }
+
+          .toast-success {
+               background-color: #28a745;
+               /* xanh lá */
+          }
+
+          .toast-error {
+               background-color: #dc3545;
+               /* đỏ */
+          }
+     </style>
 </head>
 
 <body>
+     <div class="toast-container">
+          <div ng-repeat="toast in toasts" class="toast"
+               ng-class="{'toast-success': toast.type === 'success', 'toast-error': toast.type === 'error'}"
+               ng-show="toast.show">
+               {{toast.message}}
+          </div>
+     </div>
 
      <!-- START Wrapper -->
      <div class="wrapper">
@@ -950,121 +986,234 @@
                                              <h5 class="mb-0">User Information Form</h5>
                                         </div>
                                         <div class="card-body">
-                                             <form id="userForm" class="row g-3 needs-validation" novalidate>
-                                                  <!-- User Information -->
+                                             <form id="userForm" name="registerForm" class="row g-3"
+                                                  ng-submit="submitRegister()" novalidate
+                                                  ng-controller="UserController as ctrl">
+
+                                                  <!-- First Name -->
                                                   <div class="col-12 col-md-6 mb-3">
-                                                       <label for="firstName" class="form-label">First Name</label>
-                                                       <input type="text" class="form-control" id="firstName"
-                                                            placeholder="Enter first name" required>
+                                                       <label class="form-label">First Name</label>
+                                                       <input type="text" class="form-control" name="firstname"
+                                                            ng-model="newUser.firstname" required
+                                                            ng-change="registerForm.firstname.$setTouched()"
+                                                            ng-pattern="/^[a-zA-Z0-9\s]+$/"
+                                                            ng-class="{'is-invalid': (submitted || registerForm.firstname.$touched) && registerForm.firstname.$invalid}">
+                                                       <div class="invalid-feedback"
+                                                            ng-show="(submitted || registerForm.firstname.$touched) && registerForm.firstname.$error.required">
+                                                            First Name is required.
+                                                       </div>
+                                                       <div class="invalid-feedback"
+                                                            ng-show="(submitted || registerForm.firstname.$touched) && registerForm.firstname.$error.pattern">
+                                                            No special characters allowed.
+                                                       </div>
                                                   </div>
 
+                                                  <!-- Last Name -->
                                                   <div class="col-12 col-md-6 mb-3">
-                                                       <label for="lastName" class="form-label">Last Name</label>
-                                                       <input type="text" class="form-control" id="lastName"
-                                                            placeholder="Enter last name" required>
+                                                       <label class="form-label">Last Name</label>
+                                                       <input type="text" class="form-control" name="lastname"
+                                                            ng-model="newUser.lastname" required
+                                                            ng-change="registerForm.lastname.$setTouched()"
+                                                            ng-pattern="/^[a-zA-Z0-9\s]+$/"
+                                                            ng-class="{'is-invalid': (submitted || registerForm.lastname.$touched) && registerForm.lastname.$invalid}">
+                                                       <div class="invalid-feedback"
+                                                            ng-show="(submitted || registerForm.lastname.$touched) && registerForm.lastname.$error.required">
+                                                            Last Name is required.
+                                                       </div>
+                                                       <div class="invalid-feedback"
+                                                            ng-show="(submitted || registerForm.lastname.$touched) && registerForm.lastname.$error.pattern">
+                                                            No special characters allowed.
+                                                       </div>
                                                   </div>
 
+                                                  <!-- Email -->
                                                   <div class="col-12 col-md-6 mb-3">
-                                                       <label for="email" class="form-label">Email</label>
-                                                       <input type="email" class="form-control" id="email"
-                                                            placeholder="e.g. example@newmoon.vn" required>
+                                                       <label class="form-label">Email</label>
+                                                       <input type="email" class="form-control" name="email"
+                                                            ng-model="newUser.email" required
+                                                            ng-change="registerForm.email.$setTouched()"
+                                                            ng-pattern="/^[a-zA-Z0-9._%+-]+@gmail\.com$/"
+                                                            ng-class="{'is-invalid': (submitted || registerForm.email.$touched) && registerForm.email.$invalid}">
+                                                       <div class="invalid-feedback"
+                                                            ng-show="(submitted || registerForm.email.$touched) && registerForm.email.$error.required">
+                                                            Email is required.
+                                                       </div>
+                                                       <div class="invalid-feedback"
+                                                            ng-show="(submitted || registerForm.email.$touched) && registerForm.email.$error.pattern">
+                                                            Email must end with @newmoon.vn.
+                                                       </div>
+                                                  </div>
+                                                  <!-- ng-pattern="/^[a-zA-Z0-9._%+-]+@newmoon\.vn$/" -->
+                                                  <!-- Password -->
+                                                  <!-- <div class="col-12 col-md-6 mb-3">
+                                                       <label class="form-label">Password</label>
+                                                       <input type="password" class="form-control" name="password"
+                                                            ng-model="newUser.password" required ng-minlength="8"
+                                                            ng-change="registerForm.password.$setTouched()"
+                                                            ng-class="{'is-invalid': (submitted || registerForm.password.$touched) && registerForm.password.$invalid}">
+                                                       <div class="invalid-feedback"
+                                                            ng-show="(submitted || registerForm.password.$touched) && registerForm.password.$error.required">
+                                                            Password is required.
+                                                       </div>
+                                                       <div class="invalid-feedback"
+                                                            ng-show="(submitted || registerForm.password.$touched) && registerForm.password.$error.minlength">
+                                                            Password must be at least 8 characters.
+                                                       </div>
+                                                  </div> -->
 
+                                                  <!-- Phone -->
+                                                  <div class="col-12 col-md-6 mb-3">
+                                                       <label class="form-label">Phone</label>
+                                                       <input type="text" class="form-control" name="phone"
+                                                            ng-model="newUser.phone" required
+                                                            ng-change="registerForm.phone.$setTouched()"
+                                                            ng-pattern="/^(0)(3|5|7|8|9)[0-9]{8,9}$/"
+                                                            ng-class="{'is-invalid': (submitted || registerForm.phone.$touched) && registerForm.phone.$invalid}">
+                                                       <div class="invalid-feedback"
+                                                            ng-show="(submitted || registerForm.phone.$touched) && registerForm.phone.$error.required">
+                                                            Phone number is required.
+                                                       </div>
+                                                       <div class="invalid-feedback"
+                                                            ng-show="(submitted || registerForm.phone.$touched) && registerForm.phone.$error.pattern">
+                                                            Invalid Vietnamese phone number.
+                                                       </div>
                                                   </div>
 
-                                                  <div class="col-12 col-md-6 mb-3">
-                                                       <label for="phone" class="form-label">Phone</label>
-                                                       <input type="text" class="form-control" id="phone"
-                                                            placeholder="Enter phone number" required>
-                                                  </div>
-
-                                                  <!-- Address: Province/City -->
+                                                  <!-- Province -->
                                                   <div class="col-12 col-md-4 mb-3">
                                                        <label for="province" class="form-label">Province / City</label>
-                                                       <select class="form-select" id="province" required>
-                                                            <option selected disabled value="">Select province/city...
-                                                            </option>
+                                                       <select class="form-select" id="province" name="province"
+                                                            ng-model="newUser.province"
+                                                            ng-options="p as p.name for p in provinces"
+                                                            ng-change="onProvinceChange(); registerForm.province.$setTouched()"
+                                                            required
+                                                            ng-class="{'is-invalid': (submitted || registerForm.province.$touched) && registerForm.province.$invalid}">
+                                                            <option value="">Select province/city...</option>
                                                        </select>
+                                                       <div class="invalid-feedback"
+                                                            ng-show="(submitted || registerForm.province.$touched) && registerForm.province.$error.required">
+                                                            Province / City is required.
+                                                       </div>
                                                   </div>
 
                                                   <!-- District -->
                                                   <div class="col-12 col-md-4 mb-3">
                                                        <label for="district" class="form-label">District</label>
-                                                       <select class="form-select" id="district" required disabled>
-                                                            <option selected disabled value="">Select district...
-                                                            </option>
+                                                       <select class="form-select" id="district" name="district"
+                                                            ng-model="newUser.district"
+                                                            ng-options="d as d.name for d in districts"
+                                                            ng-change="onDistrictChange(); registerForm.district.$setTouched()"
+                                                            required ng-disabled="!districts.length"
+                                                            ng-class="{'is-invalid': (submitted || registerForm.district.$touched) && registerForm.district.$invalid}">
+                                                            <option value="">Select district...</option>
                                                        </select>
+                                                       <div class="invalid-feedback"
+                                                            ng-show="(submitted || registerForm.district.$touched) && registerForm.district.$error.required">
+                                                            District is required.
+                                                       </div>
                                                   </div>
 
                                                   <!-- Ward -->
                                                   <div class="col-12 col-md-4 mb-3">
                                                        <label for="ward" class="form-label">Ward</label>
-                                                       <select class="form-select" id="ward" required disabled>
-                                                            <option selected disabled value="">Select ward...</option>
+                                                       <select class="form-select" id="ward" name="ward"
+                                                            ng-model="newUser.ward"
+                                                            ng-options="w as w.name for w in wards" required
+                                                            ng-disabled="!wards.length"
+                                                            ng-change="registerForm.ward.$setTouched()"
+                                                            ng-class="{'is-invalid': (submitted || registerForm.ward.$touched) && registerForm.ward.$invalid}">
+                                                            <option value="">Select ward...</option>
                                                        </select>
-                                                  </div>
-                                                  <div class="col-12 col-md-8 mb-3">
-                                                       <label for="role" class="form-label">Role</label>
-                                                       <select class="form-select" id="role" ng-model="selectedRole"
-                                                            ng-options="role.roleName for role in roles track by role.roleId"
-                                                            required>
-                                                            <option value="" disabled selected>Select role...</option>
-                                                       </select>
-
-                                                  </div>
-
-                                                  <div class="col-12 col-md-4 mt-3">
-                                                       <div class="form-check">
-                                                            <label for="role" class="form-label">Status</label><br>
-                                                            <input type="checkbox" id="activateAccount"
-                                                                 name="activateAccount" />
-                                                            <label for="activateAccount">Activate your account</label>
+                                                       <div class="invalid-feedback"
+                                                            ng-show="(submitted || registerForm.ward.$touched) && registerForm.ward.$error.required">
+                                                            Ward is required.
                                                        </div>
                                                   </div>
 
-                                                  <div class="col-12">
-                                                       <button class="btn btn-primary" type="submit">Add</button>
+                                                  <!-- Role -->
+                                                  <div class="col-12 col-md-8 mb-3">
+                                                       <label class="form-label">Role</label>
+                                                       <select class="form-select" name="roleId"
+                                                            ng-model="newUser.roleId"
+                                                            ng-options="role.roleId as role.roleName for role in roles"
+                                                            required ng-change="registerForm.roleId.$setTouched()"
+                                                            ng-class="{'is-invalid': (submitted || registerForm.roleId.$touched) && registerForm.roleId.$invalid}">
+                                                            <option value="" disabled selected>Select role...</option>
+                                                       </select>
+                                                       <div class="invalid-feedback"
+                                                            ng-show="(submitted || registerForm.roleId.$touched) && registerForm.roleId.$error.required">
+                                                            Role is required.
+                                                       </div>
                                                   </div>
+
+                                                  <!-- Account Activation -->
+                                                  <div class="col-12 col-md-4 mt-3">
+                                                       <label class="form-label">Status</label><br>
+                                                       <input type="checkbox" ng-model="newUser.isActive" />
+                                                       <label>Activate account</label>
+                                                  </div>
+
+                                                  <div class="col-12">
+                                                       <button class="btn btn-primary" type="submit">Add new</button>
+                                                  </div>
+
                                              </form>
 
 
                                         </div>
                                         <hr class="my-0" />
                                         <div class="card-body">
-                                             <div class="py-3">
-                                                  <table id="example" class="display nowrap" style="width:100%">
+                                             <div class="py-3 table-responsive">
+                                                  <table id="example1" class="table table-striped table-bordered nowrap"
+                                                       style="width:100%">
                                                        <thead>
                                                             <tr>
-                                                                 <th>ID</th>
-                                                                 <th>Name</th>
+                                                                 <th>STT</th>
+                                                                 <th>First name</th>
+                                                                 <th>Last name</th>
                                                                  <th>Email</th>
                                                                  <th>Position</th>
-                                                                 <th>Company</th>
-                                                                 <th>Country</th>
+                                                                 <th>Phone</th>
+                                                                 <th>Role</th>
+                                                                 <th>Status</th>
                                                                  <th>Actions</th>
                                                             </tr>
                                                        </thead>
                                                        <tbody>
-                                                            <tr>
-                                                                 <td>11</td>
-                                                                 <td>Alice</td>
-                                                                 <td>alice@example.com</td>
-                                                                 <td>Software Engineer</td>
-                                                                 <td>ABC Company</td>
-                                                                 <td>United States</td>
+                                                            <tr ng-repeat="user in users track by $index"
+                                                                 on-finish-render="ngRepeatFinished">
+                                                                 <td>{{$index + 1}}</td>
+                                                                 <td>{{user.firstname}}</td>
+                                                                 <td>{{user.lastname}}</td>
+                                                                 <td>{{user.email}}</td>
+                                                                 <td>{{user.ward}} - {{user.district}} -
+                                                                      {{user.province}}
+                                                                 </td>
+                                                                 <td>{{user.phone}}</td>
+                                                                 <td>{{user.role.roleName}}</td>
+                                                                 <td>
+                                                                      <span class="badge"
+                                                                           ng-class="{'bg-success': user.isActive, 'bg-secondary': !user.isActive}">
+                                                                           {{user.isActive ? 'Active' : 'Inactive'}}
+                                                                      </span>
+                                                                 </td>
                                                                  <td>
                                                                       <button
                                                                            class="btn btn-sm btn-primary me-1 view-btn"
                                                                            data-bs-toggle="modal"
-                                                                           data-bs-target="#viewModal">
+                                                                           data-bs-target="#viewModal"
+                                                                           ng-click="selectUser(user)">
                                                                            <i class="bi bi-eye me-1"></i> View
                                                                       </button>
                                                                       <button
                                                                            class="btn btn-sm btn-warning me-1 edit-btn"
                                                                            data-bs-toggle="modal"
-                                                                           data-bs-target="#editModal">
+                                                                           data-bs-target="#editModal"
+                                                                           ng-click="selectUser(user)">
                                                                            <i class="bi bi-pencil me-1"></i> Edit
                                                                       </button>
-                                                                      <button class="btn btn-sm btn-danger delete-btn">
+                                                                      <button class="btn btn-sm btn-danger delete-btn"
+                                                                           ng-click="deleteUser(user.id)">
                                                                            <i class="bi bi-trash me-1"></i> Delete
                                                                       </button>
                                                                  </td>
@@ -1084,16 +1233,22 @@
                                                                                 aria-label="Close"></button>
                                                                       </div>
                                                                       <div class="modal-body">
-                                                                           <!-- Nội dung hiển thị nhân viên -->
-                                                                           <p><strong>Name:</strong> Alice</p>
-                                                                           <p><strong>Email:</strong> alice@example.com
-                                                                           </p>
-                                                                           <p><strong>Position:</strong> Software
-                                                                                Engineer</p>
-                                                                           <p><strong>Company:</strong> ABC Company</p>
-                                                                           <p><strong>Country:</strong> United States
-                                                                           </p>
+                                                                           <p><strong>Name:</strong>
+                                                                                {{selectedUser.firstName}}
+                                                                                {{selectedUser.lastName}}</p>
+                                                                           <p><strong>Email:</strong>
+                                                                                {{selectedUser.email}}</p>
+                                                                           <p><strong>Position:</strong>
+                                                                                {{selectedUser.position}}</p>
+                                                                           <p><strong>Phone:</strong>
+                                                                                {{selectedUser.phone}}</p>
+                                                                           <p><strong>Role:</strong>
+                                                                                {{selectedUser.role.name}}</p>
+                                                                           <p><strong>Status:</strong>
+                                                                                {{selectedUser.isActive ? 'Active' :
+                                                                                'Inactive'}}</p>
                                                                       </div>
+
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -1112,32 +1267,55 @@
                                                                       </div>
                                                                       <div class="modal-body">
                                                                            <!-- Form sửa nhân viên -->
-                                                                           <form>
+                                                                           <form ng-submit="submitForm()">
                                                                                 <div class="mb-3">
-                                                                                     <label
-                                                                                          class="form-label">Name</label>
+                                                                                     <label class="form-label">First
+                                                                                          Name</label>
                                                                                      <input type="text"
                                                                                           class="form-control"
-                                                                                          value="Alice">
+                                                                                          ng-model="selectedUser.firstName">
+                                                                                </div>
+                                                                                <div class="mb-3">
+                                                                                     <label class="form-label">Last
+                                                                                          Name</label>
+                                                                                     <input type="text"
+                                                                                          class="form-control"
+                                                                                          ng-model="selectedUser.lastName">
                                                                                 </div>
                                                                                 <div class="mb-3">
                                                                                      <label
                                                                                           class="form-label">Email</label>
                                                                                      <input type="email"
                                                                                           class="form-control"
-                                                                                          value="alice@example.com">
+                                                                                          ng-model="selectedUser.email">
                                                                                 </div>
                                                                                 <div class="mb-3">
                                                                                      <label
-                                                                                          class="form-label">Position</label>
+                                                                                          class="form-label">Phone</label>
                                                                                      <input type="text"
                                                                                           class="form-control"
-                                                                                          value="Software Engineer">
+                                                                                          ng-model="selectedUser.phone">
+                                                                                </div>
+                                                                                <div class="mb-3">
+                                                                                     <label
+                                                                                          class="form-label">Role</label>
+                                                                                     <select class="form-select"
+                                                                                          ng-model="selectedUser.role"
+                                                                                          ng-options="role as role.name for role in roles"></select>
+                                                                                </div>
+                                                                                <div class="form-check mb-3">
+                                                                                     <input type="checkbox"
+                                                                                          class="form-check-input"
+                                                                                          id="activeCheck"
+                                                                                          ng-model="selectedUser.isActive">
+                                                                                     <label class="form-check-label"
+                                                                                          for="activeCheck">Active</label>
                                                                                 </div>
                                                                                 <button type="submit"
                                                                                      class="btn btn-primary">Save
                                                                                      changes</button>
                                                                            </form>
+
                                                                       </div>
                                                                  </div>
                                                             </div>
