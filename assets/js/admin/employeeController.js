@@ -9,7 +9,39 @@ $(document).ready(function () {
         responsive: true
     });
 });
+var app = angular.module('myApp', []);
 
+app.controller('UserController', function ($scope, $http) {
+    console.log("userController")
+    $scope.roles = [];
+    $scope.selectedRole = null;
+
+    // Gọi API để lấy danh sách roles
+    $http.get('http://localhost:8080/api/v1/auth/role')
+        .then(function (response) {
+            $scope.roles = response.data;
+            console.table($scope.roles)
+        }, function (error) {
+            console.error('Error loading roles:', error);
+        });
+
+    // Xử lý submit form (tùy chọn)
+    $scope.submitForm = function () {
+        var userData = {
+            firstName: $scope.firstName,
+            lastName: $scope.lastName,
+            email: $scope.email,
+            phone: $scope.phone,
+            roleId: $scope.selectedRole?.id,
+            isActive: $scope.activateAccount
+        };
+
+        console.log("Sending user:", userData);
+
+        // Gửi dữ liệu qua API (ví dụ POST)
+        // $http.post('/api/users', userData).then(...);
+    };
+});
 
 const provinceSelect = document.getElementById('province');
 const districtSelect = document.getElementById('district');

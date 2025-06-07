@@ -941,7 +941,7 @@
                     </div>
                     <!-- ========== Page Title End ========== -->
 
-                    <div class="row">
+                    <div class="row" ng-app="myApp" ng-controller="UserController">
 
                          <div class="col-xl-12">
                               <div class="container my-4">
@@ -967,7 +967,8 @@
                                                   <div class="col-12 col-md-6 mb-3">
                                                        <label for="email" class="form-label">Email</label>
                                                        <input type="email" class="form-control" id="email"
-                                                            placeholder="Enter email" required>
+                                                            placeholder="e.g. example@newmoon.vn" required>
+
                                                   </div>
 
                                                   <div class="col-12 col-md-6 mb-3">
@@ -1003,12 +1004,12 @@
                                                   </div>
                                                   <div class="col-12 col-md-8 mb-3">
                                                        <label for="role" class="form-label">Role</label>
-                                                       <select class="form-select" id="role" required>
-                                                            <option selected disabled value="">Select role...</option>
-                                                            <option value="admin">Admin</option>
-                                                            <option value="manager">Manager</option>
-                                                            <option value="staff">Staff</option>
+                                                       <select class="form-select" id="role" ng-model="selectedRole"
+                                                            ng-options="role.roleName for role in roles track by role.roleId"
+                                                            required>
+                                                            <option value="" disabled selected>Select role...</option>
                                                        </select>
+
                                                   </div>
 
                                                   <div class="col-12 col-md-4 mt-3">
@@ -1199,9 +1200,9 @@
 
      <!-- jQuery CDN -->
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-     <script src="assets/js/admin/employeeController.js"></script>
      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+     <script src="assets/js/admin/employeeController.js"></script>
+
 
 
 
