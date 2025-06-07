@@ -131,6 +131,8 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                 $scope.registerForm.$setUntouched();
                 $scope.submitted = false;
 
+
+
                 loadUsers(); // `ngRepeatFinished` sẽ tự init lại bảng
 
                 Swal.fire({

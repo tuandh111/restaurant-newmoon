@@ -992,12 +992,14 @@
 
                                                   <!-- First Name -->
                                                   <div class="col-12 col-md-6 mb-3">
-                                                       <label class="form-label">First Name</label>
+                                                       <label class="form-label">First Name <span
+                                                                 style="color: red;">*</span></label>
                                                        <input type="text" class="form-control" name="firstname"
                                                             ng-model="newUser.firstname" required
                                                             ng-change="registerForm.firstname.$setTouched()"
                                                             ng-pattern="/^[a-zA-Z0-9\s]+$/"
-                                                            ng-class="{'is-invalid': (submitted || registerForm.firstname.$touched) && registerForm.firstname.$invalid}">
+                                                            ng-class="{'is-invalid': (submitted || registerForm.firstname.$touched) && registerForm.firstname.$invalid}"
+                                                            placeholder="First name">
                                                        <div class="invalid-feedback"
                                                             ng-show="(submitted || registerForm.firstname.$touched) && registerForm.firstname.$error.required">
                                                             First Name is required.
@@ -1010,12 +1012,14 @@
 
                                                   <!-- Last Name -->
                                                   <div class="col-12 col-md-6 mb-3">
-                                                       <label class="form-label">Last Name</label>
+                                                       <label class="form-label">Last Name <span
+                                                                 style="color: red;">*</span></label>
                                                        <input type="text" class="form-control" name="lastname"
                                                             ng-model="newUser.lastname" required
                                                             ng-change="registerForm.lastname.$setTouched()"
                                                             ng-pattern="/^[a-zA-Z0-9\s]+$/"
-                                                            ng-class="{'is-invalid': (submitted || registerForm.lastname.$touched) && registerForm.lastname.$invalid}">
+                                                            ng-class="{'is-invalid': (submitted || registerForm.lastname.$touched) && registerForm.lastname.$invalid}"
+                                                            placeholder="Last name">
                                                        <div class="invalid-feedback"
                                                             ng-show="(submitted || registerForm.lastname.$touched) && registerForm.lastname.$error.required">
                                                             Last Name is required.
@@ -1028,12 +1032,14 @@
 
                                                   <!-- Email -->
                                                   <div class="col-12 col-md-6 mb-3">
-                                                       <label class="form-label">Email</label>
+                                                       <label class="form-label">Email <span
+                                                                 style="color: red;">*</span></label>
                                                        <input type="email" class="form-control" name="email"
                                                             ng-model="newUser.email" required
                                                             ng-change="registerForm.email.$setTouched()"
                                                             ng-pattern="/^[a-zA-Z0-9._%+-]+@gmail\.com$/"
-                                                            ng-class="{'is-invalid': (submitted || registerForm.email.$touched) && registerForm.email.$invalid}">
+                                                            ng-class="{'is-invalid': (submitted || registerForm.email.$touched) && registerForm.email.$invalid}"
+                                                            placeholder="e.g example@newmoon.vn">
                                                        <div class="invalid-feedback"
                                                             ng-show="(submitted || registerForm.email.$touched) && registerForm.email.$error.required">
                                                             Email is required.
@@ -1063,12 +1069,14 @@
 
                                                   <!-- Phone -->
                                                   <div class="col-12 col-md-6 mb-3">
-                                                       <label class="form-label">Phone</label>
+                                                       <label class="form-label">Phone <span
+                                                                 style="color: red;">*</span></label>
                                                        <input type="text" class="form-control" name="phone"
                                                             ng-model="newUser.phone" required
                                                             ng-change="registerForm.phone.$setTouched()"
                                                             ng-pattern="/^(0)(3|5|7|8|9)[0-9]{8,9}$/"
-                                                            ng-class="{'is-invalid': (submitted || registerForm.phone.$touched) && registerForm.phone.$invalid}">
+                                                            ng-class="{'is-invalid': (submitted || registerForm.phone.$touched) && registerForm.phone.$invalid}"
+                                                            placeholder="Phone">
                                                        <div class="invalid-feedback"
                                                             ng-show="(submitted || registerForm.phone.$touched) && registerForm.phone.$error.required">
                                                             Phone number is required.
@@ -1081,7 +1089,8 @@
 
                                                   <!-- Province -->
                                                   <div class="col-12 col-md-4 mb-3">
-                                                       <label for="province" class="form-label">Province / City</label>
+                                                       <label for="province" class="form-label">Province / City <span
+                                                                 style="color: red;">*</span></label>
                                                        <select class="form-select" id="province" name="province"
                                                             ng-model="newUser.province"
                                                             ng-options="p as p.name for p in provinces"
@@ -1098,7 +1107,8 @@
 
                                                   <!-- District -->
                                                   <div class="col-12 col-md-4 mb-3">
-                                                       <label for="district" class="form-label">District</label>
+                                                       <label for="district" class="form-label">District <span
+                                                                 style="color: red;">*</span></label>
                                                        <select class="form-select" id="district" name="district"
                                                             ng-model="newUser.district"
                                                             ng-options="d as d.name for d in districts"
@@ -1115,7 +1125,8 @@
 
                                                   <!-- Ward -->
                                                   <div class="col-12 col-md-4 mb-3">
-                                                       <label for="ward" class="form-label">Ward</label>
+                                                       <label for="ward" class="form-label">Ward <span
+                                                                 style="color: red;">*</span></label>
                                                        <select class="form-select" id="ward" name="ward"
                                                             ng-model="newUser.ward"
                                                             ng-options="w as w.name for w in wards" required
@@ -1132,7 +1143,8 @@
 
                                                   <!-- Role -->
                                                   <div class="col-12 col-md-8 mb-3">
-                                                       <label class="form-label">Role</label>
+                                                       <label class="form-label">Role <span
+                                                                 style="color: red;">*</span></label>
                                                        <select class="form-select" name="roleId"
                                                             ng-model="newUser.roleId"
                                                             ng-options="role.roleId as role.roleName for role in roles"
