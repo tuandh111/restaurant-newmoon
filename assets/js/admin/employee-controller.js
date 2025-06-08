@@ -1,18 +1,18 @@
 var app = angular.module('myApp', []);
 
 // Directive: Gọi sự kiện khi ng-repeat render xong
-app.directive('onFinishRender', function ($timeout) {
-    return {
-        restrict: 'A',
-        link: function (scope, element, attr) {
-            if (scope.$last === true) {
-                $timeout(function () {
-                    scope.$emit(attr.onFinishRender);
-                });
-            }
-        }
-    };
-});
+// app.directive('onFinishRender', function ($timeout) {
+//     return {
+//         restrict: 'A',
+//         link: function (scope, element, attr) {
+//             if (scope.$last === true) {
+//                 $timeout(function () {
+//                     scope.$emit(attr.onFinishRender);
+//                 });
+//             }
+//         }
+//     };
+// });
 
 app.controller('UserController', function ($scope, $http, $timeout) {
     $scope.users = [];
@@ -23,47 +23,54 @@ app.controller('UserController', function ($scope, $http, $timeout) {
     $scope.wards = [];
     $scope.submitted = false;
 
-    // Hàm khởi tạo lại DataTable
-    function initializeDataTable() {
-        $timeout(() => {
-            $('#example1').DataTable({
-                paging: true,
-                searching: true,
-                ordering: true,
-                lengthChange: true,
-                pageLength: 10,
-                lengthMenu: [5, 10, 25, 50],
-                responsive: true
-            });
-        }, 0);
-    }
-
-    // Bắt sự kiện khi ng-repeat render xong
-    $scope.$on('ngRepeatFinished', function () {
-        console.log("ngRepeat xong, init lại DataTable");
-
-        // Chỉ gọi khi bảng đã destroy trước đó
-        if ($.fn.DataTable.isDataTable('#example1')) {
-            $('#example1').DataTable().clear().destroy();
-        }
-
-        initializeDataTable();
-    });
-
-    // Load danh sách users
+    $scope.filteredUsers = []
     function loadUsers() {
         $http.get('http://localhost:8080/api/v1/auth/users').then(function (response) {
             $scope.users = response.data;
+            $scope.filteredUsers = $scope.users
             // Không cần gọi lại DataTable ở đây
         }, function (error) {
             console.error("Error loading users:", error);
         });
     }
+    $scope.applyFilters = function () {
+        const search = $scope.searchText?.toLowerCase() || '';
+        const roleFilter = $scope.selectedRole;
+        const statusFilter = $scope.selectedStatus;
+        const provinceFilter = $scope.selectedProvince;
+
+        $scope.filteredUsers = $scope.users.filter(user => {
+            const matchSearch =
+                user.firstname?.toLowerCase().includes(search) ||
+                user.lastname?.toLowerCase().includes(search) ||
+                user.email?.toLowerCase().includes(search) ||
+                user.phone?.toLowerCase().includes(search) ||
+                user.province?.toLowerCase().includes(search);
+
+            const matchRole = !roleFilter || user.role?.id == roleFilter;
+            const matchStatus = statusFilter === '' || user.isActive == (statusFilter === 'active');
+            const matchProvince = !provinceFilter || user.province == provinceFilter;
+
+            return matchSearch && matchRole && matchStatus && matchProvince;
+        });
+    };
 
     // Load roles
-    $http.get('http://localhost:8080/api/v1/auth/role').then(function (response) {
-        $scope.roles = response.data;
-    });
+    $scope.loadRoles = function () {
+        $http.get('http://localhost:8080/api/v1/auth/role')
+            .then(function (response) {
+                $scope.roles = response.data;
+
+                // Đảm bảo AngularJS cập nhật binding
+                if (!$scope.$$phase) {
+                    $scope.$applyAsync(); // Kích hoạt digest cycle nếu chưa có
+                }
+
+                console.log("Roles reloaded:", $scope.roles);
+            }, function (error) {
+                console.error('Error loading roles:', error);
+            });
+    };
 
     // Load provinces
     $http.get("https://provinces.open-api.vn/api/?depth=1").then(function (response) {
@@ -155,7 +162,52 @@ app.controller('UserController', function ($scope, $http, $timeout) {
             });
         }
     };
+    //view user
+    $scope.viewUser = function (user) {
+        console.log("okkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+        $scope.selectedUser = user;
+
+        // Hiển thị modal bootstrap (nếu không dùng data-bs-toggle)
+        const modalElement = document.getElementById('viewModal');
+        const modalInstance = new bootstrap.Modal(modalElement);
+        modalInstance.show();
+    };
+
+
+
+
+
+
+    // save role 
+    $scope.role = {
+        roleName: '',
+        description: ''
+    };
+
+    $scope.submitForm = function () {
+        $http.post('http://localhost:8080/api/v1/auth/role', {
+            roleName: $scope.role.roleName,
+            description: $scope.role.description
+        }).then(function (response) {
+            // Reset form
+            Swal.fire({
+                icon: 'success',
+                title: 'User added successfully!',
+                showConfirmButton: false,
+                timer: 2000
+            }).then(() => {
+                window.location.href = 'Employee.html';
+            });
+
+        }, function (error) {
+            alert('Thêm role thất bại!');
+            console.error(error);
+        });
+    };
+
 
     // Load dữ liệu ban đầu
     loadUsers();
+    $scope.loadRoles();
+
 });
