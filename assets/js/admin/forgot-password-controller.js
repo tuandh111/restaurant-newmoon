@@ -1,9 +1,11 @@
 var app = angular.module('app', []);
 
-app.controller('ChangePasswordCtrl', ['$scope', function ($scope) {
+app.controller('ChangePasswordCtrl', ['$scope', '$http', function ($scope, $http) {
     $scope.user = {};
+    $scope.emailTouched = false;
 
-    // Check từng điều kiện mật khẩu
+    // ========================== VALIDATION ===========================
+
     $scope.isMinLength = function (pw) {
         return pw && pw.length >= 8;
     };
@@ -23,23 +25,7 @@ app.controller('ChangePasswordCtrl', ['$scope', function ($scope) {
     $scope.hasSpecialChar = function (pw) {
         return /[\W_]/.test(pw);
     };
-    //
-    $scope.user = {};
-    $scope.emailTouched = false;
 
-    $scope.validateEmail = function () {
-        // Called on every change
-        // Just toggles state so ng-class updates
-    };
-
-    $scope.isValidEmail = function (email) {
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@newmoon\.vn$/;
-        return emailRegex.test(email);
-    };
-
-
-
-    // Hàm kiểm tra tổng thể mật khẩu hợp lệ
     $scope.isPasswordValid = function (pw) {
         return $scope.isMinLength(pw) &&
             $scope.hasUpperCase(pw) &&
@@ -48,15 +34,66 @@ app.controller('ChangePasswordCtrl', ['$scope', function ($scope) {
             $scope.hasSpecialChar(pw);
     };
 
+    $scope.isValidEmail = function (email) {
+        //const emailRegex = /^[a-zA-Z0-9._%+-]+@newmoon\.vn$/;
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        return emailRegex.test(email);
+    };
+
+    $scope.validateEmail = function () {
+        // Just update the touched state so UI can respond
+    };
+
+    // =========================== UPDATE PASSWORD ===========================
+
     $scope.updatePassword = function () {
-        if ($scope.changePasswordForm.$valid &&
-            $scope.user.newPassword === $scope.user.confirmPassword &&
-            $scope.isPasswordValid($scope.user.currentPassword) &&
-            $scope.isPasswordValid($scope.user.newPassword)) {
-            alert("Password updated!");
-            // Xử lý tiếp (gọi API...)
-        } else {
-            alert("Please fix errors first!");
+        if (
+            !$scope.isValidEmail($scope.user.email) ||
+            !$scope.isPasswordValid($scope.user.currentPassword) ||
+            !$scope.isPasswordValid($scope.user.newPassword) ||
+            $scope.user.newPassword !== $scope.user.confirmPassword
+        ) {
+            alert("Please fix validation errors before submitting.");
+            return;
         }
+
+        // Prepare data to send to backend
+        const requestData = {
+            email: $scope.user.email,
+            password: $scope.user.currentPassword,
+            newPassword: $scope.user.newPassword
+        };
+        // Send POST request to backend API
+        $http.post('http://localhost:8080/api/v1/auth/update-password', requestData)
+            .then(function (response) {
+                const successMessage = response.data.message || "Password updated successfully!";
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: successMessage,
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                }).then(() => {
+                    window.location.href = 'index.html';
+                });
+            })
+            .catch(function (error) {
+                const errorMessage = (error.data && error.data.message)
+                    ? error.data.message
+                    : "Failed to update password. Please try again.";
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: errorMessage,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            });
     };
 }]);
