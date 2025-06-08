@@ -32,6 +32,16 @@
           .has-success input {
                border: 1px solid green !important;
           }
+
+          .is-invalid {
+               border: 1px solid #dc3545 !important;
+               /* Red */
+          }
+
+          .is-valid {
+               border: 1px solid #198754 !important;
+               /* Green */
+          }
      </style>
 
 </head>
@@ -65,17 +75,23 @@
 
                                              <!-- Email -->
                                              <div class="mb-3">
-                                                  <label class="form-label" for="example-email">Email <span
-                                                            class="text-danger">*</span></label>
+                                                  <label class="form-label" for="example-email">
+                                                       Email <span class="text-danger">*</span>
+                                                  </label>
                                                   <input type="email" id="example-email" name="email"
-                                                       ng-model="user.email"
-                                                       class="form-control bg-light bg-opacity-50 border-light py-2"
-                                                       placeholder="Enter your email" required>
+                                                       ng-model="user.email" placeholder="Enter your email"
+                                                       ng-change="validateEmail()" ng-class="{
+               'is-invalid': emailTouched && !isValidEmail(user.email),
+               'is-valid': emailTouched && isValidEmail(user.email)
+           }" class="form-control bg-light bg-opacity-50 border-light py-2" required ng-focus="emailTouched = true">
+
                                                   <small class="text-danger"
-                                                       ng-show="changePasswordForm.email.$touched && changePasswordForm.email.$invalid">
+                                                       ng-show="emailTouched && !isValidEmail(user.email)">
                                                        Please enter a valid email.
                                                   </small>
                                              </div>
+
+
 
                                              <!-- Current Password -->
                                              <div class="mb-3"

@@ -23,6 +23,21 @@ app.controller('ChangePasswordCtrl', ['$scope', function ($scope) {
     $scope.hasSpecialChar = function (pw) {
         return /[\W_]/.test(pw);
     };
+    //
+    $scope.user = {};
+    $scope.emailTouched = false;
+
+    $scope.validateEmail = function () {
+        // Called on every change
+        // Just toggles state so ng-class updates
+    };
+
+    $scope.isValidEmail = function (email) {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@newmoon\.vn$/;
+        return emailRegex.test(email);
+    };
+
+
 
     // Hàm kiểm tra tổng thể mật khẩu hợp lệ
     $scope.isPasswordValid = function (pw) {
