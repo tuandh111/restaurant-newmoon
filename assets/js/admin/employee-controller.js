@@ -196,7 +196,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                 showConfirmButton: false,
                 timer: 2000
             }).then(() => {
-                window.location.href = 'Employee.html';
+                $scope.loadRoles();
             });
 
         }, function (error) {

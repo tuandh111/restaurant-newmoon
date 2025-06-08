@@ -1283,7 +1283,7 @@
 
                                                             <div class="col-md-3">
                                                                  <select class="form-select" ng-model="filterDistrict"
-                                                                      ng-options="d as d.name for d in filterDistricts"
+                                                                      ng-options="d as d.name for d in onDistrictChange"
                                                                       ng-change="onFilterDistrictChange()">
                                                                       <option value="">-- Select District --</option>
                                                                  </select>
@@ -1385,11 +1385,13 @@
                                                                       <p><strong>Email:</strong> {{selectedUser.email}}
                                                                       </p>
                                                                       <p><strong>Position:</strong>
-                                                                           {{selectedUser.position}}</p>
+                                                                           {{selectedUser.ward}} -
+                                                                           {{selectedUser.district}} -
+                                                                           {{selectedUser.province}}</p>
                                                                       <p><strong>Phone:</strong> {{selectedUser.phone}}
                                                                       </p>
                                                                       <p><strong>Role:</strong>
-                                                                           {{selectedUser.role.name}}</p>
+                                                                           {{selectedUser.role.roleName}}</p>
                                                                       <p><strong>Status:</strong>
                                                                            {{selectedUser.isActive ? 'Active' :
                                                                            'Inactive'}}</p>
