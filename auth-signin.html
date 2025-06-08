@@ -21,6 +21,7 @@
 
      <!-- App css (Require in all Page) -->
      <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" />
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 
      <!-- Theme Config js (Require in all Page) -->
      <script src="assets/js/config.min.js"></script>
@@ -33,7 +34,7 @@
 
 </head>
 
-<body class="authentication-bg">
+<body class="authentication-bg" ng-app="loginApp" ng-controller="LoginController">
 
      <div class="account-pages pt-2 pt-sm-5 pb-4 pb-sm-5">
           <div class="container">
@@ -55,8 +56,8 @@
 
 
                                    <div class="px-4">
-                                        <form ng-app="loginApp" ng-controller="LoginController" ng-submit="login()"
-                                             novalidate>
+                                        <form name="loginForm" ng-submit="login()" novalidate>
+
                                              <!-- Email Input -->
                                              <div class="mb-3">
                                                   <label class="form-label" for="example-email">Email</label>
@@ -66,45 +67,74 @@
                                                        ng-change="validateEmail()"
                                                        class="form-control bg-light bg-opacity-50 border-light py-2"
                                                        placeholder="@newmoon.vn" required>
+                                                  <small class="text-danger" ng-show="emailInvalid">Please enter a valid
+                                                       email address.</small>
                                              </div>
 
                                              <!-- Password Input -->
                                              <div class="mb-3 position-relative">
-                                                  <a href="auth-password.html"
-                                                       class="float-end text-muted text-underline-dashed ms-1">Reset
-                                                       password</a>
-                                                  <label class="form-label" for="example-password">Password</label>
-                                                  <input type="password" id="example-password" name="password"
-                                                       ng-model="user.password"
-                                                       ng-class="{'is-invalid': passwordInvalid, 'is-valid': passwordValid}"
-                                                       ng-change="validatePassword()"
-                                                       class="form-control bg-light bg-opacity-50 border-light py-2"
-                                                       placeholder="Enter your password" required />
 
-                                                  <i class="bi position-absolute top-50 end-0 translate-middle-y me-3"
-                                                       style="cursor: pointer; font-size: 1.25rem; color: #6c757d;"
-                                                       ng-click="togglePasswordVisibility()"
-                                                       ng-class="{'bi-eye': showPassword, 'bi-eye-slash': !showPassword}"
-                                                       aria-label="Toggle password visibility" role="button"></i>
+                                                  <div class="mb-3 position-relative">
+                                                       <label class="form-label" for="example-password">Password</label>
+                                                       <input type="{{showPassword ? 'text' : 'password'}}"
+                                                            id="example-password" name="password"
+                                                            ng-model="user.password" ng-change="validatePassword()"
+                                                            ng-class="{'is-invalid': passwordInvalid, 'is-valid': passwordValid}"
+                                                            class="form-control bg-light bg-opacity-50 border-light py-2"
+                                                            placeholder="Enter your password" required />
 
+                                                       <!-- Icon con mắt với margin-right -->
+                                                       <span ng-click="showPassword = !showPassword"
+                                                            style="position: absolute; top: 38px; right: 15px; cursor: pointer; user-select: none; margin-right: 18px;">
+                                                            <i class="fa"
+                                                                 ng-class="showPassword ? 'fa-eye' : 'fa-eye-slash'"></i>
+                                                       </span>
 
-
-                                             </div>
-
-
-                                             <div class="mb-3">
-                                                  <div class="form-check">
-                                                       <input type="checkbox" class="form-check-input"
-                                                            id="checkbox-signin" ng-model="user.rememberMe">
-                                                       <label class="form-check-label" for="checkbox-signin">Remember
-                                                            me</label>
+                                                       <small class="text-danger"
+                                                            ng-show="passwordInvalid && !isMinLength(user.password)">
+                                                            Password must be at least 8 characters.<br>
+                                                       </small>
+                                                       <small class="text-danger"
+                                                            ng-show="passwordInvalid && !hasUpperCase(user.password)">
+                                                            Password must contain at least one uppercase letter.<br>
+                                                       </small>
+                                                       <small class="text-danger"
+                                                            ng-show="passwordInvalid && !hasLowerCase(user.password)">
+                                                            Password must contain at least one lowercase letter.<br>
+                                                       </small>
+                                                       <small class="text-danger"
+                                                            ng-show="passwordInvalid && !hasNumber(user.password)">
+                                                            Password must contain at least one number.<br>
+                                                       </small>
+                                                       <small class="text-danger"
+                                                            ng-show="passwordInvalid && !hasSpecialChar(user.password)">
+                                                            Password must contain at least one special character.<br>
+                                                       </small>
                                                   </div>
-                                             </div>
 
-                                             <div class="mb-1 text-center d-grid">
-                                                  <button class="btn btn-danger py-2 fw-medium" type="submit">Sign
-                                                       In</button>
-                                             </div>
+
+
+                                                  <!-- Remember Me -->
+                                                  <div class="mb-3">
+                                                       <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input"
+                                                                 id="checkbox-signin" ng-model="user.rememberMe">
+                                                            <label class="form-check-label"
+                                                                 for="checkbox-signin">Remember
+                                                                 me</label>
+                                                            <a href="auth-password.html"
+                                                                 class="float-end text-muted text-underline-dashed ms-1">Reset
+                                                                 password</a>
+                                                       </div>
+
+                                                  </div>
+
+                                                  <!-- Submit -->
+                                                  <div class="mb-1 text-center d-grid">
+                                                       <button class="btn btn-danger py-2 fw-medium" type="submit"
+                                                            ng-disabled="emailInvalid || passwordInvalid || !user.email || !user.password">Sign
+                                                            In</button>
+                                                  </div>
                                         </form>
                                    </div> <!-- end col -->
                               </div> <!-- end card-body -->

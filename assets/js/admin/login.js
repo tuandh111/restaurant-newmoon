@@ -1,6 +1,6 @@
 var app = angular.module('loginApp', []);
 
-app.constant('API_BASE_URL', '');
+app.constant('API_BASE_URL', 'http://localhost:8080/api/v1');
 
 app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL) {
     $scope.user = {
@@ -13,8 +13,9 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
     $scope.emailValid = false;
     $scope.passwordInvalid = false;
     $scope.passwordValid = false;
+    $scope.showPassword = false;
 
-    // Toast config
+    // SweetAlert2 toast config
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -23,7 +24,7 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
         showConfirmButton: false
     });
 
-    // Email validation
+    // Validate email ends with @newmoon.vn
     $scope.validateEmail = function () {
         const pattern = /^[a-zA-Z0-9._%+-]+@newmoon\.vn$/;
         if ($scope.user.email && pattern.test($scope.user.email)) {
@@ -35,49 +36,42 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
         }
     };
 
-    // Password validation
-    $scope.validatePassword = function () {
-        const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&_])[A-Za-z\d@$!%*?#&_]{8,}$/;
-        if ($scope.user.password && pattern.test($scope.user.password)) {
-            $scope.passwordInvalid = false;
-            $scope.passwordValid = true;
-        } else {
-            $scope.passwordInvalid = true;
-            $scope.passwordValid = false;
-        }
+    // Detailed password checks for user feedback
+    $scope.isMinLength = function (pw) {
+        return pw && pw.length >= 8;
     };
-    $scope.showPassword = false; // mặc định ẩn mật khẩu
+    $scope.hasUpperCase = function (pw) {
+        return /[A-Z]/.test(pw);
+    };
+    $scope.hasLowerCase = function (pw) {
+        return /[a-z]/.test(pw);
+    };
+    $scope.hasNumber = function (pw) {
+        return /\d/.test(pw);
+    };
+    $scope.hasSpecialChar = function (pw) {
+        return /[\W_]/.test(pw);
+    };
 
+    $scope.validatePassword = function () {
+        const pw = $scope.user.password || '';
+        const isValid =
+            $scope.isMinLength(pw) &&
+            $scope.hasUpperCase(pw) &&
+            $scope.hasLowerCase(pw) &&
+            $scope.hasNumber(pw) &&
+            $scope.hasSpecialChar(pw);
+
+        $scope.passwordInvalid = !isValid;
+        $scope.passwordValid = isValid;
+    };
+
+    // Toggle show/hide password input
     $scope.togglePasswordVisibility = function () {
         $scope.showPassword = !$scope.showPassword;
-        var input = document.getElementById('example-password');
-        input.type = $scope.showPassword ? 'text' : 'password';
     };
 
-
-    $scope.validatePasswordDetails = function () {
-        const password = $scope.user.password;
-        const errors = [];
-
-        if (password.length < 8) {
-            errors.push('Have at least 8 characters');
-        }
-        if (!/[a-z]/.test(password)) {
-            errors.push('Include at least one lowercase letter');
-        }
-        if (!/[A-Z]/.test(password)) {
-            errors.push('Include at least one uppercase letter');
-        }
-        if (!/[0-9]/.test(password)) {
-            errors.push('Include at least one number');
-        }
-        if (!/[\W_]/.test(password)) {
-            errors.push('Include at least one special character');
-        }
-
-        return errors;
-    };
-
+    // Login function called on form submit
     $scope.login = function () {
         $scope.validateEmail();
         $scope.validatePassword();
@@ -87,14 +81,19 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
             return;
         }
 
-        const errors = $scope.validatePasswordDetails();
+        if ($scope.passwordInvalid) {
+            const errors = [];
+            if (!$scope.isMinLength($scope.user.password)) errors.push('At least 8 characters');
+            if (!$scope.hasUpperCase($scope.user.password)) errors.push('At least one uppercase letter');
+            if (!$scope.hasLowerCase($scope.user.password)) errors.push('At least one lowercase letter');
+            if (!$scope.hasNumber($scope.user.password)) errors.push('At least one number');
+            if (!$scope.hasSpecialChar($scope.user.password)) errors.push('At least one special character');
 
-        if (errors.length > 0) {
-            const errorMessage = 'Password must:<br>' + errors.map(e => '• ' + e).join('<br>');
+            const errorMsg = errors.map(e => `• ${e}`).join('<br>');
             Toast.fire({
                 icon: 'error',
                 title: 'Invalid Password',
-                html: errorMessage
+                html: `Password must:<br>${errorMsg}`
             });
             return;
         }
@@ -104,16 +103,14 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
             password: $scope.user.password
         };
 
-        $http.post('http://localhost:8080/api/v1/auth/authenticate', loginData)
-            .then(function (response) {
-                console.log('Login success', response.data);
+        $http.post(`${API_BASE_URL}/auth/authenticate`, loginData)
+            .then(response => {
                 Toast.fire({ icon: 'success', title: 'Login successful!' });
                 setTimeout(() => {
                     $window.location.href = 'index.html';
                 }, 1000);
             })
-            .catch(function (error) {
-                console.error('Login failed', error);
+            .catch(error => {
                 Toast.fire({ icon: 'error', title: 'Login failed! Check email or password.' });
             });
     };
