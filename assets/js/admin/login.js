@@ -1,3 +1,4 @@
+
 var app = angular.module('loginApp', []);
 
 app.constant('API_BASE_URL', 'http://localhost:8080/api/v1');
@@ -26,7 +27,8 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
 
     // Validate email ends with @newmoon.vn
     $scope.validateEmail = function () {
-        const pattern = /^[a-zA-Z0-9._%+-]+@newmoon\.vn$/;
+        //const pattern = /^[a-zA-Z0-9._%+-]+@newmoon\.vn$/;
+        const pattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
         if ($scope.user.email && pattern.test($scope.user.email)) {
             $scope.emailInvalid = false;
             $scope.emailValid = true;
@@ -36,7 +38,7 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
         }
     };
 
-    // Detailed password checks for user feedback
+    // Password validation helpers
     $scope.isMinLength = function (pw) {
         return pw && pw.length >= 8;
     };
@@ -105,13 +107,33 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
 
         $http.post(`${API_BASE_URL}/auth/authenticate`, loginData)
             .then(response => {
-                Toast.fire({ icon: 'success', title: 'Login successful!' });
-                setTimeout(() => {
-                    $window.location.href = 'index.html';
-                }, 1000);
+                // Save or remove credentials in localStorage
+                if ($scope.user.rememberMe) {
+                    localStorage.setItem('email', $scope.user.email);
+                    localStorage.setItem('password', $scope.user.password);
+                    localStorage.setItem('rememberMe', 'true');
+                } else {
+                    localStorage.removeItem('email');
+                    localStorage.removeItem('password');
+                    localStorage.setItem('rememberMe', 'false');
+                }
+
+                Toast.fire({ icon: 'success', title: 'Login successful!' }).then(() => {
+                    $window.location.href = 'admin-dashboard.html';
+                });
             })
             .catch(error => {
                 Toast.fire({ icon: 'error', title: 'Login failed! Check email or password.' });
             });
     };
+
+    // Load saved credentials if "Remember Me" was checked
+    if (localStorage.getItem('rememberMe') === 'true') {
+        $scope.user.email = localStorage.getItem('email') || '';
+        $scope.user.password = localStorage.getItem('password') || '';
+        $scope.user.rememberMe = true;
+
+        $scope.validateEmail();
+        $scope.validatePassword();
+    }
 });
