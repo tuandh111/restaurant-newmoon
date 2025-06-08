@@ -140,7 +140,10 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                     title: 'User registered successfully!',
                     showConfirmButton: false,
                     timer: 2000
+                }).then(() => {
+                    window.location.href = 'Employee.html';
                 });
+
             }, function (error) {
                 Swal.close();
                 console.error("Registration failed:", error);

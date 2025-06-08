@@ -997,7 +997,7 @@
                                                        <input type="text" class="form-control" name="firstname"
                                                             ng-model="newUser.firstname" required
                                                             ng-change="registerForm.firstname.$setTouched()"
-                                                            ng-pattern="/^[a-zA-Z0-9\s]+$/"
+                                                            ng-pattern="/^[a-zA-ZÀ-ỹà-ỹ\s]+$/"
                                                             ng-class="{'is-invalid': (submitted || registerForm.firstname.$touched) && registerForm.firstname.$invalid}"
                                                             placeholder="First name">
                                                        <div class="invalid-feedback"
@@ -1006,7 +1006,7 @@
                                                        </div>
                                                        <div class="invalid-feedback"
                                                             ng-show="(submitted || registerForm.firstname.$touched) && registerForm.firstname.$error.pattern">
-                                                            No special characters allowed.
+                                                            Only letters and spaces are allowed.
                                                        </div>
                                                   </div>
 
@@ -1017,7 +1017,7 @@
                                                        <input type="text" class="form-control" name="lastname"
                                                             ng-model="newUser.lastname" required
                                                             ng-change="registerForm.lastname.$setTouched()"
-                                                            ng-pattern="/^[a-zA-Z0-9\s]+$/"
+                                                            ng-pattern="/^[a-zA-ZÀ-ỹà-ỹ\s]+$/"
                                                             ng-class="{'is-invalid': (submitted || registerForm.lastname.$touched) && registerForm.lastname.$invalid}"
                                                             placeholder="Last name">
                                                        <div class="invalid-feedback"
@@ -1026,7 +1026,7 @@
                                                        </div>
                                                        <div class="invalid-feedback"
                                                             ng-show="(submitted || registerForm.lastname.$touched) && registerForm.lastname.$error.pattern">
-                                                            No special characters allowed.
+                                                            Only letters and spaces are allowed.
                                                        </div>
                                                   </div>
 
