@@ -1,19 +1,4 @@
 var app = angular.module('myApp', []);
-
-// Directive: Gọi sự kiện khi ng-repeat render xong
-// app.directive('onFinishRender', function ($timeout) {
-//     return {
-//         restrict: 'A',
-//         link: function (scope, element, attr) {
-//             if (scope.$last === true) {
-//                 $timeout(function () {
-//                     scope.$emit(attr.onFinishRender);
-//                 });
-//             }
-//         }
-//     };
-// });
-
 app.controller('UserController', function ($scope, $http, $timeout) {
     const apiBaseUrl = 'http://localhost:8080/api/v1/auth';
     $scope.users = [];
@@ -29,7 +14,6 @@ app.controller('UserController', function ($scope, $http, $timeout) {
         $http.get(apiBaseUrl + '/users').then(function (response) {
             $scope.users = response.data;
             $scope.filteredUsers = $scope.users
-            // Không cần gọi lại DataTable ở đây
         }, function (error) {
             console.error("Error loading users:", error);
         });
@@ -140,7 +124,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
 
 
 
-                loadUsers(); // `ngRepeatFinished` sẽ tự init lại bảng
+                loadUsers();
 
                 Swal.fire({
                     icon: 'success',
@@ -235,7 +219,6 @@ app.controller('UserController', function ($scope, $http, $timeout) {
     //cập nhật userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
     //delete userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
     $scope.deleteUser = function (userId) {
-        // Hiển thị hộp thoại xác nhận
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -245,59 +228,13 @@ app.controller('UserController', function ($scope, $http, $timeout) {
             cancelButtonText: 'No, cancel!',
         }).then((result) => {
             if (result.isConfirmed) {
-                // Nếu người dùng xác nhận xóa, gọi API xóa hoặc thực hiện hành động xóa
-                // Ví dụ: gọi API hoặc xóa ngay trong frontend
-                $http.delete('/api/users/' + userId)
+                $http.delete(apiBaseUrl + '/delete-by-user-id/' + userId)
                     .then(function (response) {
-                        // Xử lý sau khi xóa thành công, ví dụ: cập nhật lại danh sách người dùng
                         Swal.fire(
                             'Deleted!',
                             'The user has been deleted.',
                             'success'
                         );
-                        // Cập nhật lại danh sách người dùng hoặc làm gì đó sau khi xóa
-                        $scope.getUsers(); // Ví dụ gọi lại API để lấy lại danh sách người dùng
-                    })
-                    .catch(function (error) {
-                        Swal.fire(
-                            'Error!',
-                            'There was an issue deleting the user.',
-                            'error'
-                        );
-                    });
-            } else {
-                // Người dùng huỷ bỏ
-                Swal.fire(
-                    'Cancelled',
-                    'The user was not deleted.',
-                    'info'
-                );
-            }
-        });
-    };
-    $scope.deleteUser = function (userId) {
-        // Hiển thị hộp thoại xác nhận
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'No, cancel!',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Nếu người dùng xác nhận xóa, gọi API xóa hoặc thực hiện hành động xóa
-                // Ví dụ: gọi API hoặc xóa ngay trong frontend
-                $http.delete('/api/users/' + userId)
-                    .then(function (response) {
-                        // Xử lý sau khi xóa thành công, ví dụ: cập nhật lại danh sách người dùng
-                        Swal.fire(
-                            'Deleted!',
-                            'The user has been deleted.',
-                            'success'
-                        );
-                        // Cập nhật lại danh sách người dùng hoặc làm gì đó sau khi xóa
-                        $scope.getUsers(); // Ví dụ gọi lại API để lấy lại danh sách người dùng
                     })
                     .catch(function (error) {
                         Swal.fire(
