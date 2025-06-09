@@ -1260,55 +1260,66 @@
                                                   <div class="row my-2">
                                                        <!-- Role và Status -->
                                                        <!-- Bộ lọc chính (Role, Status, Province, District, Ward) -->
-                                                       <label>Filter & Search </label>
+                                                       <label>Filter & Search</label>
                                                        <div class="row my-2">
+                                                            <!-- Filter by Role -->
                                                             <div class="col-md-3 mb-2">
                                                                  <select class="form-select" ng-model="filterRole"
-                                                                      ng-options="role.roleName as role.roleName for role in roles">
+                                                                      ng-change="applyFilters()"
+                                                                      ng-options="role.id as role.roleName for role in roles">
                                                                       <option value="">-- All Roles --</option>
                                                                  </select>
                                                             </div>
 
+
+                                                            <!-- Filter by Status -->
                                                             <div class="col-md-3 mb-2">
-                                                                 <select class="form-select" ng-model="filterStatus">
+                                                                 <select class="form-select" ng-model="filterStatus"
+                                                                      ng-change="applyFilters()">
                                                                       <option value="">-- All Status --</option>
                                                                       <option value="true">Active</option>
                                                                       <option value="false">Inactive</option>
                                                                  </select>
                                                             </div>
 
+                                                            <!-- Filter by Province -->
                                                             <div class="col-md-2 mb-2">
                                                                  <select class="form-select" ng-model="filterProvince"
-                                                                      ng-options="p as p.name for p in provinces"
-                                                                      ng-change="onFilterProvinceChange()">
+                                                                      ng-options="p.name as p.name for p in provinces"
+                                                                      ng-change="onFilterProvinceChange(); applyFilters()">
                                                                       <option value="">-- Select Province --</option>
                                                                  </select>
                                                             </div>
 
+                                                            <!-- Filter by District -->
                                                             <div class="col-md-2 mb-2">
                                                                  <select class="form-select" ng-model="filterDistrict"
-                                                                      ng-options="d as d.name for d in onDistrictChange"
-                                                                      ng-change="onFilterDistrictChange()">
+                                                                      ng-options="d.name as d.name for d in onDistrictChange"
+                                                                      ng-change="onDistrictChange(); applyFilters()">
                                                                       <option value="">-- Select District --</option>
                                                                  </select>
                                                             </div>
 
+                                                            <!-- Filter by Ward -->
                                                             <div class="col-md-2 mb-2">
                                                                  <select class="form-select" ng-model="filterWard"
-                                                                      ng-options="w as w.name for w in filterWards">
+                                                                      ng-options="w.name as w.name for w in filterWards"
+                                                                      ng-change="applyFilters()">
                                                                       <option value="">-- Select Ward --</option>
                                                                  </select>
                                                             </div>
                                                        </div>
 
-                                                       <!-- Input tìm kiếm riêng biệt -->
+                                                       <!-- Search input -->
                                                        <div class="row my-3">
                                                             <div class="col-md-8">
                                                                  <input type="text" class="form-control"
                                                                       placeholder="Search by name/email/phone..."
-                                                                      ng-model="searchText">
+                                                                      ng-model="searchText"
+                                                                      ng-change="applyFilters()" />
                                                             </div>
                                                        </div>
+
                                                   </div>
 
                                                   <!-- TABLE -->

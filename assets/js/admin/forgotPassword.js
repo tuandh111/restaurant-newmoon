@@ -57,6 +57,8 @@ angular.module('app', [])
                             text: 'Please check your inbox.',
                             showConfirmButton: false,
                             timer: 2000
+                        }).then(() => {
+                            window.location.href = 'update-password.html';
                         });
                         $scope.email = '';
                     } else if (message == "null") {

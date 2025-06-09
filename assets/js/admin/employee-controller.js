@@ -14,31 +14,36 @@ app.controller('UserController', function ($scope, $http, $timeout) {
         $http.get(apiBaseUrl + '/users').then(function (response) {
             $scope.users = response.data;
             $scope.filteredUsers = $scope.users
+            console.table($scope.users)
         }, function (error) {
             console.error("Error loading users:", error);
         });
     }
+    $scope.filterRole = null;
+
+    // Hàm lọc dữ liệu
     $scope.applyFilters = function () {
-        const search = $scope.searchText?.toLowerCase() || '';
-        const roleFilter = $scope.selectedRole;
-        const statusFilter = $scope.selectedStatus;
-        const provinceFilter = $scope.selectedProvince;
-
-        $scope.filteredUsers = $scope.users.filter(user => {
+        $scope.filteredList = $scope.filteredUsers.filter(function (user) {
+            const searchText = ($scope.searchText || "").toLowerCase();
             const matchSearch =
-                user.firstname?.toLowerCase().includes(search) ||
-                user.lastname?.toLowerCase().includes(search) ||
-                user.email?.toLowerCase().includes(search) ||
-                user.phone?.toLowerCase().includes(search) ||
-                user.province?.toLowerCase().includes(search);
+                user.firstname.toLowerCase().includes(searchText) ||
+                user.email.toLowerCase().includes(searchText) ||
+                user.phone.toLowerCase().includes(searchText);
 
-            const matchRole = !roleFilter || user.role?.id == roleFilter;
-            const matchStatus = statusFilter === '' || user.isActive == (statusFilter === 'active');
-            const matchProvince = !provinceFilter || user.province == provinceFilter;
+            const matchRole = $scope.filterRole == null || user.roleId == $scope.filterRole;
+            const matchStatus = !$scope.filterStatus || user.status.toString() == $scope.filterStatus;
+            const matchProvince = !$scope.filterProvince || user.province == $scope.filterProvince;
 
-            return matchSearch && matchRole && matchStatus && matchProvince;
+            const districtFilter = $scope.filterDistrict;
+            const wardFilter = $scope.filterWard;
+
+            const matchDistrict = !districtFilter || user.district == districtFilter;
+            const matchWard = !wardFilter || user.ward == wardFilter;
+
+            return matchSearch && matchRole && matchStatus && matchProvince && matchDistrict && matchWard;
         });
     };
+
 
     // Load roles
     $scope.loadRoles = function () {
