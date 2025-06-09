@@ -4,6 +4,7 @@ var app = angular.module('loginApp', []);
 app.constant('API_BASE_URL', 'http://localhost:8080/api/v1');
 
 app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL) {
+    const apiBaseUrl = 'http://localhost:8080/api/v1/auth';
     $scope.user = {
         email: '',
         password: '',
@@ -105,7 +106,7 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
             password: $scope.user.password
         };
 
-        $http.post(`${API_BASE_URL}/auth/authenticate`, loginData)
+        $http.post(apiBaseUrl + '/auth/authenticate', loginData)
             .then(response => {
                 // Save or remove credentials in localStorage
                 if ($scope.user.rememberMe) {

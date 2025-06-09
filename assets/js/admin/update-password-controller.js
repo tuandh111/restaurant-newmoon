@@ -3,7 +3,7 @@ var app = angular.module('app', []);
 app.controller('ChangePasswordCtrl', ['$scope', '$http', function ($scope, $http) {
     $scope.user = {};
     $scope.emailTouched = false;
-
+    const apiBaseUrl = 'http://localhost:8080/api/v1/auth';
     // ========================== VALIDATION ===========================
 
     $scope.isMinLength = function (pw) {
@@ -64,7 +64,7 @@ app.controller('ChangePasswordCtrl', ['$scope', '$http', function ($scope, $http
             newPassword: $scope.user.newPassword
         };
         // Send POST request to backend API
-        $http.post('http://localhost:8080/api/v1/auth/update-password', requestData)
+        $http.post(apiBaseUrl + '/update-password', requestData)
             .then(function (response) {
                 const successMessage = response.data.message || "Password updated successfully!";
 

@@ -12,6 +12,7 @@ $(document).ready(function () {
 var app = angular.module('myApp', []);
 app.controller('RoleController', function ($scope, $http) {
     console.log("RoleController")
+    const apiBaseUrl = 'http://localhost:8080/api/v1/auth';
     $scope.role = {
         roleName: '',
         description: ''
@@ -19,7 +20,7 @@ app.controller('RoleController', function ($scope, $http) {
 
     $scope.submitForm = function () {
         // Gửi POST request đến Spring Boot API
-        $http.post('http://localhost:8080/api/v1/auth/role', {
+        $http.post(apiBaseUrl + '/role', {
             roleName: $scope.role.roleName,
             description: $scope.role.description
         }).then(function (response) {
@@ -33,7 +34,7 @@ app.controller('RoleController', function ($scope, $http) {
         });
     };
     $scope.loadRoles = function () {
-        $http.get('http://localhost:8080/api/v1/auth/role')
+        $http.get(apiBaseUrl + '/role')
             .then(function (response) {
                 $scope.roles = response.data;
             }, function (error) {
@@ -54,7 +55,7 @@ app.controller('RoleController', function ($scope, $http) {
             cancelButtonText: 'No, cancel!',
         }).then((result) => {
             if (result.isConfirmed) {
-                $http.delete('http://localhost:8080/api/v1/auth/role/' + id)
+                $http.delete(apiBaseUrl + '/role/' + id)
                     .then(function (response) {
                         Swal.fire(
                             'Deleted!',
@@ -99,7 +100,7 @@ app.controller('RoleController', function ($scope, $http) {
     $scope.saveEdit = function () {
         console.table($scope.editedRole)
         // Gọi API hoặc xử lý cập nhật tại đây
-        $http.put('http://localhost:8080/api/v1/auth/role/' + $scope.editedRole.roleId, $scope.editedRole)
+        $http.put(apiBaseUrl + '/role/' + $scope.editedRole.roleId, $scope.editedRole)
             .then(function (response) {
                 alert('Updated successfully!');
                 $('#editModal').modal('hide'); // Đóng modal (jQuery Bootstrap)

@@ -1,6 +1,6 @@
 angular.module('app', [])
     .controller('ResetPasswordCtrl', function ($scope, $q, $timeout, $http) {
-
+        const apiBaseUrl = 'http://localhost:8080/api/v1/auth';
         // Giả lập API kiểm tra email có tồn tại
         function checkEmailExists(email) {
             var deferred = $q.defer();
@@ -44,7 +44,7 @@ angular.module('app', [])
                 }
             });
 
-            $http.post('http://localhost:8080/api/v1/auth/send-code?email=' + encodeURIComponent($scope.email))
+            $http.post(apiBaseUrl + '/send-code?email=' + encodeURIComponent($scope.email))
                 .then(function (response) {
                     Swal.close();
 
