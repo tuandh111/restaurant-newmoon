@@ -15,6 +15,7 @@ var app = angular.module('myApp', []);
 // });
 
 app.controller('UserController', function ($scope, $http, $timeout) {
+    const apiBaseUrl = 'http://localhost:8080/api/v1/auth';
     $scope.users = [];
     $scope.roles = [];
     $scope.newUser = {};
@@ -25,7 +26,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
 
     $scope.filteredUsers = []
     function loadUsers() {
-        $http.get('http://localhost:8080/api/v1/auth/users').then(function (response) {
+        $http.get(apiBaseUrl + '/users').then(function (response) {
             $scope.users = response.data;
             $scope.filteredUsers = $scope.users
             // Không cần gọi lại DataTable ở đây
@@ -57,7 +58,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
 
     // Load roles
     $scope.loadRoles = function () {
-        $http.get('http://localhost:8080/api/v1/auth/role')
+        $http.get(apiBaseUrl + '/role')
             .then(function (response) {
                 $scope.roles = response.data;
 
@@ -128,7 +129,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                 }
             });
 
-            $http.post('http://localhost:8080/api/v1/auth/register', payload).then(function (response) {
+            $http.post(apiBaseUrl + '/register', payload).then(function (response) {
                 Swal.close();
 
                 // Reset form
@@ -170,21 +171,153 @@ app.controller('UserController', function ($scope, $http, $timeout) {
         const modalInstance = new bootstrap.Modal(modalElement);
         modalInstance.show();
     };
-    //cập nhật user
+    //cập nhật userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
     $scope.selectUser = function (user) {
-
-        // Clone dữ liệu user vào newUser để binding với form
         $scope.newUser = angular.copy(user);
-        console.table($scope.newUser)
+        $scope.newUser.isActive = user.status;
         if (user.role && user.role.roleId) {
             $scope.newUser.roleId = user.role.roleId;
         }
-            $scope.newUser.isActive = user.status;
-        // Load lại danh sách quận/huyện/phường nếu cần thiết
+        $scope.newUser.province = $scope.provinces.find(p => p.name === user.province);
         $scope.onProvinceChange();
-        $scope.onDistrictChange();
+        setTimeout(function () {
+            $scope.newUser.district = $scope.districts.find(d => d.name === user.district);
+            $scope.onDistrictChange();
+
+            setTimeout(function () {
+                $scope.newUser.ward = $scope.wards.find(w => w.name === user.ward);
+
+                $scope.$apply();
+            }, 100);
+        }, 100);
+    };
+    $scope.updateUser = function () {
+        $scope.submitted = true;
+
+        if ($scope.registerForm.$invalid) {
+            return; // Nếu form không hợp lệ thì không gửi
+        }
+
+        const payload = {
+            id: $scope.newUser.id,
+            email: $scope.newUser.email,
+            firstname: $scope.newUser.firstname,
+            lastname: $scope.newUser.lastname,
+            phone: $scope.newUser.phone,
+            province: $scope.newUser.province?.name || $scope.newUser.province || '',
+            district: $scope.newUser.district?.name || $scope.newUser.district || '',
+            ward: $scope.newUser.ward?.name || $scope.newUser.ward || '',
+            roleId: $scope.newUser.roleId || 0,        // mặc định 0 nếu chưa có
+            status: !!$scope.newUser.status             // chuyển sang boolean (true/false)
+        };
+        $http.post(apiBaseUrl + '/update-user', payload)
+            .then(function (response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'User updated successfully!',
+                    showConfirmButton: false,
+                    timer: 2000
+                }).then(() => {
+                    $scope.loadRoles();
+                });
+            })
+            .catch(function (error) {
+                console.error('Update failed:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while updating the user.'
+                });
+            });
     };
 
+
+    //cập nhật userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+    //delete userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+    $scope.deleteUser = function (userId) {
+        // Hiển thị hộp thoại xác nhận
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Nếu người dùng xác nhận xóa, gọi API xóa hoặc thực hiện hành động xóa
+                // Ví dụ: gọi API hoặc xóa ngay trong frontend
+                $http.delete('/api/users/' + userId)
+                    .then(function (response) {
+                        // Xử lý sau khi xóa thành công, ví dụ: cập nhật lại danh sách người dùng
+                        Swal.fire(
+                            'Deleted!',
+                            'The user has been deleted.',
+                            'success'
+                        );
+                        // Cập nhật lại danh sách người dùng hoặc làm gì đó sau khi xóa
+                        $scope.getUsers(); // Ví dụ gọi lại API để lấy lại danh sách người dùng
+                    })
+                    .catch(function (error) {
+                        Swal.fire(
+                            'Error!',
+                            'There was an issue deleting the user.',
+                            'error'
+                        );
+                    });
+            } else {
+                // Người dùng huỷ bỏ
+                Swal.fire(
+                    'Cancelled',
+                    'The user was not deleted.',
+                    'info'
+                );
+            }
+        });
+    };
+    $scope.deleteUser = function (userId) {
+        // Hiển thị hộp thoại xác nhận
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Nếu người dùng xác nhận xóa, gọi API xóa hoặc thực hiện hành động xóa
+                // Ví dụ: gọi API hoặc xóa ngay trong frontend
+                $http.delete('/api/users/' + userId)
+                    .then(function (response) {
+                        // Xử lý sau khi xóa thành công, ví dụ: cập nhật lại danh sách người dùng
+                        Swal.fire(
+                            'Deleted!',
+                            'The user has been deleted.',
+                            'success'
+                        );
+                        // Cập nhật lại danh sách người dùng hoặc làm gì đó sau khi xóa
+                        $scope.getUsers(); // Ví dụ gọi lại API để lấy lại danh sách người dùng
+                    })
+                    .catch(function (error) {
+                        Swal.fire(
+                            'Error!',
+                            'There was an issue deleting the user.',
+                            'error'
+                        );
+                    });
+            } else {
+                // Người dùng huỷ bỏ
+                Swal.fire(
+                    'Cancelled',
+                    'The user was not deleted.',
+                    'info'
+                );
+            }
+        });
+    };
+
+    //delete userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
     // save role 
     $scope.role = {
         roleName: '',
@@ -192,7 +325,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
     };
 
     $scope.submitForm = function () {
-        $http.post('http://localhost:8080/api/v1/auth/role', {
+        $http.post(apiBaseUrl + '/role', {
             roleName: $scope.role.roleName,
             description: $scope.role.description
         }).then(function (response) {
