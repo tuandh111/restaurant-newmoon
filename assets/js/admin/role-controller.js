@@ -44,18 +44,42 @@ app.controller('RoleController', function ($scope, $http) {
     // Gọi ngay khi controller khởi tạo
     $scope.loadRoles();
 
-    // Hàm xóa (tuỳ chọn)
     $scope.deleteRole = function (id) {
-        if (confirm('Are you sure you want to delete this role?')) {
-            $http.delete('http://localhost:8080/api/v1/auth/role/' + id)
-                .then(function (response) {
-                    alert('Deleted successfully!');
-                    $scope.loadRoles(); // Refresh lại danh sách
-                }, function (error) {
-                    alert('Delete failed!');
-                });
-        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This role will be permanently deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $http.delete('http://localhost:8080/api/v1/auth/role/' + id)
+                    .then(function (response) {
+                        Swal.fire(
+                            'Deleted!',
+                            'The role has been deleted successfully.',
+                            'success'
+                        );
+                        $scope.loadRoles(); // Refresh lại danh sách
+                    })
+                    .catch(function (error) {
+                        Swal.fire(
+                            'Error!',
+                            'Failed to delete the role. Please try again.',
+                            'error'
+                        );
+                    });
+            } else {
+                Swal.fire(
+                    'Cancelled',
+                    'The role was not deleted.',
+                    'info'
+                );
+            }
+        });
     };
+
 
     $scope.selectedRole = {};
 
