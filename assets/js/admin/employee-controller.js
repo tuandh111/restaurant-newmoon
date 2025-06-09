@@ -116,7 +116,8 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                 ward: $scope.newUser.ward?.name || "",
                 firstname: $scope.newUser.firstname,
                 lastname: $scope.newUser.lastname,
-                phone: $scope.newUser.phone
+                phone: $scope.newUser.phone,
+                status:$scope.newUser.isActive
             };
 
             Swal.fire({
@@ -164,7 +165,6 @@ app.controller('UserController', function ($scope, $http, $timeout) {
     };
     //view user
     $scope.viewUser = function (user) {
-        console.log("okkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
         $scope.selectedUser = user;
 
         // Hiển thị modal bootstrap (nếu không dùng data-bs-toggle)

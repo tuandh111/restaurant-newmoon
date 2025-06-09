@@ -1192,8 +1192,11 @@
                                                   <div class="col-12 col-md-3">
                                                        <label class="form-label d-block">Status</label>
                                                        <div class="form-check form-switch">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                 ng-model="newUser.isActive" id="isActiveSwitch" />
+                                                           <input class="form-check-input" type="checkbox"
+       ng-model="newUser.isActive"
+       ng-init="newUser.isActive = true"
+       id="isActiveSwitch" />
+
                                                             <label class="form-check-label"
                                                                  for="isActiveSwitch">Activate</label>
                                                        </div>
@@ -1257,15 +1260,16 @@
                                                   <div class="row my-2">
                                                        <!-- Role và Status -->
                                                        <!-- Bộ lọc chính (Role, Status, Province, District, Ward) -->
-                                                       <div class="row my-2 g-2">
-                                                            <div class="col-md-2">
+                                                        <label>Filter & Search </label>
+                                                       <div class="row my-2">
+                                                            <div class="col-md-3 mb-2">
                                                                  <select class="form-select" ng-model="filterRole"
                                                                       ng-options="role.roleName as role.roleName for role in roles">
                                                                       <option value="">-- All Roles --</option>
                                                                  </select>
                                                             </div>
 
-                                                            <div class="col-md-2">
+                                                            <div class="col-md-3 mb-2">
                                                                  <select class="form-select" ng-model="filterStatus">
                                                                       <option value="">-- All Status --</option>
                                                                       <option value="true">Active</option>
@@ -1273,7 +1277,7 @@
                                                                  </select>
                                                             </div>
 
-                                                            <div class="col-md-3">
+                                                            <div class="col-md-2 mb-2">
                                                                  <select class="form-select" ng-model="filterProvince"
                                                                       ng-options="p as p.name for p in provinces"
                                                                       ng-change="onFilterProvinceChange()">
@@ -1281,7 +1285,7 @@
                                                                  </select>
                                                             </div>
 
-                                                            <div class="col-md-3">
+                                                            <div class="col-md-2 mb-2">
                                                                  <select class="form-select" ng-model="filterDistrict"
                                                                       ng-options="d as d.name for d in onDistrictChange"
                                                                       ng-change="onFilterDistrictChange()">
@@ -1289,7 +1293,7 @@
                                                                  </select>
                                                             </div>
 
-                                                            <div class="col-md-2">
+                                                            <div class="col-md-2 mb-2">
                                                                  <select class="form-select" ng-model="filterWard"
                                                                       ng-options="w as w.name for w in filterWards">
                                                                       <option value="">-- Select Ward --</option>
@@ -1299,16 +1303,13 @@
 
                                                        <!-- Input tìm kiếm riêng biệt -->
                                                        <div class="row my-3">
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-8">
                                                                  <input type="text" class="form-control"
-                                                                      placeholder="Search by name/email..."
+                                                                      placeholder="Search by name/email/phone..."
                                                                       ng-model="searchText">
                                                             </div>
                                                        </div>
-
-
                                                   </div>
-
 
                                                   <!-- TABLE -->
                                                   <table class="table table-striped table-bordered nowrap mt-3">
@@ -1339,8 +1340,8 @@
                                                                  <td>{{user.role.roleName}}</td>
                                                                  <td>
                                                                       <span class="badge"
-                                                                           ng-class="{'bg-success': user.isActive, 'bg-secondary': !user.isActive}">
-                                                                           {{user.isActive ? 'Active' : 'Inactive'}}
+                                                                           ng-class="{'bg-success': user.status, 'bg-secondary': !user.status}">
+                                                                           {{user.status ? 'Active' : 'Inactive'}}
                                                                       </span>
                                                                  </td>
                                                                  <td>
@@ -1348,17 +1349,20 @@
                                                                            <button
                                                                                 class="btn btn-sm btn-primary view-btn"
                                                                                 ng-click="viewUser(user)">
-                                                                                <i class="bi bi-eye me-1"></i> View
+                                                                                 <iconify-icon icon="mdi:eye"
+                                                                                     class="me-1"></iconify-icon>View
                                                                            </button>
                                                                            <button
                                                                                 class="btn btn-sm btn-warning edit-btn"
                                                                                 ng-click="selectUser(user)">
-                                                                                <i class="bi bi-pencil me-1"></i> Edit
+                                                                                 <iconify-icon icon="mdi:pencil"
+                                                                                     class="me-1"></iconify-icon>Edit
                                                                            </button>
                                                                            <button
                                                                                 class="btn btn-sm btn-danger delete-btn"
                                                                                 ng-click="deleteUser(user.id)">
-                                                                                <i class="bi bi-trash me-1"></i> Delete
+                                                                                <iconify-icon icon="mdi:trash-can"
+                                                                                     class="me-1"></iconify-icon> Delete
                                                                            </button>
                                                                       </div>
                                                                  </td>
