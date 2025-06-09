@@ -19,6 +19,9 @@ app.controller('RoleController', function ($scope, $http) {
     };
 
     $scope.submitForm = function () {
+        if ($scope.role.roleName == '' || $scope.role.roleName == null || $scope.role.roleName == undefined) {
+            return;
+        }
         // Gửi POST request đến Spring Boot API
         $http.post(apiBaseUrl + '/role', {
             roleName: $scope.role.roleName,

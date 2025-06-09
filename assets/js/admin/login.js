@@ -106,7 +106,7 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
             password: $scope.user.password
         };
 
-        $http.post(apiBaseUrl + '/auth/authenticate', loginData)
+        $http.post('http://localhost:8080/api/v1/auth/authenticate', loginData)
             .then(response => {
                 // Save or remove credentials in localStorage
                 if ($scope.user.rememberMe) {
