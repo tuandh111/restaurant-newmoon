@@ -65,8 +65,6 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                 if (!$scope.$$phase) {
                     $scope.$applyAsync(); // Kích hoạt digest cycle nếu chưa có
                 }
-
-                console.log("Roles reloaded:", $scope.roles);
             }, function (error) {
                 console.error('Error loading roles:', error);
             });
@@ -117,7 +115,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                 firstname: $scope.newUser.firstname,
                 lastname: $scope.newUser.lastname,
                 phone: $scope.newUser.phone,
-                status:$scope.newUser.isActive
+                status: $scope.newUser.isActive
             };
 
             Swal.fire({
@@ -172,11 +170,20 @@ app.controller('UserController', function ($scope, $http, $timeout) {
         const modalInstance = new bootstrap.Modal(modalElement);
         modalInstance.show();
     };
+    //cập nhật user
+    $scope.selectUser = function (user) {
 
-
-
-
-
+        // Clone dữ liệu user vào newUser để binding với form
+        $scope.newUser = angular.copy(user);
+        console.table($scope.newUser)
+        if (user.role && user.role.roleId) {
+            $scope.newUser.roleId = user.role.roleId;
+        }
+            $scope.newUser.isActive = user.status;
+        // Load lại danh sách quận/huyện/phường nếu cần thiết
+        $scope.onProvinceChange();
+        $scope.onDistrictChange();
+    };
 
     // save role 
     $scope.role = {
