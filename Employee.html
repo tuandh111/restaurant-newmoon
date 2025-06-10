@@ -927,31 +927,50 @@
                                                                  </select>
                                                             </div>
 
-                                                            <!-- Filter by Province -->
+
+                                                            <!-- Province -->
                                                             <div class="col-md-2 mb-2">
-                                                                 <select class="form-select" ng-model="filterProvince"
-                                                                      ng-options="p.name as p.name for p in provinces"
-                                                                      ng-change="onFilterProvinceChange(); applyFilters()">
-                                                                      <option value="">-- Select Province --</option>
+                                                                 <select class="form-select" id="province"
+                                                                      name="province" ng-model="filterProvince"
+                                                                      ng-options="p as p.name for p in provinces"
+                                                                      ng-change="onProvinceChangeFilter(); applyFilters()"
+                                                                      required
+                                                                      ng-class="{'is-invalid': (submitted || registerForm.province.$touched) && registerForm.province.$invalid}">
+                                                                      <option value="">Select province/city...</option>
                                                                  </select>
                                                             </div>
 
-                                                            <!-- Filter by District -->
+                                                            <!-- District -->
                                                             <div class="col-md-2 mb-2">
-                                                                 <select class="form-select" ng-model="filterDistrict"
-                                                                      ng-options="d.name as d.name for d in districts"
-                                                                      ng-change="onDistrictChange(); applyFilters()">
-                                                                      <option value="">-- Select District --</option>
+                                                                 <select class="form-select" id="district"
+                                                                      name="district" ng-model="filterDistrict"
+                                                                      ng-options="d as d.name for d in districts"
+                                                                      ng-change="onDistrictChangeFilter();  applyFilters()"
+                                                                      required ng-disabled="!districts.length"
+                                                                      ng-class="{'is-invalid': (submitted || registerForm.district.$touched) && registerForm.district.$invalid}">
+                                                                      <option value="">Select district...</option>
                                                                  </select>
+                                                                 <div class="invalid-feedback"
+                                                                      ng-show="(submitted || registerForm.district.$touched) && registerForm.district.$error.required">
+                                                                      District is required.
+                                                                 </div>
                                                             </div>
 
-                                                            <!-- Filter by Ward -->
+                                                            <!-- Ward -->
                                                             <div class="col-md-2 mb-2">
-                                                                 <select class="form-select" ng-model="filterWard"
-                                                                      ng-options="w.name as w.name for w in filterWards"
-                                                                      ng-change="applyFilters()">
-                                                                      <option value="">-- Select Ward --</option>
+
+                                                                 <select class="form-select" id="ward" name="ward"
+                                                                      ng-model="filterWard"
+                                                                      ng-options="w as w.name for w in wards" required
+                                                                      ng-disabled="!wards.length"
+                                                                      ng-change=" applyFilters()"
+                                                                      ng-class="{'is-invalid': (submitted || registerForm.ward.$touched) && registerForm.ward.$invalid}">
+                                                                      <option value="">Select ward...</option>
                                                                  </select>
+                                                                 <div class="invalid-feedback"
+                                                                      ng-show="(submitted || registerForm.ward.$touched) && registerForm.ward.$error.required">
+                                                                      Ward is required.
+                                                                 </div>
                                                             </div>
                                                        </div>
 

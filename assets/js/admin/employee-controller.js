@@ -40,9 +40,9 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                 user.phone.toLowerCase().includes(searchText);
             const matchRole = !$scope.filterRole || user.role.roleId == $scope.filterRole;
             const matchStatus = !$scope.filterStatus || user.status.toString() == $scope.filterStatus;
-            const matchProvince = !$scope.filterProvince || user.province == $scope.filterProvince;
-            const matchDistrict = !$scope.filterDistrict || user.district == $scope.filterDistrict;
-            const matchWard = !$scope.filterWard || user.ward == $scope.filterWard;
+            const matchProvince = !$scope.filterProvince || user.province.toLowerCase() == $scope.filterProvince.name.toLowerCase();
+            const matchDistrict = !$scope.filterDistrict || user.district.toLowerCase() == $scope.filterDistrict.name.toLowerCase();
+            const matchWard = !$scope.filterWard || user.ward.toLowerCase() == $scope.filterWard.name.toLowerCase();
             return matchSearch && matchRole && matchStatus && matchProvince && matchDistrict && matchWard;
         });
     };
@@ -268,6 +268,39 @@ app.controller('UserController', function ($scope, $http, $timeout) {
             console.error(error);
         });
     };
+    //filter
+    // Khi chọn tỉnh
+    $scope.onProvinceChangeFilter = function () {
+        const provinceCode = $scope.filterProvince?.code;
+        $scope.districts = [];
+        $scope.filterDistrict = null;
+        $scope.wards = [];
+        $scope.filterWard = null;
+        if (!provinceCode) return;
+        $http.get(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`).then(function (response) {
+            console.log("ok rồi nhé", response.data.districts)
+            $scope.districts = response.data.districts;
+            $scope.newUser.district = null;
+            $scope.wards = [];
+            $scope.newUser.ward = null;
+        });
+    };
+    // Khi chọn huyện
+    $scope.onDistrictChangeFilter = function () {
+        const districtCode = $scope.filterDistrict?.code;
+        $scope.wards = [];
+        $scope.filterWard = null;
+        if (!districtCode) return;
+        $http.get(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`).then(function (response) {
+            $scope.wards = response.data.wards;
+            $scope.newUser.ward = null;
+        });
+    };
+
+
+
+
+
     // Load dữ liệu ban đầu
     loadUsers();
     $scope.loadRoles();
