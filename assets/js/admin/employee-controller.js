@@ -39,8 +39,6 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                 user.email.toLowerCase().includes(searchText) ||
                 user.phone.toLowerCase().includes(searchText);
             const matchRole = !$scope.filterRole || user.role.roleId == $scope.filterRole;
-            console.log("filler role: "+ $scope.filterRole)
-             console.log("role id: "+ user.role.roleId )
             const matchStatus = !$scope.filterStatus || user.status.toString() == $scope.filterStatus;
             const matchProvince = !$scope.filterProvince || user.province == $scope.filterProvince;
             const matchDistrict = !$scope.filterDistrict || user.district == $scope.filterDistrict;
