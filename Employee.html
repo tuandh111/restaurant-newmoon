@@ -77,6 +77,13 @@
                align-items: center;
                justify-content: center;
           }
+
+
+          input.ng-invalid.is-invalid,
+          input.is-invalid {
+               border-color: #dc3545 !important;
+               box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+          }
      </style>
 </head>
 
@@ -703,9 +710,9 @@
                                                                  style="color: red;">*</span></label>
                                                        <input type="email" class="form-control" name="email"
                                                             ng-model="newUser.email" required
-                                                            ng-change="registerForm.email.$setTouched()"
+                                                            ng-change="resetEmailError();registerForm.email.$setTouched()"
                                                             ng-pattern="/^[a-zA-Z0-9._%+-]+@gmail\.com$/"
-                                                            ng-class="{'is-invalid': (submitted || registerForm.email.$touched) && registerForm.email.$invalid}"
+                                                            ng-class="{'is-invalid': (submitted || registerForm.email.$touched) && registerForm.email.$invalid} || emailExists"
                                                             placeholder="e.g example@newmoon.vn">
                                                        <div class="invalid-feedback"
                                                             ng-show="(submitted || registerForm.email.$touched) && registerForm.email.$error.required">
@@ -715,6 +722,11 @@
                                                             ng-show="(submitted || registerForm.email.$touched) && registerForm.email.$error.pattern">
                                                             Email must end with @newmoon.vn.
                                                        </div>
+                                                       <div class="text-danger" ng-show="emailExists">
+                                                            Email already exists or belongs to a staff member.
+                                                       </div>
+
+
                                                   </div>
                                                   <!-- ng-pattern="/^[a-zA-Z0-9._%+-]+@newmoon\.vn$/" -->
                                                   <!-- Password -->
@@ -1154,9 +1166,10 @@
                                                                                      name="email"
                                                                                      ng-model="newUser.email" required
                                                                                      ng-change="registerForm.email.$setTouched()"
-                                                                                     ng-pattern="/^[a-zA-Z0-9._%+-]+@gmail\.com$/"
+                                                                                     ng-pattern="/^[a-zA-Z0-9._%+-]+@newmoon\.vn$/"
                                                                                      ng-class="{'is-invalid': (submitted || registerForm.email.$touched) && registerForm.email.$invalid}"
-                                                                                     placeholder="e.g example@newmoon.vn">
+                                                                                     placeholder="e.g example@newmoon.vn"
+                                                                                     disabled>
                                                                                 <div class="invalid-feedback"
                                                                                      ng-show="(submitted || registerForm.email.$touched) && registerForm.email.$error.required">
                                                                                      Email is required.

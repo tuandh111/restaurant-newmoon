@@ -116,20 +116,29 @@ app.controller('UserController', function ($scope, $http, $timeout) {
             });
             $http.post(apiBaseUrl + '/register', payload).then(function (response) {
                 Swal.close();
-                // Reset form
+                console.log("ok", response.data.message)
+                if (response.data.message === "ErrorEmail") {
+                    $scope.emailExists = true; // << Cờ để hiển thị lỗi ở UI
+                    return;
+                }
+
+                // Nếu không có lỗi
+                $scope.emailExists = false;
                 $scope.newUser = {};
                 $scope.registerForm.$setPristine();
                 $scope.registerForm.$setUntouched();
                 $scope.submitted = false;
-                loadUsers();
+
                 Swal.fire({
                     icon: 'success',
                     title: 'User registered successfully!',
                     showConfirmButton: false,
                     timer: 2000
                 }).then(() => {
-                    window.location.href = 'Employee.html';
+                    loadUsers();
+                    $scope.loadRoles();
                 });
+
             }, function (error) {
                 Swal.close();
                 console.error("Registration failed:", error);
@@ -194,6 +203,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                     showConfirmButton: false,
                     timer: 2000
                 }).then(() => {
+                    loadUsers();
                     $scope.loadRoles();
                 });
             })
@@ -225,6 +235,8 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                             'The user has been deleted.',
                             'success'
                         );
+                        loadUsers();
+                        $scope.loadRoles();
                     })
                     .catch(function (error) {
                         Swal.fire(
@@ -300,6 +312,9 @@ app.controller('UserController', function ($scope, $http, $timeout) {
 
 
 
+    $scope.resetEmailError = function () {
+        $scope.emailExists = false;
+    };
 
     // Load dữ liệu ban đầu
     loadUsers();
