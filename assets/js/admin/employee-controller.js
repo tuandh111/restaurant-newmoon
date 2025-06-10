@@ -8,38 +8,43 @@ app.controller('UserController', function ($scope, $http, $timeout) {
     $scope.districts = [];
     $scope.wards = [];
     $scope.submitted = false;
-
     $scope.filteredUsers = []
     function loadUsers() {
         $http.get(apiBaseUrl + '/users').then(function (response) {
             $scope.users = response.data;
-            $scope.filteredUsers = $scope.users
-            console.table($scope.users)
+            $scope.filteredUsers = angular.copy($scope.users);
+            $scope.applyFilters();
         }, function (error) {
             console.error("Error loading users:", error);
         });
     }
     $scope.filterRole = null;
-
-    // Hàm lọc dữ liệu
+    $scope.filteredUsers = [];
+    $scope.filteredList = [];
+    $scope.initUsers = function (data) {
+        $scope.users = data;
+        $scope.filteredUsers = angular.copy(data);
+        $scope.filteredList = angular.copy(data);
+    };
     $scope.applyFilters = function () {
+        const searchText = ($scope.searchText || "").toLowerCase();
         $scope.filteredList = $scope.filteredUsers.filter(function (user) {
-            const searchText = ($scope.searchText || "").toLowerCase();
             const matchSearch =
+                user.role.roleName.toLowerCase().includes(searchText) ||
+                user.province.toLowerCase().includes(searchText) ||
+                user.district.toLowerCase().includes(searchText) ||
+                user.ward.toLowerCase().includes(searchText) ||
+                user.lastname.toLowerCase().includes(searchText) ||
                 user.firstname.toLowerCase().includes(searchText) ||
                 user.email.toLowerCase().includes(searchText) ||
                 user.phone.toLowerCase().includes(searchText);
-
-            const matchRole = $scope.filterRole == null || user.roleId == $scope.filterRole;
+            const matchRole = !$scope.filterRole || user.role.roleId == $scope.filterRole;
+            console.log("filler role: "+ $scope.filterRole)
+             console.log("role id: "+ user.role.roleId )
             const matchStatus = !$scope.filterStatus || user.status.toString() == $scope.filterStatus;
             const matchProvince = !$scope.filterProvince || user.province == $scope.filterProvince;
-
-            const districtFilter = $scope.filterDistrict;
-            const wardFilter = $scope.filterWard;
-
-            const matchDistrict = !districtFilter || user.district == districtFilter;
-            const matchWard = !wardFilter || user.ward == wardFilter;
-
+            const matchDistrict = !$scope.filterDistrict || user.district == $scope.filterDistrict;
+            const matchWard = !$scope.filterWard || user.ward == $scope.filterWard;
             return matchSearch && matchRole && matchStatus && matchProvince && matchDistrict && matchWard;
         });
     };
@@ -50,10 +55,8 @@ app.controller('UserController', function ($scope, $http, $timeout) {
         $http.get(apiBaseUrl + '/role')
             .then(function (response) {
                 $scope.roles = response.data;
-
-                // Đảm bảo AngularJS cập nhật binding
                 if (!$scope.$$phase) {
-                    $scope.$applyAsync(); // Kích hoạt digest cycle nếu chưa có
+                    $scope.$applyAsync();
                 }
             }, function (error) {
                 console.error('Error loading roles:', error);
@@ -76,7 +79,6 @@ app.controller('UserController', function ($scope, $http, $timeout) {
             $scope.newUser.ward = null;
         });
     };
-
     // Khi chọn huyện
     $scope.onDistrictChange = function () {
         const districtCode = $scope.newUser.district?.code;
@@ -86,11 +88,9 @@ app.controller('UserController', function ($scope, $http, $timeout) {
             $scope.newUser.ward = null;
         });
     };
-
     // Submit đăng ký user mới
     $scope.submitRegister = function () {
         $scope.submitted = true;
-
         if ($scope.registerForm.$valid) {
             const payload = {
                 email: $scope.newUser.email,
@@ -107,7 +107,6 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                 phone: $scope.newUser.phone,
                 status: $scope.newUser.isActive
             };
-
             Swal.fire({
                 title: 'Processing...',
                 text: 'Please wait while we register the user',
@@ -117,20 +116,14 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                     Swal.showLoading();
                 }
             });
-
             $http.post(apiBaseUrl + '/register', payload).then(function (response) {
                 Swal.close();
-
                 // Reset form
                 $scope.newUser = {};
                 $scope.registerForm.$setPristine();
                 $scope.registerForm.$setUntouched();
                 $scope.submitted = false;
-
-
-
                 loadUsers();
-
                 Swal.fire({
                     icon: 'success',
                     title: 'User registered successfully!',
@@ -139,7 +132,6 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                 }).then(() => {
                     window.location.href = 'Employee.html';
                 });
-
             }, function (error) {
                 Swal.close();
                 console.error("Registration failed:", error);
@@ -154,8 +146,6 @@ app.controller('UserController', function ($scope, $http, $timeout) {
     //view user
     $scope.viewUser = function (user) {
         $scope.selectedUser = user;
-
-        // Hiển thị modal bootstrap (nếu không dùng data-bs-toggle)
         const modalElement = document.getElementById('viewModal');
         const modalInstance = new bootstrap.Modal(modalElement);
         modalInstance.show();
@@ -184,9 +174,8 @@ app.controller('UserController', function ($scope, $http, $timeout) {
         $scope.submitted = true;
 
         if ($scope.registerForm.$invalid) {
-            return; // Nếu form không hợp lệ thì không gửi
+            return;
         }
-
         const payload = {
             id: $scope.newUser.id,
             email: $scope.newUser.email,
@@ -196,8 +185,8 @@ app.controller('UserController', function ($scope, $http, $timeout) {
             province: $scope.newUser.province?.name || $scope.newUser.province || '',
             district: $scope.newUser.district?.name || $scope.newUser.district || '',
             ward: $scope.newUser.ward?.name || $scope.newUser.ward || '',
-            roleId: $scope.newUser.roleId || 0,        // mặc định 0 nếu chưa có
-            status: !!$scope.newUser.status             // chuyển sang boolean (true/false)
+            roleId: $scope.newUser.roleId || 0,
+            status: !!$scope.newUser.status
         };
         $http.post(apiBaseUrl + '/update-user', payload)
             .then(function (response) {
@@ -219,8 +208,6 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                 });
             });
     };
-
-
     //cập nhật userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
     //delete userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
     $scope.deleteUser = function (userId) {
@@ -249,7 +236,6 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                         );
                     });
             } else {
-                // Người dùng huỷ bỏ
                 Swal.fire(
                     'Cancelled',
                     'The user was not deleted.',
@@ -258,14 +244,12 @@ app.controller('UserController', function ($scope, $http, $timeout) {
             }
         });
     };
-
     //delete userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
     // save role 
     $scope.role = {
         roleName: '',
         description: ''
     };
-
     $scope.submitForm = function () {
         $http.post(apiBaseUrl + '/role', {
             roleName: $scope.role.roleName,
@@ -286,8 +270,6 @@ app.controller('UserController', function ($scope, $http, $timeout) {
             console.error(error);
         });
     };
-
-
     // Load dữ liệu ban đầu
     loadUsers();
     $scope.loadRoles();

@@ -1260,19 +1260,16 @@
                                              <div class="py-3 table-responsive">
                                                   <!-- FILTERS -->
                                                   <div class="row my-2">
-                                                       <!-- Role và Status -->
-                                                       <!-- Bộ lọc chính (Role, Status, Province, District, Ward) -->
                                                        <label>Filter & Search</label>
                                                        <div class="row my-2">
                                                             <!-- Filter by Role -->
                                                             <div class="col-md-3 mb-2">
                                                                  <select class="form-select" ng-model="filterRole"
                                                                       ng-change="applyFilters()"
-                                                                      ng-options="role.id as role.roleName for role in roles">
+                                                                      ng-options="role.roleId as role.roleName for role in roles">
                                                                       <option value="">-- All Roles --</option>
                                                                  </select>
                                                             </div>
-
 
                                                             <!-- Filter by Status -->
                                                             <div class="col-md-3 mb-2">
@@ -1321,7 +1318,6 @@
                                                                       ng-change="applyFilters()" />
                                                             </div>
                                                        </div>
-
                                                   </div>
 
                                                   <!-- TABLE -->
@@ -1340,9 +1336,8 @@
                                                             </tr>
                                                        </thead>
                                                        <tbody>
-                                                            <tr ng-repeat="user in filteredUsers track by $index">
-
-
+                                                            <!-- SỬA chỗ này: dùng filteredList thay vì filteredUsers -->
+                                                            <tr ng-repeat="user in filteredList track by $index">
                                                                  <td>{{$index + 1}}</td>
                                                                  <td>{{user.firstname}}</td>
                                                                  <td>{{user.lastname}}</td>
@@ -1379,12 +1374,12 @@
                                                                                 <iconify-icon icon="mdi:trash-can"
                                                                                      class="me-1"></iconify-icon> Delete
                                                                            </button>
-
                                                                       </div>
                                                                  </td>
                                                             </tr>
                                                        </tbody>
                                                   </table>
+
 
                                                   <!-- VIEW MODAL -->
                                                   <div class="modal fade" id="viewModal" tabindex="-1"
