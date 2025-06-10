@@ -106,7 +106,7 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
             password: $scope.user.password
         };
 
-        $http.post('http://localhost:8080/api/v1/auth/authenticate', loginData)
+        $http.post(apiBaseUrl + '/authenticate', loginData)
             .then(response => {
                 // Save or remove credentials in localStorage
                 if ($scope.user.rememberMe) {
@@ -124,7 +124,15 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
                 });
             })
             .catch(error => {
-                Toast.fire({ icon: 'error', title: 'Login failed! Check email or password.' });
+                const message = error?.data?.message;
+
+                if (message === 'LOGIN_FAIL') {
+                    Toast.fire({ icon: 'error', title: 'Login failed! Invalid email or password.' });
+                } else if (message === 'ACCOUNT_DISABLED') {
+                    Toast.fire({ icon: 'warning', title: 'Your account has been disabled. Please contact the admin to restore access.' });
+                } else {
+                    Toast.fire({ icon: 'error', title: 'Login failed! Please try again later.' });
+                }
             });
     };
 
