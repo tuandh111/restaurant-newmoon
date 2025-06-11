@@ -53,9 +53,6 @@ app.controller('UserController', function ($scope, $http, $timeout) {
         $http.get(apiBaseUrl + '/role')
             .then(function (response) {
                 $scope.roles = response.data;
-                if (!$scope.$$phase) {
-                    $scope.$applyAsync();
-                }
             }, function (error) {
                 console.error('Error loading roles:', error);
             });
@@ -268,11 +265,12 @@ app.controller('UserController', function ($scope, $http, $timeout) {
             // Reset form
             Swal.fire({
                 icon: 'success',
-                title: 'User added successfully!',
+                title: 'Role added successfully!',
                 showConfirmButton: false,
                 timer: 2000
             }).then(() => {
                 $scope.loadRoles();
+                if (!$scope.$$phase) $scope.$apply();
             });
 
         }, function (error) {
@@ -281,7 +279,6 @@ app.controller('UserController', function ($scope, $http, $timeout) {
         });
     };
     //filter
-    // Khi chọn tỉnh
     $scope.onProvinceChangeFilter = function () {
         const provinceCode = $scope.filterProvince?.code;
         $scope.districts = [];
