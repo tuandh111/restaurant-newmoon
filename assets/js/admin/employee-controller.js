@@ -115,7 +115,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                 Swal.close();
                 console.log("ok", response.data.message)
                 if (response.data.message === "ErrorEmail") {
-                    $scope.emailExists = true; // << Cờ để hiển thị lỗi ở UI
+                    $scope.emailExists = true; 
                     return;
                 }
 
@@ -132,8 +132,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                     showConfirmButton: false,
                     timer: 2000
                 }).then(() => {
-                    loadUsers();
-                    $scope.loadRoles();
+                   location.reload();
                 });
 
             }, function (error) {
