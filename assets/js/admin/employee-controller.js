@@ -8,7 +8,10 @@ app.controller('UserController', function ($scope, $http, $timeout) {
     $scope.districts = [];
     $scope.wards = [];
     $scope.submitted = false;
-    $scope.filteredUsers = []
+    $scope.filteredUsers = [];
+    $scope.filterRole = null;
+    $scope.filteredUsers = [];
+    $scope.filteredList = [];
     function loadUsers() {
         $http.get(apiBaseUrl + '/users').then(function (response) {
             $scope.users = response.data;
@@ -18,9 +21,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
             console.error("Error loading users:", error);
         });
     }
-    $scope.filterRole = null;
-    $scope.filteredUsers = [];
-    $scope.filteredList = [];
+
     $scope.initUsers = function (data) {
         $scope.users = data;
         $scope.filteredUsers = angular.copy(data);
@@ -53,6 +54,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
         $http.get(apiBaseUrl + '/role')
             .then(function (response) {
                 $scope.roles = response.data;
+                console.log($scope.roles)
             }, function (error) {
                 console.error('Error loading roles:', error);
             });
@@ -115,7 +117,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                 Swal.close();
                 console.log("ok", response.data.message)
                 if (response.data.message === "ErrorEmail") {
-                    $scope.emailExists = true; 
+                    $scope.emailExists = true;
                     return;
                 }
 
@@ -132,7 +134,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                     showConfirmButton: false,
                     timer: 2000
                 }).then(() => {
-                   location.reload();
+                    location.reload();
                 });
 
             }, function (error) {
@@ -256,27 +258,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
         roleName: '',
         description: ''
     };
-    $scope.submitForm = function () {
-        $http.post(apiBaseUrl + '/role', {
-            roleName: $scope.role.roleName,
-            description: $scope.role.description
-        }).then(function (response) {
-            // Reset form
-            Swal.fire({
-                icon: 'success',
-                title: 'Role added successfully!',
-                showConfirmButton: false,
-                timer: 2000
-            }).then(() => {
-                $scope.loadRoles();
-                if (!$scope.$$phase) $scope.$apply();
-            });
 
-        }, function (error) {
-            alert('Thêm role thất bại!');
-            console.error(error);
-        });
-    };
     //filter
     $scope.onProvinceChangeFilter = function () {
         const provinceCode = $scope.filterProvince?.code;
@@ -311,7 +293,6 @@ app.controller('UserController', function ($scope, $http, $timeout) {
     $scope.resetEmailError = function () {
         $scope.emailExists = false;
     };
-
     // Load dữ liệu ban đầu
     loadUsers();
     $scope.loadRoles();

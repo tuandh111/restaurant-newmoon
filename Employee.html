@@ -839,13 +839,13 @@
 
 
                                                   <!-- Add Role Button -->
-                                                  <div class="col-12 col-md-2">
+                                                  <!-- <div class="col-12 col-md-2">
                                                        <label class="form-label">&nbsp;</label><br>
                                                        <button type="button" class="btn btn-outline-primary "
                                                             data-bs-toggle="modal" data-bs-target="#addRoleModal">
                                                             + Add Role
                                                        </button>
-                                                  </div>
+                                                  </div> -->
                                                   <!-- Add Role Modal -->
 
                                                   <!-- Status -->
@@ -1054,10 +1054,9 @@
                                                                       </div>
                                                                  </td>
                                                             </tr>
-                                                            <tr ng-if="filteredList.length === 0">
-                                                                 <td colspan="9" class="text-center text-muted">No data
-                                                                      available</td>
-                                                            </tr>
+                                                       <tr ng-if="filteredList.length === 0">
+    <td colspan="9" class="text-center text-muted">No data available</td>
+</tr>
 
                                                        </tbody>
                                                   </table>
