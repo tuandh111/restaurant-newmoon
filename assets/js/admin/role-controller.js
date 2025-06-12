@@ -3,12 +3,13 @@ $(document).ready(function () {
         paging: true,
         searching: true,
         ordering: true,
-        lengthChange: true, // ✅ Hiển thị combobox chọn số dòng
+        lengthChange: true,
         pageLength: 5,
         lengthMenu: [5, 10, 25, 50],
         responsive: true
     });
 });
+
 var app = angular.module('myApp', []);
 app.controller('RoleController', function ($scope, $http) {
     console.log("RoleController")
@@ -19,33 +20,51 @@ app.controller('RoleController', function ($scope, $http) {
     };
 
     $scope.submitForm = function () {
-        if ($scope.role.roleName == '' || $scope.role.roleName == null || $scope.role.roleName == undefined) {
+        if (!$scope.role.roleName) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Role Name',
+                text: 'Please enter a role name.'
+            });
             return;
         }
-        // Gửi POST request đến Spring Boot API
+
         $http.post(apiBaseUrl + '/role', {
             roleName: $scope.role.roleName,
             description: $scope.role.description
         }).then(function (response) {
-            alert('Thêm role thành công!');
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Role added successfully!'
+            });
             console.log(response.data);
-            // Xóa form sau khi thành công
             $scope.role = {};
+            $scope.loadRoles();
         }, function (error) {
-            alert('Thêm role thất bại!');
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed!',
+                text: 'Failed to add role.'
+            });
             console.error(error);
         });
     };
+
     $scope.loadRoles = function () {
         $http.get(apiBaseUrl + '/role')
             .then(function (response) {
                 $scope.roles = response.data;
             }, function (error) {
                 console.error('Error loading roles:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Failed to load roles.'
+                });
             });
     };
 
-    // Gọi ngay khi controller khởi tạo
     $scope.loadRoles();
 
     $scope.deleteRole = function (id) {
@@ -65,7 +84,7 @@ app.controller('RoleController', function ($scope, $http) {
                             'The role has been deleted successfully.',
                             'success'
                         );
-                        $scope.loadRoles(); // Refresh lại danh sách
+                        $scope.loadRoles();
                     })
                     .catch(function (error) {
                         Swal.fire(
@@ -84,54 +103,58 @@ app.controller('RoleController', function ($scope, $http) {
         });
     };
 
-
     $scope.selectedRole = {};
 
     $scope.viewRole = function (role) {
         $scope.selectedRole = angular.copy(role);
     };
 
-
-
-    //edit role
-    $scope.editedRole = {}; // Khởi tạo biến
+    $scope.editedRole = {};
 
     $scope.editRole = function (role) {
-        $scope.editedRole = angular.copy(role); // Gán bản sao để chỉnh sửa
+        $scope.editedRole = angular.copy(role);
     };
 
     $scope.saveEdit = function () {
-        console.table($scope.editedRole)
-        // Gọi API hoặc xử lý cập nhật tại đây
         $http.put(apiBaseUrl + '/role/' + $scope.editedRole.roleId, $scope.editedRole)
             .then(function (response) {
-                alert('Updated successfully!');
-                $('#editModal').modal('hide'); // Đóng modal (jQuery Bootstrap)
-                $scope.loadRoles(); // Reload danh sách (nếu có hàm loadRoles)
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated!',
+                    text: 'Role updated successfully!'
+                });
+                $('#editModal').modal('hide');
+                $scope.loadRoles();
             })
             .catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Update failed!',
+                    text: 'Failed to update role. Please try again.'
+                });
                 console.error('Update failed:', error);
             });
     };
 
-
-
-    //clear checkbox
     $scope.permissions = {
         add_user: false,
         edit_user: false,
         delete_user: false,
-        view_user: true, // mặc định được check
+        view_user: true,
         approve_employee: false,
         export_employee: false
     };
 
     $scope.clearPermissions = function () {
-        // Reset tất cả về false
         for (var key in $scope.permissions) {
             if ($scope.permissions.hasOwnProperty(key)) {
                 $scope.permissions[key] = false;
             }
         }
+        Swal.fire({
+            icon: 'info',
+            title: 'Permissions cleared!',
+            text: 'All permissions have been reset.'
+        });
     };
 });

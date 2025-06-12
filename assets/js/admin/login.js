@@ -109,6 +109,11 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
         $http.post(apiBaseUrl + '/authenticate', loginData)
             .then(response => {
                 // Save or remove credentials in localStorage
+                const data = response.data;
+
+                // Lưu token và user vào localStorage
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
                 if ($scope.user.rememberMe) {
                     localStorage.setItem('email', $scope.user.email);
                     localStorage.setItem('password', $scope.user.password);
