@@ -259,6 +259,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
         description: ''
     };
 
+
     //filter
     $scope.onProvinceChangeFilter = function () {
         const provinceCode = $scope.filterProvince?.code;
@@ -293,8 +294,48 @@ app.controller('UserController', function ($scope, $http, $timeout) {
     $scope.resetEmailError = function () {
         $scope.emailExists = false;
     };
+
     // Load dữ liệu ban đầu
     loadUsers();
     $scope.loadRoles();
 
+    // $scope.loadRolesAdd = function (callback) {
+    //     $http.get(apiBaseUrl + '/role').then(function (response) {
+    //         $scope.roles = response.data;
+    //         if (callback && typeof callback === 'function') {
+    //             callback();
+    //         }
+    //     }, function (error) {
+    //         console.error('Lỗi khi tải danh sách roles:', error);
+    //     });
+    // };
+    // $scope.submitForm = function () {
+    //     $http.post(apiBaseUrl + '/role', {
+    //         roleName: $scope.role.roleName,
+    //         description: $scope.role.description
+    //     }).then(function (response) {
+    //         const newRole = response.data;
+
+    //         // Gọi loadRoles và truyền callback để gán roleId sau khi load xong
+    //         $scope.loadRolesAdd(function () {
+    //             $scope.newUser.roleId = newRole.roleId;
+
+    //             // Apply lại nếu chưa apply
+    //             $timeout(() => {
+    //                 if (!$scope.$$phase) $scope.$apply();
+    //             }, 100);
+    //         });
+
+    //         // Thông báo thành công
+    //         Swal.fire({
+    //             icon: 'success',
+    //             title: 'Role added successfully!',
+    //             showConfirmButton: false,
+    //             timer: 2000
+    //         });
+    //     }, function (error) {
+    //         alert('Thêm role thất bại!');
+    //         console.error(error);
+    //     });
+    // };
 });
