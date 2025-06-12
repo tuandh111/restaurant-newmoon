@@ -457,158 +457,169 @@
 
             <div class="scrollbar" data-simplebar>
 
-                <ul class="navbar-nav" id="navbar-nav">
+                    <ul class="navbar-nav" id="navbar-nav">
 
-                    <li class="menu-title">Menu</li>
+                         <li class="menu-title">Menu</li>
 
-                    <li class="nav-item">
-                        <a class="nav-link menu-arrow" href="#sidebarDashboards" data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="sidebarDashboards">
-                            <span class="nav-icon">
-                                <iconify-icon icon="solar:widget-5-bold-duotone"></iconify-icon>
-                            </span>
-                            <span class="nav-text"> Dashboards </span>
-                        </a>
-                        <div class="collapse" id="sidebarDashboards">
-                            <ul class="nav sub-navbar-nav">
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="index.html">eCommerce</a>
-                                </li>
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="dashboard-analytics.html">Analytics</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link menu-arrow" href="#sidebarMarketing" data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="sidebarMarketing">
-                            <span class="nav-icon">
-                                <iconify-icon icon="mdi:bullhorn"></iconify-icon>
-                            </span>
-                            <span class="nav-text"> Marketing </span>
+                         <li class="nav-item"
+                              ng-if="canAccess('admin') || canAccess('marketing') || canAccess('it') || canAccess('hr') || canAccess('accounting') || canAccess('operations')">
+                              <a class="nav-link menu-arrow" href="#sidebarDashboards" data-bs-toggle="collapse"
+                                   role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="solar:widget-5-bold-duotone"></iconify-icon>
+                                   </span>
+                                   <span class="nav-text"> Dashboards </span>
+                              </a>
+                              <div class="collapse" id="sidebarDashboards">
+                                   <ul class="nav sub-navbar-nav">
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="index.html">eCommerce</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="dashboard-analytics.html">Analytics</a>
+                                        </li>
+                                   </ul>
+                              </div>
+                         </li>
+                         <!-- Marketing -->
+                         <li class="nav-item" ng-if="canAccess('marketing','admin')">
 
-                        </a>
-                        <div class="collapse" id="sidebarMarketing">
-                            <ul class="nav sub-navbar-nav">
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="MarketingCampaigns.html">Campaigns</a>
-                                </li>
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="ContentManager.html">Content Manager</a>
-                                </li>
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="SocialMedia.html">Social Media</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link menu-arrow" href="#sidebarAccounting" data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="sidebarAccounting">
-                            <span class="nav-icon">
-                                <iconify-icon icon="mdi:calculator-variant-outline"></iconify-icon>
-                            </span>
-                            <span class="nav-text"> Accounting </span>
-                        </a>
-                        <div class="collapse" id="sidebarAccounting">
-                            <ul class="nav sub-navbar-nav">
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="Invoices.html">Invoices</a>
-                                </li>
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="Payments.html">Payments</a>
-                                </li>
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="FinancialReports.html">Financial Reports</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link menu-arrow" href="#sidebarOperations" data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="sidebarOperations">
-                            <span class="nav-icon">
-                                <iconify-icon icon="mdi:chart-timeline-variant"></iconify-icon>
-                            </span>
-                            <span class="nav-text"> Operations </span>
-                        </a>
-                        <div class="collapse" id="sidebarOperations">
-                            <ul class="nav sub-navbar-nav">
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="OperationsDashboard.html">Dashboard</a>
-                                </li>
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="WarehouseManagement.html">Warehouse</a>
-                                </li>
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="TaskTracking.html">Task Tracking</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link menu-arrow" href="#sidebarHR" data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="sidebarHR">
-                            <span class="nav-icon">
-                                <iconify-icon icon="mdi:account-group-outline"></iconify-icon>
-                            </span>
-                            <span class="nav-text"> Human Resources </span>
-                        </a>
-                        <div class="collapse" id="sidebarHR">
-                            <ul class="nav sub-navbar-nav">
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="EmployeeRecords.html">Employee Records</a>
-                                </li>
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="Recruitment.html">Recruitment</a>
-                                </li>
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="Attendance.html">Attendance</a>
-                                </li>
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="Employee.html">
+                              <a class="nav-link menu-arrow" href="#sidebarMarketing" data-bs-toggle="collapse"
+                                   role="button" aria-expanded="false" aria-controls="sidebarMarketing">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="mdi:bullhorn"></iconify-icon>
+                                   </span>
+                                   <span class="nav-text"> Marketing </span>
+
+                              </a>
+                              <div class="collapse" id="sidebarMarketing">
+                                   <ul class="nav sub-navbar-nav">
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="MarketingCampaigns.html">Campaigns</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="ContentManager.html">Content Manager</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="SocialMedia.html">Social Media</a>
+                                        </li>
+                                   </ul>
+                              </div>
+                         </li>
+                         <!-- Accounting -->
+                         <li class="nav-item" ng-if="canAccess('accounting','admin')">
+
+                              <a class="nav-link menu-arrow" href="#sidebarAccounting" data-bs-toggle="collapse"
+                                   role="button" aria-expanded="false" aria-controls="sidebarAccounting">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="mdi:calculator-variant-outline"></iconify-icon>
+                                   </span>
+                                   <span class="nav-text"> Accounting </span>
+                              </a>
+                              <div class="collapse" id="sidebarAccounting">
+                                   <ul class="nav sub-navbar-nav">
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="Invoices.html">Invoices</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="Payments.html">Payments</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="FinancialReports.html">Financial Reports</a>
+                                        </li>
+                                   </ul>
+                              </div>
+                         </li>
+                         <!-- Operations -->
+                         <li class="nav-item" ng-if="canAccess('operations','admin')">
+
+                              <a class="nav-link menu-arrow" href="#sidebarOperations" data-bs-toggle="collapse"
+                                   role="button" aria-expanded="false" aria-controls="sidebarOperations">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="mdi:chart-timeline-variant"></iconify-icon>
+                                   </span>
+                                   <span class="nav-text"> Operations </span>
+                              </a>
+                              <div class="collapse" id="sidebarOperations">
+                                   <ul class="nav sub-navbar-nav">
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="OperationsDashboard.html">Dashboard</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="WarehouseManagement.html">Warehouse</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="TaskTracking.html">Task Tracking</a>
+                                        </li>
+                                   </ul>
+                              </div>
+                         </li>
+                         <!-- Human Resources -->
+                         <li class="nav-item" ng-if="canAccess('hr','admin')">
+
+                              <a class="nav-link menu-arrow" href="#sidebarHR" data-bs-toggle="collapse" role="button"
+                                   aria-expanded="false" aria-controls="sidebarHR">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="mdi:account-group-outline"></iconify-icon>
+                                   </span>
+                                   <span class="nav-text"> Human Resources </span>
+                              </a>
+                              <div class="collapse" id="sidebarHR">
+                                   <ul class="nav sub-navbar-nav">
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="EmployeeRecords.html">Employee Records</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="Recruitment.html">Recruitment</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="Attendance.html">Attendance</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="Employee.html">
 
 
-                                        <span class="nav-text"> Employee </span>
-                                        <span class="badge bg-success badge-pill text-end">New</span>
-                                    </a>
-                                </li>
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="role.html">
-                                        <span class="nav-text"> Role </span>
-                                        <span class="badge bg-success badge-pill text-end">New</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link menu-arrow" href="#sidebarIT" data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="sidebarIT">
-                            <span class="nav-icon">
-                                <iconify-icon icon="solar:shield-user-bold-duotone"></iconify-icon>
+                                                  <span class="nav-text"> Employee </span>
+                                                  <span class="badge bg-success badge-pill text-end">New</span>
+                                             </a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="role.html">
+                                                  <span class="nav-text"> Role </span>
+                                                  <span class="badge bg-success badge-pill text-end">New</span>
+                                             </a>
+                                        </li>
+                                   </ul>
+                              </div>
+                         </li>
+                         <!-- IT Management -->
+                         <li class="nav-item" ng-if="canAccess('it','admin')">
 
-                            </span>
-                            <span class="nav-text"> IT Management </span>
-                        </a>
-                        <div class="collapse" id="sidebarIT">
-                            <ul class="nav sub-navbar-nav">
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="SystemMonitoring.html">System Monitoring</a>
-                                </li>
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="SupportTickets.html">Support Tickets</a>
-                                </li>
-                                <li class="sub-nav-item">
-                                    <a class="sub-nav-link" href="AssetManagement.html">Asset Management</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="menu-title">Custom</li>
-                </ul>
-            </div>
+                              <a class="nav-link menu-arrow" href="#sidebarIT" data-bs-toggle="collapse" role="button"
+                                   aria-expanded="false" aria-controls="sidebarIT">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="solar:shield-user-bold-duotone"></iconify-icon>
+
+                                   </span>
+                                   <span class="nav-text"> IT Management </span>
+                              </a>
+                              <div class="collapse" id="sidebarIT">
+                                   <ul class="nav sub-navbar-nav">
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="SystemMonitoring.html">System Monitoring</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="SupportTickets.html">Support Tickets</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="AssetManagement.html">Asset Management</a>
+                                        </li>
+                                   </ul>
+                              </div>
+                         </li>
+                         <li class="menu-title">Custom</li>
+                    </ul>
+               </div>
         </div>
         <!-- ========== App Menu End ========== -->
 
