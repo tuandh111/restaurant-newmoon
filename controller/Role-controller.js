@@ -1,17 +1,16 @@
-$(document).ready(function () {
-    $('#example').DataTable({
-        paging: true,
-        searching: true,
-        ordering: true,
-        lengthChange: true,
-        pageLength: 5,
-        lengthMenu: [5, 10, 25, 50],
-        responsive: true
-    });
-});
+// $(document).ready(function () {
+//     $('#example').DataTable({
+//         paging: true,
+//         searching: true,
+//         ordering: true,
+//         lengthChange: true,
+//         pageLength: 5,
+//         lengthMenu: [5, 10, 25, 50],
+//         responsive: true
+//     });
+// });
 
-var app = angular.module('myApp', []);
-app.controller('RoleController', function ($scope, $http) {
+app.controller('RoleController', function ($scope, $http,API_BASE_URL) {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
     console.log(JSON.parse(userData).role.roleName)
@@ -44,7 +43,6 @@ app.controller('RoleController', function ($scope, $http) {
             $window.location.href = 'index.html';
         }, 1200); // Đợi 1.2 giây rồi chuyển trang cho mượt
     };
-    const apiBaseUrl = 'http://localhost:8080/api/v1/auth';
     $scope.role = {
         roleName: '',
         description: ''
@@ -60,7 +58,7 @@ app.controller('RoleController', function ($scope, $http) {
             return;
         }
 
-        $http.post(apiBaseUrl + '/role', {
+        $http.post(API_BASE_URL + '/role', {
             roleName: $scope.role.roleName,
             description: $scope.role.description
         }).then(function (response) {
@@ -83,7 +81,7 @@ app.controller('RoleController', function ($scope, $http) {
     };
 
     $scope.loadRoles = function () {
-        $http.get(apiBaseUrl + '/role')
+        $http.get(API_BASE_URL + '/role')
             .then(function (response) {
                 $scope.roles = response.data;
             }, function (error) {
@@ -108,7 +106,7 @@ app.controller('RoleController', function ($scope, $http) {
             cancelButtonText: 'No, cancel!',
         }).then((result) => {
             if (result.isConfirmed) {
-                $http.delete(apiBaseUrl + '/role/' + id)
+                $http.delete(API_BASE_URL + '/role/' + id)
                     .then(function (response) {
                         Swal.fire(
                             'Deleted!',
@@ -147,7 +145,7 @@ app.controller('RoleController', function ($scope, $http) {
     };
 
     $scope.saveEdit = function () {
-        $http.put(apiBaseUrl + '/role/' + $scope.editedRole.roleId, $scope.editedRole)
+        $http.put(API_BASE_URL + '/role/' + $scope.editedRole.roleId, $scope.editedRole)
             .then(function (response) {
                 Swal.fire({
                     icon: 'success',

@@ -1,10 +1,10 @@
-var app = angular.module('myApp', []);
-app.controller('UserController', function ($scope, $http, $timeout) {
+
+app.controller('EmployeeController', function ($scope, $http, $timeout,API_BASE_URL) {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
     console.log(JSON.parse(userData).role.roleName)
     if (!token || !userData) {
-        $window.location.href = 'index.html'; // Redirect nếu chưa đăng nhập
+        $window.location.href = 'login.html'; // Redirect nếu chưa đăng nhập
         return;
     }
 
@@ -29,10 +29,9 @@ app.controller('UserController', function ($scope, $http, $timeout) {
         setTimeout(() => {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            $window.location.href = 'index.html';
+            $window.location.href = 'login.html';
         }, 1200); // Đợi 1.2 giây rồi chuyển trang cho mượt
     };
-    const apiBaseUrl = 'http://localhost:8080/api/v1/auth';
     $scope.users = [];
     $scope.roles = [];
     $scope.newUser = {};
@@ -45,7 +44,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
     $scope.filteredUsers = [];
     $scope.filteredList = [];
     function loadUsers() {
-        $http.get(apiBaseUrl + '/users').then(function (response) {
+        $http.get(API_BASE_URL + '/users').then(function (response) {
             $scope.users = response.data;
             $scope.filteredUsers = angular.copy($scope.users);
             $scope.applyFilters();
@@ -83,7 +82,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
 
     // Load roles
     $scope.loadRoles = function () {
-        $http.get(apiBaseUrl + '/role')
+        $http.get(API_BASE_URL + '/role')
             .then(function (response) {
                 $scope.roles = response.data;
                 console.log($scope.roles)
@@ -145,7 +144,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                     Swal.showLoading();
                 }
             });
-            $http.post(apiBaseUrl + '/register', payload).then(function (response) {
+            $http.post(API_BASE_URL + '/register', payload).then(function (response) {
                 Swal.close();
                 console.log("ok", response.data.message)
                 if (response.data.message === "ErrorEmail") {
@@ -225,7 +224,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
             roleId: $scope.newUser.roleId || 0,
             status: !!$scope.newUser.status
         };
-        $http.post(apiBaseUrl + '/update-user', payload)
+        $http.post(API_BASE_URL + '/update-user', payload)
             .then(function (response) {
                 Swal.fire({
                     icon: 'success',
@@ -235,6 +234,13 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                 }).then(() => {
                     loadUsers();
                     $scope.loadRoles();
+                    $scope.clearForm();
+                    const modalEl = document.getElementById('editUserModal');
+                    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
+
                 });
             })
             .catch(function (error) {
@@ -246,6 +252,25 @@ app.controller('UserController', function ($scope, $http, $timeout) {
                 });
             });
     };
+    $scope.clearForm = function () {
+        $scope.newUser = {
+            id: null,
+            email: '',
+            firstname: '',
+            lastname: '',
+            phone: '',
+            roleId: null,
+            status: false
+        };
+
+        $scope.submitted = false;
+
+        if ($scope.registerForm) {
+            $scope.registerForm.$setPristine(); // đánh dấu form như chưa thay đổi
+            $scope.registerForm.$setUntouched(); // đánh dấu các field như chưa được focus
+        }
+    };
+
     //cập nhật userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
     //delete userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
     $scope.deleteUser = function (userId) {
@@ -258,7 +283,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
             cancelButtonText: 'No, cancel!',
         }).then((result) => {
             if (result.isConfirmed) {
-                $http.delete(apiBaseUrl + '/delete-by-user-id/' + userId)
+                $http.delete(API_BASE_URL + '/delete-by-user-id/' + userId)
                     .then(function (response) {
                         Swal.fire(
                             'Deleted!',
@@ -332,7 +357,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
     $scope.loadRoles();
 
     // $scope.loadRolesAdd = function (callback) {
-    //     $http.get(apiBaseUrl + '/role').then(function (response) {
+    //     $http.get(API_BASE_URL + '/role').then(function (response) {
     //         $scope.roles = response.data;
     //         if (callback && typeof callback === 'function') {
     //             callback();
@@ -342,7 +367,7 @@ app.controller('UserController', function ($scope, $http, $timeout) {
     //     });
     // };
     // $scope.submitForm = function () {
-    //     $http.post(apiBaseUrl + '/role', {
+    //     $http.post(API_BASE_URL + '/role', {
     //         roleName: $scope.role.roleName,
     //         description: $scope.role.description
     //     }).then(function (response) {

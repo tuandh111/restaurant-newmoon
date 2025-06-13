@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="myApp">
 
 <head>
      <!-- Title Meta -->
      <meta charset="utf-8" />
-     <title>Sign In | Raydar - Responsive Admin Dashboard Template</title>
+     <title>Dashboard | Newmoon company</title>
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <meta name="description" content="A fully responsive premium admin dashboard template" />
      <meta name="author" content="Techzaa" />
@@ -21,140 +21,628 @@
 
      <!-- App css (Require in all Page) -->
      <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" />
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 
      <!-- Theme Config js (Require in all Page) -->
      <script src="assets/js/config.min.js"></script>
-     <!-- Bootstrap's class "is-invalid" is already styled, but just in case -->
      <style>
-          .is-invalid {
-               border-color: #dc3545 !important;
+          .nav-link.active {
+               font-weight: bold;
+               background-color: #e7f1ff;
+               color: #0d6efd;
           }
      </style>
-
 </head>
 
-<body class="authentication-bg" ng-app="loginApp" ng-controller="LoginController">
+<body>
 
-     <div class="account-pages pt-2 pt-sm-5 pb-4 pb-sm-5">
-          <div class="container">
-               <div class="row justify-content-center">
-                    <div class="col-xl-5">
-                         <div class="card auth-card">
-                              <div class="card-body px-3 ">
-                                   <div class="mx-auto  text-center auth-logo">
-                                        <a href="index.html" class="logo-dark">
-                                             <img src="assets/images/LOGO NM (1).png" height="128" alt="logo dark">
+     <!-- START Wrapper -->
+     <div class="wrapper">
+
+          <!-- ========== Topbar Start ========== -->
+          <header class="topbar">
+               <div class="container-fluid">
+                    <div class="navbar-header">
+                         <div class="d-flex align-items-center gap-2">
+                              <!-- Menu Toggle Button -->
+                              <div class="topbar-item">
+                                   <button type="button" class="button-toggle-menu topbar-button">
+                                        <iconify-icon icon="solar:hamburger-menu-broken"
+                                             class="fs-24 align-middle"></iconify-icon>
+                                   </button>
+                              </div>
+
+                              <!-- App Search-->
+                              <form class="app-search d-none d-md-block me-auto">
+                                   <div class="position-relative">
+                                        <input type="search" class="form-control" placeholder="Search..."
+                                             autocomplete="off" value="">
+                                        <iconify-icon icon="solar:magnifer-broken"
+                                             class="search-widget-icon"></iconify-icon>
+                                   </div>
+                              </form>
+                         </div>
+
+                         <div class="d-flex align-items-center gap-1">
+                              <!-- Theme Color (Light/Dark) -->
+                              <div class="topbar-item">
+                                   <button type="button" class="topbar-button" id="light-dark-mode">
+                                        <iconify-icon icon="solar:moon-bold-duotone"
+                                             class="fs-24 align-middle light-mode"></iconify-icon>
+                                        <iconify-icon icon="solar:sun-2-bold-duotone"
+                                             class="fs-24 align-middle dark-mode"></iconify-icon>
+                                   </button>
+                              </div>
+
+                              <!-- Category -->
+                              <div class="dropdown topbar-item d-none d-lg-flex">
+                                   <button type="button" class="topbar-button" data-toggle="fullscreen">
+                                        <iconify-icon icon="solar:full-screen-bold-duotone"
+                                             class="fs-24 align-middle fullscreen"></iconify-icon>
+                                        <iconify-icon icon="solar:quit-full-screen-bold-duotone"
+                                             class="fs-24 align-middle quit-fullscreen"></iconify-icon>
+                                   </button>
+                              </div>
+
+                              <!-- Notification -->
+                              <div class="dropdown topbar-item">
+                                   <button type="button" class="topbar-button position-relative"
+                                        id="page-header-notifications-dropdown" data-bs-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                        <iconify-icon icon="solar:bell-bing-bold-duotone"
+                                             class="fs-24 align-middle"></iconify-icon>
+                                        <span
+                                             class="position-absolute topbar-badge fs-10 translate-middle badge bg-danger rounded-pill">3<span
+                                                  class="visually-hidden">unread messages</span></span>
+                                   </button>
+                                   <div class="dropdown-menu py-0 dropdown-lg dropdown-menu-end"
+                                        aria-labelledby="page-header-notifications-dropdown">
+                                        <div class="p-3 border-top-0 border-start-0 border-end-0 border-dashed border">
+                                             <div class="row align-items-center">
+                                                  <div class="col">
+                                                       <h6 class="m-0 fs-16 fw-semibold"> Notifications</h6>
+                                                  </div>
+                                                  <div class="col-auto">
+                                                       <a href="javascript: void(0);"
+                                                            class="text-dark text-decoration-underline">
+                                                            <small>Clear All</small>
+                                                       </a>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                        <div data-simplebar style="max-height: 280px;">
+                                             <!-- Item -->
+                                             <a href="javascript:void(0);"
+                                                  class="dropdown-item py-3 border-bottom text-wrap">
+                                                  <div class="d-flex">
+                                                       <div class="flex-shrink-0">
+                                                            <img src="assets/images/users/avatar-1.jpg"
+                                                                 class="img-fluid me-2 avatar-sm rounded-circle"
+                                                                 alt="avatar-1" />
+                                                       </div>
+                                                       <div class="flex-grow-1">
+                                                            <p class="mb-0"><span class="fw-medium">Josephine Thompson
+                                                                 </span>commented on admin panel <span>" Wow 😍! this
+                                                                      admin looks good and awesome design"</span></p>
+                                                       </div>
+                                                  </div>
+                                             </a>
+                                             <!-- Item -->
+                                             <a href="javascript:void(0);" class="dropdown-item py-3 border-bottom">
+                                                  <div class="d-flex">
+                                                       <div class="flex-shrink-0">
+                                                            <div class="avatar-sm me-2">
+                                                                 <span
+                                                                      class="avatar-title bg-soft-info text-info fs-20 rounded-circle">
+                                                                      D
+                                                                 </span>
+                                                            </div>
+                                                       </div>
+                                                       <div class="flex-grow-1">
+                                                            <p class="mb-0 fw-semibold">Donoghue Susan</p>
+                                                            <p class="mb-0 text-wrap">
+                                                                 Hi, How are you? What about our next meeting
+                                                            </p>
+                                                       </div>
+                                                  </div>
+                                             </a>
+                                             <!-- Item -->
+                                             <a href="javascript:void(0);" class="dropdown-item py-3 border-bottom">
+                                                  <div class="d-flex">
+                                                       <div class="flex-shrink-0">
+                                                            <img src="assets/images/users/avatar-3.jpg"
+                                                                 class="img-fluid me-2 avatar-sm rounded-circle"
+                                                                 alt="avatar-3" />
+                                                       </div>
+                                                       <div class="flex-grow-1">
+                                                            <p class="mb-0 fw-semibold">Jacob Gines</p>
+                                                            <p class="mb-0 text-wrap">
+                                                                 Answered to your comment on the cash flow forecast's
+                                                                 graph 🔔.
+                                                            </p>
+                                                       </div>
+                                                  </div>
+                                             </a>
+                                             <!-- Item -->
+                                             <a href="javascript:void(0);" class="dropdown-item py-3 border-bottom">
+                                                  <div class="d-flex">
+                                                       <div class="flex-shrink-0">
+                                                            <div class="avatar-sm me-2">
+                                                                 <span
+                                                                      class="avatar-title bg-soft-warning text-warning fs-20 rounded-circle">
+                                                                      <iconify-icon
+                                                                           icon="solar:leaf-bold-duotone"></iconify-icon>
+                                                                 </span>
+                                                            </div>
+                                                       </div>
+                                                       <div class="flex-grow-1">
+                                                            <p class="mb-0 fw-semibold text-wrap">You have received
+                                                                 <b>20</b> new messages in the
+                                                                 conversation
+                                                            </p>
+                                                       </div>
+                                                  </div>
+                                             </a>
+                                             <!-- Item -->
+                                             <a href="javascript:void(0);" class="dropdown-item py-3 border-bottom">
+                                                  <div class="d-flex">
+                                                       <div class="flex-shrink-0">
+                                                            <img src="assets/images/users/avatar-5.jpg"
+                                                                 class="img-fluid me-2 avatar-sm rounded-circle"
+                                                                 alt="avatar-5" />
+                                                       </div>
+                                                       <div class="flex-grow-1">
+                                                            <p class="mb-0 fw-semibold">Shawn Bunch</p>
+                                                            <p class="mb-0 text-wrap">
+                                                                 Commented on Admin
+                                                            </p>
+                                                       </div>
+                                                  </div>
+                                             </a>
+                                        </div>
+                                        <div class="text-center py-3">
+                                             <a href="javascript:void(0);" class="btn btn-primary btn-sm">View All
+                                                  Notification <i class="bx bx-right-arrow-alt ms-1"></i></a>
+                                        </div>
+                                   </div>
+                              </div>
+
+                              <!-- Theme Setting -->
+                              <div class="topbar-item d-none d-md-flex">
+                                   <button type="button" class="topbar-button" id="theme-settings-btn"
+                                        data-bs-toggle="offcanvas" data-bs-target="#theme-settings-offcanvas"
+                                        aria-controls="theme-settings-offcanvas">
+                                        <iconify-icon icon="solar:settings-bold-duotone"
+                                             class="fs-24 align-middle"></iconify-icon>
+                                   </button>
+                              </div>
+
+                              <!-- User -->
+                              <div class="dropdown topbar-item">
+                                   <a type="button" class="topbar-button" id="page-header-user-dropdown"
+                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="d-flex align-items-center">
+                                             <img class="rounded-circle" width="32"
+                                                  src="assets/images/users/avatar-1.jpg" alt="avatar-3">
+                                        </span>
+                                   </a>
+                                   <div class="dropdown-menu dropdown-menu-end">
+                                        <!-- item-->
+                                        <h6 class="dropdown-header">Welcome Gaston!</h6>
+
+                                        <a class="dropdown-item" href="pages-calendar.html">
+                                             <iconify-icon icon="solar:calendar-bold-duotone"
+                                                  class="align-middle me-2 fs-18"></iconify-icon><span
+                                                  class="align-middle">My Schedules</span>
                                         </a>
 
-                                        <a href="index.html" class="logo-light">
-                                             <img src="assets/images/LOGO NM (1).png" height="28" alt="logo light">
+                                        <a class="dropdown-item" href="pages-pricing.html">
+                                             <iconify-icon icon="solar:wallet-bold-duotone"
+                                                  class="align-middle me-2 fs-18"></iconify-icon><span
+                                                  class="align-middle">Pricing</span>
                                         </a>
+                                        <a class="dropdown-item" href="pages-faqs.html">
+                                             <iconify-icon icon="solar:help-bold-duotone"
+                                                  class="align-middle me-2 fs-18"></iconify-icon><span
+                                                  class="align-middle">Help</span>
+                                        </a>
+                                        <a class="dropdown-item" href="auth-lock-screen.html">
+                                             <iconify-icon icon="solar:lock-keyhole-bold-duotone"
+                                                  class="align-middle me-2 fs-18"></iconify-icon><span
+                                                  class="align-middle">Lock screen</span>
+                                        </a>
+
+                                        <div class="dropdown-divider my-1"></div>
+
+                                        <a id="logoutBtn" class="dropdown-item text-danger" href="javascript:void(0)">
+                                             <iconify-icon icon="solar:logout-3-bold-duotone"
+                                                  class="align-middle me-2 fs-18"></iconify-icon>
+                                             <span class="align-middle">Logout</span>
+                                        </a>
+
+                                        </a>
+
+                                        </a>
+                                   </div>
+                              </div>
+                         </div>
+                    </div>
+               </div>
+          </header>
+
+          <!-- Right Sidebar (Theme Settings) -->
+          <div>
+               <div class="offcanvas offcanvas-end border-0" tabindex="-1" id="theme-settings-offcanvas">
+                    <div class="d-flex align-items-center bg-primary p-3 offcanvas-header">
+                         <h5 class="text-white m-0">Theme Settings</h5>
+                         <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="offcanvas"
+                              aria-label="Close"></button>
+                    </div>
+
+                    <div class="offcanvas-body p-0">
+                         <div data-simplebar class="h-100">
+                              <div class="p-3 settings-bar">
+
+                                   <div>
+                                        <h5 class="mb-3 font-16 fw-semibold">Color Scheme</h5>
+
+                                        <div class="form-check mb-2">
+                                             <input class="form-check-input" type="radio" name="data-bs-theme"
+                                                  id="layout-color-light" value="light">
+                                             <label class="form-check-label" for="layout-color-light">Light</label>
+                                        </div>
+
+                                        <div class="form-check mb-2">
+                                             <input class="form-check-input" type="radio" name="data-bs-theme"
+                                                  id="layout-color-dark" value="dark">
+                                             <label class="form-check-label" for="layout-color-dark">Dark</label>
+                                        </div>
+                                   </div>
+
+                                   <div>
+                                        <h5 class="my-3 font-16 fw-semibold">Topbar Color</h5>
+
+                                        <div class="form-check mb-2">
+                                             <input class="form-check-input" type="radio" name="data-topbar-color"
+                                                  id="topbar-color-light" value="light">
+                                             <label class="form-check-label" for="topbar-color-light">Light</label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                             <input class="form-check-input" type="radio" name="data-topbar-color"
+                                                  id="topbar-color-dark" value="dark">
+                                             <label class="form-check-label" for="topbar-color-dark">Dark</label>
+                                        </div>
                                    </div>
 
 
-                                   <div class="px-4">
-                                        <form name="loginForm" ng-submit="login()" novalidate>
+                                   <div>
+                                        <h5 class="my-3 font-16 fw-semibold">Menu Color</h5>
 
-                                             <!-- Email Input -->
-                                             <div class="mb-3">
-                                                  <label class="form-label" for="example-email">Email</label>
-                                                  <input type="email" id="example-email" name="email"
-                                                       ng-model="user.email"
-                                                       ng-class="{'is-invalid': emailInvalid, 'is-valid': emailValid}"
-                                                       ng-change="validateEmail()"
-                                                       class="form-control bg-light bg-opacity-50 border-light py-2"
-                                                       placeholder="e.g example@newmoon.vn" required>
-                                                  <small class="text-danger" ng-show="emailInvalid">Please enter a valid
-                                                       email address.</small>
-                                             </div>
+                                        <div class="form-check mb-2">
+                                             <input class="form-check-input" type="radio" name="data-menu-color"
+                                                  id="leftbar-color-light" value="light">
+                                             <label class="form-check-label" for="leftbar-color-light">
+                                                  Light
+                                             </label>
+                                        </div>
 
-                                             <!-- Password Input -->
-                                             <div class="mb-3 position-relative">
+                                        <div class="form-check mb-2">
+                                             <input class="form-check-input" type="radio" name="data-menu-color"
+                                                  id="leftbar-color-dark" value="dark">
+                                             <label class="form-check-label" for="leftbar-color-dark">
+                                                  Dark
+                                             </label>
+                                        </div>
+                                   </div>
 
-                                                  <div class="mb-3 position-relative">
-                                                       <label class="form-label" for="example-password">Password</label>
-                                                       <input type="{{showPassword ? 'text' : 'password'}}"
-                                                            id="example-password" name="password"
-                                                            ng-model="user.password" ng-change="validatePassword()"
-                                                            ng-class="{'is-invalid': passwordInvalid, 'is-valid': passwordValid}"
-                                                            class="form-control bg-light bg-opacity-50 border-light py-2"
-                                                            placeholder="Enter your password" required />
+                                   <div>
+                                        <h5 class="my-3 font-16 fw-semibold">Sidebar Size</h5>
 
-                                                       <!-- Icon con mắt với margin-right -->
-                                                       <!-- <span ng-click="showPassword = !showPassword"
-                                                            style="position: absolute; top: 38px; right: 15px; cursor: pointer; user-select: none; margin-right: 18px;">
-                                                            <i class="fa"
-                                                                 ng-class="showPassword ? 'fa-eye' : 'fa-eye-slash'"></i>
-                                                       </span> -->
+                                        <div class="form-check mb-2">
+                                             <input class="form-check-input" type="radio" name="data-menu-size"
+                                                  id="leftbar-size-default" value="default">
+                                             <label class="form-check-label" for="leftbar-size-default">
+                                                  Default
+                                             </label>
+                                        </div>
 
-                                                       <small class="text-danger"
-                                                            ng-show="passwordInvalid && !isMinLength(user.password)">
-                                                            Password must be at least 8 characters.<br>
-                                                       </small>
-                                                       <small class="text-danger"
-                                                            ng-show="passwordInvalid && !hasUpperCase(user.password)">
-                                                            Password must contain at least one uppercase letter.<br>
-                                                       </small>
-                                                       <small class="text-danger"
-                                                            ng-show="passwordInvalid && !hasLowerCase(user.password)">
-                                                            Password must contain at least one lowercase letter.<br>
-                                                       </small>
-                                                       <small class="text-danger"
-                                                            ng-show="passwordInvalid && !hasNumber(user.password)">
-                                                            Password must contain at least one number.<br>
-                                                       </small>
-                                                       <small class="text-danger"
-                                                            ng-show="passwordInvalid && !hasSpecialChar(user.password)">
-                                                            Password must contain at least one special character.<br>
-                                                       </small>
-                                                  </div>
+                                        <div class="form-check mb-2">
+                                             <input class="form-check-input" type="radio" name="data-menu-size"
+                                                  id="leftbar-size-small" value="condensed">
+                                             <label class="form-check-label" for="leftbar-size-small">
+                                                  Condensed
+                                             </label>
+                                        </div>
 
+                                        <div class="form-check mb-2">
+                                             <input class="form-check-input" type="radio" name="data-menu-size"
+                                                  id="leftbar-hidden" value="hidden">
+                                             <label class="form-check-label" for="leftbar-hidden">
+                                                  Hidden
+                                             </label>
+                                        </div>
 
+                                        <div class="form-check mb-2">
+                                             <input class="form-check-input" type="radio" name="data-menu-size"
+                                                  id="leftbar-size-small-hover-active" value="sm-hover-active">
+                                             <label class="form-check-label" for="leftbar-size-small-hover-active">
+                                                  Small Hover Active
+                                             </label>
+                                        </div>
 
-                                                  <!-- Remember Me -->
-                                                  <div class="mb-3">
-                                                       <div class="form-check">
-                                                            <input type="checkbox" class="form-check-input"
-                                                                 id="checkbox-signin" ng-model="user.rememberMe">
-                                                            <label class="form-check-label"
-                                                                 for="checkbox-signin">Remember
-                                                                 me</label>
-                                                            <a href="auth-password.html"
-                                                                 class="float-end text-muted text-underline-dashed ms-1">Forgot
-                                                                 password</a>
-                                                       </div>
+                                        <div class="form-check mb-2">
+                                             <input class="form-check-input" type="radio" name="data-menu-size"
+                                                  id="leftbar-size-small-hover" value="sm-hover">
+                                             <label class="form-check-label" for="leftbar-size-small-hover">
+                                                  Small Hover
+                                             </label>
+                                        </div>
+                                   </div>
 
-                                                  </div>
-
-                                                  <!-- Submit -->
-                                                  <div class="mb-1 text-center d-grid">
-                                                       <button class="btn btn-danger py-2 fw-medium" type="submit"
-                                                            ng-disabled="emailInvalid || passwordInvalid || !user.email || !user.password">Sign
-                                                            In</button>
-                                                  </div>
-                                        </form>
-                                   </div> <!-- end col -->
-                              </div> <!-- end card-body -->
-                         </div> <!-- end card -->
-
-
-                    </div> <!-- end col -->
-               </div> <!-- end row -->
+                              </div>
+                         </div>
+                    </div>
+                    <div class="offcanvas-footer border-top p-3 text-center">
+                         <div class="row">
+                              <div class="col">
+                                   <button type="button" class="btn btn-danger w-100" id="reset-layout">Reset</button>
+                              </div>
+                         </div>
+                    </div>
+               </div>
           </div>
+          <!-- ========== Topbar End ========== -->
+
+          <!-- ========== App Menu Start ========== -->
+          <div class="main-nav">
+               <!-- Sidebar Logo -->
+               <div class="logo-box">
+                    <a href="index.html" class="logo-dark">
+                         <img src="assets/images/LOGO NM (1).png" class="logo-sm" alt="logo sm">
+                         <img src="assets/images/LOGO NM (1).png" class="logo-lg" style="height: 100px;"
+                              alt="logo dark">
+                    </a>
+
+                    <a href="index.html" class="logo-light">
+                         <img src="assets/images/LOGO NM (1).png" class="logo-sm" alt="logo sm">
+                         <img src="assets/images/LOGO NM (1).png" style="height: 100px;" class="logo-lg"
+                              alt="logo light">
+                    </a>
+               </div>
+
+               <!-- Menu Toggle Button (sm-hover) -->
+               <button type="button" class="button-sm-hover" aria-label="Show Full Sidebar">
+                    <iconify-icon icon="solar:hamburger-menu-broken" class="button-sm-hover-icon"></iconify-icon>
+               </button>
+
+               <div class="scrollbar" data-simplebar>
+
+                    <ul class="navbar-nav" id="navbar-nav">
+
+                         <li class="menu-title">Menu</li>
+
+                         <li class="nav-item">
+                              <!--    ng-if="canAccess('admin') || canAccess('marketing') || canAccess('it') || canAccess('hr') || canAccess('accounting') || canAccess('operations')" -->
+                              <a class="nav-link menu-arrow" href="#sidebarDashboards" data-bs-toggle="collapse"
+                                   role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="solar:widget-5-bold-duotone"></iconify-icon>
+                                   </span>
+                                   <span class="nav-text"> Dashboards </span>
+                              </a>
+                              <div class="collapse" id="sidebarDashboards">
+                                   <ul class="nav sub-navbar-nav">
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/" onclick="setActive(this)">eCommerce</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/dashboard-analytics"
+                                                  onclick="setActive(this)">Analytics</a>
+                                        </li>
+                                   </ul>
+                              </div>
+                         </li>
+                         <!-- Marketing -->
+                         <li class="nav-item">
+                              <!-- ng-if="canAccess('marketing','admin')" -->
+                              <a class="nav-link menu-arrow" href="#sidebarMarketing" data-bs-toggle="collapse"
+                                   role="button" aria-expanded="false" aria-controls="sidebarMarketing">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="mdi:bullhorn"></iconify-icon>
+                                   </span>
+                                   <span class="nav-text"> Marketing </span>
+
+                              </a>
+                              <div class="collapse" id="sidebarMarketing">
+                                   <ul class="nav sub-navbar-nav">
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/MarketingCampaigns"
+                                                  onclick="setActive(this)">Campaigns</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/ContentManager"
+                                                  onclick="setActive(this)">Content Manager</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/SocialMedia"
+                                                  onclick="setActive(this)">Social Media</a>
+                                        </li>
+                                   </ul>
+                              </div>
+                         </li>
+                         <!-- Accounting -->
+                         <li class="nav-item">
+                              <!-- ng-if="canAccess('accounting','admin')" -->
+                              <a class="nav-link menu-arrow" href="#sidebarAccounting" data-bs-toggle="collapse"
+                                   role="button" aria-expanded="false" aria-controls="sidebarAccounting">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="mdi:calculator-variant-outline"></iconify-icon>
+                                   </span>
+                                   <span class="nav-text"> Accounting </span>
+                              </a>
+                              <div class="collapse" id="sidebarAccounting">
+                                   <ul class="nav sub-navbar-nav">
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/Invoices"
+                                                  onclick="setActive(this)">Invoices</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/Payments"
+                                                  onclick="setActive(this)">Payments</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/FinancialReports"
+                                                  onclick="setActive(this)">Financial Reports</a>
+                                        </li>
+                                   </ul>
+                              </div>
+                         </li>
+                         <!-- Operations -->
+                         <li class="nav-item">
+                              <!-- ng-if="canAccess('operations','admin')" -->
+                              <a class="nav-link menu-arrow" href="#sidebarOperations" data-bs-toggle="collapse"
+                                   role="button" aria-expanded="false" aria-controls="sidebarOperations">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="mdi:chart-timeline-variant"></iconify-icon>
+                                   </span>
+                                   <span class="nav-text"> Operations </span>
+                              </a>
+                              <div class="collapse" id="sidebarOperations">
+                                   <ul class="nav sub-navbar-nav">
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/OperationsDashboard"
+                                                  onclick="setActive(this)">Dashboard</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/WarehouseManagement"
+                                                  onclick="setActive(this)">Warehouse</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/TaskTracking"
+                                                  onclick="setActive(this)">Task Tracking</a>
+                                        </li>
+                                   </ul>
+                              </div>
+                         </li>
+                         <!-- Human Resources -->
+                         <li class="nav-item">
+                              <!-- ng-if="canAccess('hr','admin')" -->
+                              <a class="nav-link menu-arrow" href="#sidebarHR" data-bs-toggle="collapse" role="button"
+                                   aria-expanded="false" aria-controls="sidebarHR">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="mdi:account-group-outline"></iconify-icon>
+                                   </span>
+                                   <span class="nav-text"> Human Resources </span>
+                              </a>
+                              <div class="collapse" id="sidebarHR">
+                                   <ul class="nav sub-navbar-nav">
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/EmployeeRecords"
+                                                  onclick="setActive(this)">Employee Records</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/Recruitment"
+                                                  onclick="setActive(this)">Recruitment</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/Attendance"
+                                                  onclick="setActive(this)">Attendance</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/Employee" onclick="setActive(this)">
+
+
+                                                  <span class="nav-text"> Employee </span>
+                                                  <span class="badge bg-success badge-pill text-end">New</span>
+                                             </a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/Role" onclick="setActive(this)">
+                                                  <span class="nav-text"> Role </span>
+                                                  <span class="badge bg-success badge-pill text-end">New</span>
+                                             </a>
+                                        </li>
+                                   </ul>
+                              </div>
+                         </li>
+                         <!-- IT Management -->
+                         <li class="nav-item">
+                              <!-- ng-if="canAccess('it','admin')" -->
+                              <a class="nav-link menu-arrow" href="#sidebarIT" data-bs-toggle="collapse" role="button"
+                                   aria-expanded="false" aria-controls="sidebarIT">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="solar:shield-user-bold-duotone"></iconify-icon>
+
+                                   </span>
+                                   <span class="nav-text"> IT Management </span>
+                              </a>
+                              <div class="collapse" id="sidebarIT">
+                                   <ul class="nav sub-navbar-nav">
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/SystemMonitoring"
+                                                  onclick="setActive(this)">System Monitoring</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/SupportTickets"
+                                                  onclick="setActive(this)">Support Tickets</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="#!/AssetManagement"
+                                                  onclick="setActive(this)">Asset Management</a>
+                                        </li>
+                                   </ul>
+                              </div>
+                         </li>
+                         <li class="menu-title">Custom</li>
+                    </ul>
+               </div>
+          </div>
+          <!-- ========== App Menu End ========== -->
+
+          <!-- ==================================================== -->
+          <!-- Start right Content here -->
+          <!-- ==================================================== -->
+          <div ng-view></div>
+
+
+          <!-- ==================================================== -->
+          <!-- End Page Content -->
+          <!-- ==================================================== -->
+
      </div>
+     <!-- END Wrapper -->
 
      <!-- Vendor Javascript (Require in all Page) -->
      <script src="assets/js/vendor.min.js"></script>
 
      <!-- App Javascript (Require in all Page) -->
      <script src="assets/js/app.min.js"></script>
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 
+     <!-- Dashboard Js -->
+     <script src="assets/js/pages/dashboard.js"></script>
+
+     <!-- <script src="assets/js/admin/admin-dashboard-controller.js"></script> -->
+     <!-- SCRIPT -->
+
+     <script src="assets/vendor/gridjs/gridjs.umd.js"></script>
      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-     <!-- File JS chứa login -->
-     <script src="assets/js/admin/login.js"></script>
+     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+     <script src="app.js"></script>
+     <script src="controller/Main-controller.js"></script>
+     <script src="controller/Employee-controller.js"></script>
+     <script src="controller/Role-controller.js"></script>
 
+     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css" />
+
+     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+     <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+     <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+     <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 </body>
 
 </html>

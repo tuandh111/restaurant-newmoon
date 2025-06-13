@@ -1,10 +1,9 @@
 
 var app = angular.module('loginApp', []);
 
-app.constant('API_BASE_URL', 'http://localhost:8080/api/v1');
-
+app.constant('API_BASE_URL', 'http://localhost:8080/api/v1/auth');
 app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL) {
-    const apiBaseUrl = 'http://localhost:8080/api/v1/auth';
+    console.log("loginController")
     $scope.user = {
         email: '',
         password: '',
@@ -106,7 +105,7 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
             password: $scope.user.password
         };
 
-        $http.post(apiBaseUrl + '/authenticate', loginData)
+        $http.post(API_BASE_URL + '/authenticate', loginData)
             .then(response => {
                 // Save or remove credentials in localStorage
                 const data = response.data;
@@ -124,7 +123,7 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
                 }
 
                 Toast.fire({ icon: 'success', title: 'Login successful!' }).then(() => {
-                    $window.location.href = 'admin-dashboard.html';
+                    $window.location.href = 'index.html';
                 });
             })
             .catch(error => {
