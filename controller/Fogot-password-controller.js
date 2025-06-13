@@ -1,36 +1,28 @@
 angular.module('app', [])
-    .controller('ResetPasswordCtrl', function ($scope, $q, $timeout, $http) {
+    .controller('ResetPasswordCtrl', function ($scope, $http) {
+        console.log("reset password controller");
+
         const apiBaseUrl = 'http://localhost:8080/api/v1/auth';
-        // Giả lập API kiểm tra email có tồn tại
-        function checkEmailExists(email) {
-            var deferred = $q.defer();
-            $timeout(function () {
-                // Email có "example" được xem là tồn tại
-                deferred.resolve(email.includes('example'));
-            }, 1000);
-            return deferred.promise;
-        }
 
-        // Giả lập API kiểm tra mã OTP
-        function verifyCode(email, code) {
-            var deferred = $q.defer();
-            $timeout(function () {
-                deferred.resolve(code === '123456');
-            }, 1000);
-            return deferred.promise;
-        }
+        $scope.email = '';
+        $scope.emailInvalid = false;
 
-        // Giả lập API cập nhật mật khẩu mới
-        function resetPassword(email, newPassword) {
-            var deferred = $q.defer();
-            $timeout(function () {
-                deferred.resolve(true);
-            }, 1000);
-            return deferred.promise;
-        }
+        // Kiểm tra email phải đúng định dạng @newmoon.vn
+        $scope.validateEmail = function () {
+            const pattern = /^[^\s@]+@newmoon\.vn$/;
+            $scope.emailInvalid = !$scope.email || !pattern.test($scope.email);
+        };
+
         $scope.sendResetPasswordEmail = function () {
+            $scope.validateEmail();
+
             if (!$scope.email) {
                 Swal.fire('Error', 'Please enter your email.', 'error');
+                return;
+            }
+
+            if ($scope.emailInvalid) {
+                Swal.fire('Error', 'Email must end with @newmoon.vn', 'error');
                 return;
             }
 
@@ -50,7 +42,7 @@ angular.module('app', [])
 
                     const message = response.data.message;
 
-                    if (message == "Successfully send mail") {
+                    if (message === "Successfully send mail") {
                         Swal.fire({
                             icon: 'success',
                             title: 'Email sent!',
@@ -61,7 +53,7 @@ angular.module('app', [])
                             window.location.href = 'update-password.html';
                         });
                         $scope.email = '';
-                    } else if (message == "null") {
+                    } else if (message === "null") {
                         Swal.fire({
                             icon: 'error',
                             title: 'User not found',
@@ -85,6 +77,4 @@ angular.module('app', [])
                     });
                 });
         };
-
-
     });

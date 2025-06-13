@@ -27,8 +27,8 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
 
     // Validate email ends with @newmoon.vn
     $scope.validateEmail = function () {
-        //const pattern = /^[a-zA-Z0-9._%+-]+@newmoon\.vn$/;
-        const pattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        const pattern = /^[a-zA-Z0-9._%+-]+@newmoon\.vn$/;
+        //const pattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
         if ($scope.user.email && pattern.test($scope.user.email)) {
             $scope.emailInvalid = false;
             $scope.emailValid = true;
