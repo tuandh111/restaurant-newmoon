@@ -1,5 +1,22 @@
 
-app.controller('EmployeeController', function ($scope, $http, $timeout,API_BASE_URL) {
+app.directive('onModalHide', function () {
+    return {
+        restrict: 'A',
+        scope: {
+            onModalHide: '&'
+        },
+        link: function (scope, element) {
+            element.on('hidden.bs.modal', function () {
+                scope.$apply(function () {
+                    scope.onModalHide();
+                });
+            });
+        }
+    };
+});
+
+
+app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE_URL) {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
     console.log(JSON.parse(userData).role.roleName)
@@ -190,22 +207,31 @@ app.controller('EmployeeController', function ($scope, $http, $timeout,API_BASE_
     $scope.selectUser = function (user) {
         $scope.newUser = angular.copy(user);
         $scope.newUser.isActive = user.status;
+
         if (user.role && user.role.roleId) {
             $scope.newUser.roleId = user.role.roleId;
         }
+
         $scope.newUser.province = $scope.provinces.find(p => p.name === user.province);
-        $scope.onProvinceChange();
-        setTimeout(function () {
-            $scope.newUser.district = $scope.districts.find(d => d.name === user.district);
-            $scope.onDistrictChange();
 
-            setTimeout(function () {
+        // Gọi API lấy huyện theo tỉnh
+        $http.get(`https://provinces.open-api.vn/api/p/${$scope.newUser.province?.code}?depth=2`)
+            .then(function (resProvince) {
+                $scope.districts = resProvince.data.districts;
+                $scope.newUser.district = $scope.districts.find(d => d.name === user.district);
+
+                // Gọi API lấy xã theo huyện
+                return $http.get(`https://provinces.open-api.vn/api/d/${$scope.newUser.district?.code}?depth=2`);
+            })
+            .then(function (resDistrict) {
+                $scope.wards = resDistrict.data.wards;
                 $scope.newUser.ward = $scope.wards.find(w => w.name === user.ward);
-
-                $scope.$apply();
-            }, 100);
-        }, 100);
+            })
+            .finally(function () {
+                $scope.$applyAsync(); // Đảm bảo cập nhật scope
+            });
     };
+
     $scope.updateUser = function () {
         $scope.submitted = true;
 
@@ -350,6 +376,9 @@ app.controller('EmployeeController', function ($scope, $http, $timeout,API_BASE_
 
     $scope.resetEmailError = function () {
         $scope.emailExists = false;
+    };
+    $scope.resetUser = function () {
+        $scope.newUser = {};
     };
 
     // Load dữ liệu ban đầu
