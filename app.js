@@ -9,8 +9,8 @@ app.config(function($routeProvider) {
             templateUrl: "views/index.html",
             controller: "MainController"
         })
-        .when("/dashboard-analytics", {
-            templateUrl: "views/dashboard-analytics.html",
+        .when("/Dashboard-analytics", {
+            templateUrl: "views/Dashboard-analytics.html",
             controller: "AnalyticsController"
         })
 
