@@ -77,7 +77,7 @@ app.controller('ChangePasswordCtrl', ['$scope', '$http', function ($scope, $http
                     timer: 2000,
                     timerProgressBar: true
                 }).then(() => {
-                    window.location.href = 'index.html';
+                    window.location.href = 'login.html';
                 });
             })
             .catch(function (error) {

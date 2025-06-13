@@ -227,23 +227,25 @@
                                    </a>
                                    <div class="dropdown-menu dropdown-menu-end">
                                         <!-- item-->
-                                        <h6 class="dropdown-header">Welcome Gaston!</h6>
-
+                                        <h6 class="dropdown-header">Welcome {{currentUser.lastname}}
+                                             {{currentUser.firstname}}!</h6>
+                                        <h6 class="dropdown-header">Role: {{currentUser.role.roleName}}
+                                             </h6>
                                         <a class="dropdown-item" href="pages-calendar.html">
                                              <iconify-icon icon="solar:calendar-bold-duotone"
                                                   class="align-middle me-2 fs-18"></iconify-icon><span
                                                   class="align-middle">My Schedules</span>
                                         </a>
 
-                                        <a class="dropdown-item" href="pages-pricing.html">
+                                        <a class="dropdown-item" href="update-password.html">
                                              <iconify-icon icon="solar:wallet-bold-duotone"
                                                   class="align-middle me-2 fs-18"></iconify-icon><span
-                                                  class="align-middle">Pricing</span>
+                                                  class="align-middle">Forgot password</span>
                                         </a>
-                                        <a class="dropdown-item" href="pages-faqs.html">
+                                        <a class="dropdown-item" href="update-password.html">
                                              <iconify-icon icon="solar:help-bold-duotone"
                                                   class="align-middle me-2 fs-18"></iconify-icon><span
-                                                  class="align-middle">Help</span>
+                                                  class="align-middle">Update password</span>
                                         </a>
                                         <a class="dropdown-item" href="auth-lock-screen.html">
                                              <iconify-icon icon="solar:lock-keyhole-bold-duotone"
@@ -444,7 +446,7 @@
                               </div>
                          </li>
                          <!-- Marketing -->
-                         <li class="nav-item" g-if="canAccess('marketing','admin')">
+                         <li class="nav-item" ng-if="canAccess('marketing','admin')">
                               <!-- ng-if="canAccess('marketing','admin')" -->
                               <a class="nav-link menu-arrow" href="#sidebarMarketing" data-bs-toggle="collapse"
                                    role="button" aria-expanded="false" aria-controls="sidebarMarketing">
