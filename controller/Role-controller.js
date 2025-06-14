@@ -49,14 +49,22 @@ app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL)
     };
 
     $scope.submitForm = function () {
-        if (!$scope.role.roleName) {
-            $scope.showToast('⚠️ Please enter a role name.', 'warning');
+        $scope.userForm.roleName.$setTouched();
+
+        // Nếu input rỗng → báo lỗi
+        if (!($scope.role.roleName && $scope.role.roleName.trim())) {
+            $scope.showToast('❌ Please enter a role name.', 'error');
             return;
         }
 
+
         $http.post(API_BASE_URL + '/role', $scope.role).then(function (response) {
             $scope.showToast('✅ Role added successfully!', 'success');
-            $scope.role = {};
+               $scope.role = {}; // Clear input model
+
+        // ✅ Reset trạng thái của form
+        $scope.userForm.$setPristine();
+        $scope.userForm.$setUntouched();
             $scope.loadRoles();
         }, function () {
             $scope.showToast('❌ Failed to add role.', 'error');

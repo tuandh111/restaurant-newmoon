@@ -28,29 +28,42 @@
                               <div class="card-body">
                                    <form name="userForm" ng-submit="submitForm()" novalidate
                                         class="row g-3 needs-validation">
+
+                                        <!-- Role Name -->
                                         <div class="col-12 col-md-6 mb-3">
                                              <label for="firstName" class="form-label">Role Name <span
                                                        style="color: red;">*</span></label>
-                                             <input type="text" class="form-control" id="firstName" placeholder="Name"
-                                                  ng-model="role.roleName" required>
+                                             <input type="text" class="form-control" id="firstName" name="roleName"
+                                                  placeholder="Enter role name" ng-model="role.roleName"
+                                                  ng-change="userForm.roleName.$setTouched()" required ng-class="{
+             'is-invalid': userForm.roleName.$touched && userForm.roleName.$invalid,
+             'is-valid': userForm.roleName.$touched && userForm.roleName.$valid
+           }">
+
+                                             <div class="invalid-feedback"
+                                                  ng-show="userForm.roleName.$touched && userForm.roleName.$error.required">
+                                                  Role name is required.
+                                             </div>
                                         </div>
 
-                                        <div class="col-12 col-md-12 mb-12">
+                                        <!-- Description -->
+                                        <div class="col-12 col-md-12 mb-3">
                                              <label for="description" class="form-label">Description</label>
-                                             <textarea class="form-control" id="description" rows="4"
-                                                  ng-model="role.description" placeholder="Description"></textarea>
+                                             <textarea class="form-control" id="description" ng-model="role.description"
+                                                  placeholder="Enter description (optional)">
+    </textarea>
                                         </div>
 
-
-
+                                        <!-- Submit Button -->
                                         <div class="col-12">
                                              <button class="btn btn-primary" type="submit">
                                                   <iconify-icon icon="mdi:plus-circle-outline"
                                                        class="me-1"></iconify-icon>
-                                                  Add new
+                                                  Add New
                                              </button>
                                         </div>
                                    </form>
+
 
                               </div>
                               <hr class="my-0" />
@@ -383,7 +396,8 @@
                                                                                 ng-model="permissions.export_employee" />
                                                                       </div>
                                                                  </div>
-                                                                 <span class="text-danger my-5" style="margin-top: 10px;">
+                                                                 <span class="text-danger my-5"
+                                                                      style="margin-top: 10px;">
                                                                       (*) Permission functionality is under development
                                                                       – awaiting confirmation of specific features
                                                                  </span>
