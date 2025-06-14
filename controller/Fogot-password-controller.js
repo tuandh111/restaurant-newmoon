@@ -10,10 +10,8 @@ angular.module('app', [])
         $scope.validateEmail = function () {
             const emailValue = ($scope.email || '').trim();
             const pattern = /^[^\s@]+@newmoon\.vn$/;
+            $scope.emailInvalid = !pattern.test(emailValue); // sai thì báo đỏ
 
-         
-                $scope.emailInvalid = !pattern.test(emailValue); // sai thì báo đỏ
-            
         };
 
         $scope.sendResetPasswordEmail = function () {
