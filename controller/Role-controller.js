@@ -1,48 +1,48 @@
-// $(document).ready(function () {
-//     $('#example').DataTable({
-//         paging: true,
-//         searching: true,
-//         ordering: true,
-//         lengthChange: true,
-//         pageLength: 5,
-//         lengthMenu: [5, 10, 25, 50],
-//         responsive: true
-//     });
-// });
-
-app.controller('RoleController', function ($scope, $http,API_BASE_URL) {
+app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL) {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
-    console.log(JSON.parse(userData).role.roleName)
+
     if (!token || !userData) {
-        $window.location.href = 'index.html'; // Redirect nếu chưa đăng nhập
+        $window.location.href = 'index.html';
         return;
     }
 
     $scope.currentUser = JSON.parse(userData);
     $scope.userRole = $scope.currentUser.role.roleName.toLowerCase();
+
     $scope.canAccess = function (department) {
         return $scope.userRole === 'admin' || $scope.userRole === department;
     };
 
+    // Toastify helper
+    $scope.showToast = function (text, type = 'info') {
+        let bgColor = '#17a2b8'; // info
+        if (type === 'success') bgColor = '#28a745';
+        if (type === 'error') bgColor = '#dc3545';
+        if (type === 'warning') bgColor = '#ffc107';
+
+        Toastify({
+            text: text,
+            duration: 3000,
+            gravity: "top",
+            position: "center",
+            style: {
+                background: bgColor,
+                color: type === 'warning' ? 'black' : 'white',
+                fontWeight: 'bold'
+            }
+        }).showToast();
+    };
 
     $scope.logout = function () {
-        Swal.fire({
-            title: 'Logging out...',
-            didOpen: () => {
-                Swal.showLoading();
-            },
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            allowEnterKey: false
-        });
-
+        $scope.showToast('Logging out...', 'info');
         setTimeout(() => {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             $window.location.href = 'index.html';
-        }, 1200); // Đợi 1.2 giây rồi chuyển trang cho mượt
+        }, 1200);
     };
+
     $scope.role = {
         roleName: '',
         description: ''
@@ -50,48 +50,25 @@ app.controller('RoleController', function ($scope, $http,API_BASE_URL) {
 
     $scope.submitForm = function () {
         if (!$scope.role.roleName) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Missing Role Name',
-                text: 'Please enter a role name.'
-            });
+            $scope.showToast('⚠️ Please enter a role name.', 'warning');
             return;
         }
 
-        $http.post(API_BASE_URL + '/role', {
-            roleName: $scope.role.roleName,
-            description: $scope.role.description
-        }).then(function (response) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: 'Role added successfully!'
-            });
-            console.log(response.data);
+        $http.post(API_BASE_URL + '/role', $scope.role).then(function (response) {
+            $scope.showToast('✅ Role added successfully!', 'success');
             $scope.role = {};
             $scope.loadRoles();
-        }, function (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Failed!',
-                text: 'Failed to add role.'
-            });
-            console.error(error);
+        }, function () {
+            $scope.showToast('❌ Failed to add role.', 'error');
         });
     };
 
     $scope.loadRoles = function () {
-        $http.get(API_BASE_URL + '/role')
-            .then(function (response) {
-                $scope.roles = response.data;
-            }, function (error) {
-                console.error('Error loading roles:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'Failed to load roles.'
-                });
-            });
+        $http.get(API_BASE_URL + '/role').then(function (response) {
+            $scope.roles = response.data;
+        }, function () {
+            $scope.showToast('❌ Failed to load roles.', 'error');
+        });
     };
 
     $scope.loadRoles();
@@ -99,35 +76,41 @@ app.controller('RoleController', function ($scope, $http,API_BASE_URL) {
     $scope.deleteRole = function (id) {
         Swal.fire({
             title: 'Are you sure?',
-            text: "This role will be permanently deleted!",
+            text: "Do you really want to delete this role? This action cannot be undone.",
             icon: 'warning',
             showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
             confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'No, cancel!',
+            cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
-                $http.delete(API_BASE_URL + '/role/' + id)
-                    .then(function (response) {
-                        Swal.fire(
-                            'Deleted!',
-                            'The role has been deleted successfully.',
-                            'success'
-                        );
-                        $scope.loadRoles();
-                    })
-                    .catch(function (error) {
-                        Swal.fire(
-                            'Error!',
-                            'Failed to delete the role. Please try again.',
-                            'error'
-                        );
+                $http.delete(API_BASE_URL + '/role/' + id).then(function () {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'The role has been deleted successfully.',
+                        timer: 2000,
+                        showConfirmButton: false
                     });
-            } else {
-                Swal.fire(
-                    'Cancelled',
-                    'The role was not deleted.',
-                    'info'
-                );
+                    $scope.loadRoles();
+                }).catch(function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Failed to delete the role. Please try again later.',
+                        timer: 2500,
+                        showConfirmButton: false
+                    });
+                });
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Cancelled',
+                    text: 'The role was not deleted.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
             }
         });
     };
@@ -146,22 +129,13 @@ app.controller('RoleController', function ($scope, $http,API_BASE_URL) {
 
     $scope.saveEdit = function () {
         $http.put(API_BASE_URL + '/role/' + $scope.editedRole.roleId, $scope.editedRole)
-            .then(function (response) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Updated!',
-                    text: 'Role updated successfully!'
-                });
+            .then(function () {
+                $scope.showToast('✅ Role updated successfully!', 'success');
                 $('#editModal').modal('hide');
                 $scope.loadRoles();
             })
-            .catch(function (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Update failed!',
-                    text: 'Failed to update role. Please try again.'
-                });
-                console.error('Update failed:', error);
+            .catch(function () {
+                $scope.showToast('❌ Failed to update role.', 'error');
             });
     };
 
@@ -180,10 +154,6 @@ app.controller('RoleController', function ($scope, $http,API_BASE_URL) {
                 $scope.permissions[key] = false;
             }
         }
-        Swal.fire({
-            icon: 'info',
-            title: 'Permissions cleared!',
-            text: 'All permissions have been reset.'
-        });
+        $scope.showToast('ℹ️ All permissions have been reset.', 'info');
     };
 });
