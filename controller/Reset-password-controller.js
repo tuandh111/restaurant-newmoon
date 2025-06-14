@@ -35,8 +35,8 @@ app.controller('ChangePasswordCtrl', ['$scope', '$http', function ($scope, $http
     };
 
     $scope.isValidEmail = function (email) {
-        //const emailRegex = /^[a-zA-Z0-9._%+-]+@newmoon\.vn$/;
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@newmoon\.vn$/;
+        //const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
         return emailRegex.test(email);
     };
 
