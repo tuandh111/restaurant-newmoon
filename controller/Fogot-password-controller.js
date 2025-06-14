@@ -2,7 +2,7 @@ angular.module('app', [])
     .controller('ResetPasswordCtrl', function ($scope, $http) {
         console.log("reset password controller");
 
-        const apiBaseUrl = 'http://localhost:8080/api/v1/auth';
+        const apiBaseUrl = 'http://125.253.113.76/api/v1/auth';
 
         $scope.email = '';
         $scope.emailInvalid = false;

@@ -1,7 +1,7 @@
 
 var app = angular.module('loginApp', []);
 
-app.constant('API_BASE_URL', 'http://localhost:8080/api/v1/auth');
+app.constant('API_BASE_URL', 'http://125.253.113.76/api/v1/auth');
 app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL) {
     console.log("loginController")
     $scope.user = {
