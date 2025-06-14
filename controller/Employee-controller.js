@@ -352,8 +352,8 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
             text: message,
             duration: duration,
             close: true,
-            gravity: "top",
-            position: "right",
+            gravity: "top",           // Hiển thị ở trên cùng
+            position: "center",       // Căn giữa ngang
             backgroundColor: {
                 success: "#4caf50",
                 error: "#f44336",
@@ -361,7 +361,6 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
                 info: "#2196f3"
             }[type] || "#333"
         }).showToast();
-
         return new Promise(resolve => setTimeout(resolve, duration));
     }
 
