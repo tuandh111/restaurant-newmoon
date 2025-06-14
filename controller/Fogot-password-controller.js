@@ -7,10 +7,15 @@ angular.module('app', [])
         $scope.email = '';
         $scope.emailInvalid = false;
 
-        // Kiểm tra email phải đúng định dạng @newmoon.vn
         $scope.validateEmail = function () {
+            const emailValue = ($scope.email || '').trim();
             const pattern = /^[^\s@]+@newmoon\.vn$/;
-            $scope.emailInvalid = !$scope.email || !pattern.test($scope.email);
+
+            if (emailValue === '') {
+                $scope.emailInvalid = false; // chưa nhập thì không báo lỗi
+            } else {
+                $scope.emailInvalid = !pattern.test(emailValue); // sai thì báo đỏ
+            }
         };
 
         $scope.sendResetPasswordEmail = function () {
@@ -77,4 +82,5 @@ angular.module('app', [])
                     });
                 });
         };
+
     });
