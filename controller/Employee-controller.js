@@ -183,6 +183,8 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
                 Swal.close();
                 showToast("Registration failed", "error");
             });
+        }else{
+            showToast("Please fill in all required fields.", "error");
         }
     };
     //view user
@@ -225,6 +227,7 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
         $scope.submitted = true;
 
         if ($scope.registerForm.$invalid) {
+            showToast("Please fill in all required fields.", "error");
             return;
         }
         const payload = {
