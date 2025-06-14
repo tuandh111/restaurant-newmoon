@@ -11,25 +11,43 @@ angular.module('app', [])
             const emailValue = ($scope.email || '').trim();
             const pattern = /^[^\s@]+@newmoon\.vn$/;
 
-            if (emailValue === '') {
-                $scope.emailInvalid = false; // chưa nhập thì không báo lỗi
-            } else {
+         
                 $scope.emailInvalid = !pattern.test(emailValue); // sai thì báo đỏ
-            }
+            
         };
 
         $scope.sendResetPasswordEmail = function () {
             $scope.validateEmail();
 
             if (!$scope.email) {
-                Swal.fire('Error', 'Please enter your email.', 'error');
+                Toastify({
+                    text: "❌ Error! Please enter your email.",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "center",
+                    className: "toast-error"
+                }).showToast();
                 return;
             }
 
             if ($scope.emailInvalid) {
-                Swal.fire('Error', 'Email must end with @newmoon.vn', 'error');
+                Toastify({
+                    text: "❌ Error! Email must end with @newmoon.vn",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "center",
+                    className: "toast-error"
+                }).showToast();
                 return;
             }
+
+            Toastify({
+                text: "⏳ Sending reset instructions...",
+                duration: 2000,
+                gravity: "top",
+                position: "center",
+                className: "toast-info"
+            }).showToast();
 
             Swal.fire({
                 title: 'Processing...',
@@ -44,43 +62,49 @@ angular.module('app', [])
             $http.post(apiBaseUrl + '/send-code?email=' + encodeURIComponent($scope.email))
                 .then(function (response) {
                     Swal.close();
-
                     const message = response.data.message;
 
                     if (message === "Successfully send mail") {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Email sent!',
-                            text: 'Please check your inbox.',
-                            showConfirmButton: false,
-                            timer: 2000
-                        }).then(() => {
-                            window.location.href = 'update-password.html';
-                        });
+                        Toastify({
+                            text: "✅ Email sent! Please check your inbox.",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "center",
+                            className: "toast-success"
+                        }).showToast();
+
                         $scope.email = '';
+                        setTimeout(() => {
+                            window.location.href = 'update-password.html';
+                        }, 3000);
                     } else if (message === "null") {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'User not found',
-                            text: 'Email does not exist in the system.'
-                        });
+                        Toastify({
+                            text: "❌ User not found! Email does not exist.",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "center",
+                            className: "toast-error"
+                        }).showToast();
                     } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Failed to send email',
-                            text: 'Please try again later.'
-                        });
+                        Toastify({
+                            text: "⚠️ Failed to send email. Please try again later.",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "center",
+                            className: "toast-error"
+                        }).showToast();
                     }
                 })
                 .catch(function (error) {
                     Swal.close();
                     console.error("Error calling /send-code:", error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Request error',
-                        text: 'An unexpected error occurred.'
-                    });
+                    Toastify({
+                        text: "🚨 Request error! Please check your connection.",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "center",
+                        className: "toast-error"
+                    }).showToast();
                 });
         };
-
     });
