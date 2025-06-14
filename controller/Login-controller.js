@@ -62,22 +62,30 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
         $scope.showPassword = !$scope.showPassword;
     };
 
-    $scope.showToast = function (text, className) {
+    $scope.showToast = function (text, type = 'info') {
+        let bgColor = '#17a2b8'; // info
+        if (type === 'success') bgColor = '#28a745';
+        if (type === 'error') bgColor = '#dc3545';
+        if (type === 'warning') bgColor = '#ffc107';
+
         Toastify({
             text: text,
             duration: 3000,
             gravity: "top",
             position: "center",
-            className: className
+            style: {
+                background: bgColor,
+                color: type === 'warning' ? 'black' : 'white',
+                fontWeight: 'bold'
+            }
         }).showToast();
     };
-
     $scope.login = function () {
         $scope.validateEmail();
         $scope.validatePassword();
 
         if (!$scope.emailValid) {
-            $scope.showToast("❌ Email must end with @newmoon.vn", "toast-error");
+            $scope.showToast("❌ Email must end with @newmoon.vn", "error");
             return;
         }
 
@@ -90,7 +98,7 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
             if (!$scope.hasSpecialChar($scope.user.password)) errors.push("• One special character");
 
             const errorMsg = "❌ Invalid Password:\n" + errors.join("\n");
-            $scope.showToast(errorMsg, "toast-error");
+            $scope.showToast(errorMsg, "error");
             return;
         }
 
@@ -104,7 +112,7 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
                 const data = response.data;
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
-
+sessionStorage.setItem('justLoggedIn', 'true'); 
                 if ($scope.user.rememberMe) {
                     localStorage.setItem('email', $scope.user.email);
                     localStorage.setItem('password', $scope.user.password);
@@ -115,7 +123,7 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
                     localStorage.setItem('rememberMe', 'false');
                 }
 
-                $scope.showToast("✅ Login successful!", "toast-success");
+                $scope.showToast("✅ Login successful!", "success");
 
                 setTimeout(() => {
                     $window.location.href = 'index.html';
@@ -125,11 +133,11 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
                 const message = error?.data?.message;
 
                 if (message === 'LOGIN_FAIL') {
-                    $scope.showToast("❌ Login failed! Invalid email or password.", "toast-error");
+                    $scope.showToast("❌ Login failed! Invalid email or password.", "error");
                 } else if (message === 'ACCOUNT_DISABLED') {
-                    $scope.showToast("⚠️ Your account has been disabled. Contact admin.", "toast-warning");
+                    $scope.showToast("⚠️ Your account has been disabled. Contact admin.", "warning");
                 } else {
-                    $scope.showToast("🚨 Login failed! Please try again later.", "toast-error");
+                    $scope.showToast("🚨 Login failed! Please try again later.", "error");
                 }
             });
     };
