@@ -348,21 +348,25 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
     };
     function showToast(message, type = 'info') {
         const duration = 3000;
+        let bgColor = '#17a2b8'; // info
+        if (type === 'success') bgColor = '#28a745';
+        if (type === 'error') bgColor = '#dc3545';
+        if (type === 'warning') bgColor = '#ffc107';
         Toastify({
             text: message,
             duration: duration,
             close: true,
-            gravity: "top",           // Hiển thị ở trên cùng
-            position: "center",       // Căn giữa ngang
-            backgroundColor: {
-                success: "#4caf50",
-                error: "#f44336",
-                warning: "#ff9800",
-                info: "#2196f3"
-            }[type] || "#333"
+            gravity: "top",
+            position: "center",
+            style: {
+                background: bgColor,
+                color: type === 'warning' ? 'black' : 'white',
+                fontWeight: 'bold'
+            }
         }).showToast();
         return new Promise(resolve => setTimeout(resolve, duration));
     }
+
 
 
     // Load dữ liệu ban đầu
