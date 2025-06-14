@@ -188,6 +188,7 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
             }, function (error) {
                 Swal.close();
                 console.error("Registration failed:", error);
+                showToast("Password confirmation does not match.", "error");
                 Swal.fire({
                     icon: 'error',
                     title: 'Registration failed',
@@ -271,11 +272,7 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
             })
             .catch(function (error) {
                 console.error('Update failed:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred while updating the user.'
-                });
+                showToast("An error occurred while updating the user.", "error");
             });
     };
     $scope.clearForm = function () {
@@ -381,47 +378,23 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
         $scope.newUser = {};
     };
 
+    function showToast(message, type = 'info') {
+        Toastify({
+            text: message,
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            backgroundColor: {
+                success: "#4caf50",
+                error: "#f44336",
+                warning: "#ff9800",
+                info: "#2196f3"
+            }[type] || "#333"
+        }).showToast();
+    }
+
     // Load dữ liệu ban đầu
     loadUsers();
     $scope.loadRoles();
-
-    // $scope.loadRolesAdd = function (callback) {
-    //     $http.get(API_BASE_URL + '/role').then(function (response) {
-    //         $scope.roles = response.data;
-    //         if (callback && typeof callback === 'function') {
-    //             callback();
-    //         }
-    //     }, function (error) {
-    //         console.error('Lỗi khi tải danh sách roles:', error);
-    //     });
-    // };
-    // $scope.submitForm = function () {
-    //     $http.post(API_BASE_URL + '/role', {
-    //         roleName: $scope.role.roleName,
-    //         description: $scope.role.description
-    //     }).then(function (response) {
-    //         const newRole = response.data;
-
-    //         // Gọi loadRoles và truyền callback để gán roleId sau khi load xong
-    //         $scope.loadRolesAdd(function () {
-    //             $scope.newUser.roleId = newRole.roleId;
-
-    //             // Apply lại nếu chưa apply
-    //             $timeout(() => {
-    //                 if (!$scope.$$phase) $scope.$apply();
-    //             }, 100);
-    //         });
-
-    //         // Thông báo thành công
-    //         Swal.fire({
-    //             icon: 'success',
-    //             title: 'Role added successfully!',
-    //             showConfirmButton: false,
-    //             timer: 2000
-    //         });
-    //     }, function (error) {
-    //         alert('Thêm role thất bại!');
-    //         console.error(error);
-    //     });
-    // };
 });
