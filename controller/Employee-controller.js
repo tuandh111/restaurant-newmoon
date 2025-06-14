@@ -19,7 +19,6 @@ app.directive('onModalHide', function () {
 app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE_URL) {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
-    console.log(JSON.parse(userData).role.roleName)
     if (!token || !userData) {
         $window.location.href = 'login.html'; // Redirect nếu chưa đăng nhập
         return;
@@ -66,7 +65,7 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
             $scope.filteredUsers = angular.copy($scope.users);
             $scope.applyFilters();
         }, function (error) {
-            console.error("Error loading users:", error);
+            showToast(error, "error");
         });
     }
 
@@ -102,9 +101,8 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
         $http.get(API_BASE_URL + '/role')
             .then(function (response) {
                 $scope.roles = response.data;
-                console.log($scope.roles)
             }, function (error) {
-                console.error('Error loading roles:', error);
+                showToast(error, "error");
             });
     };
 
@@ -163,7 +161,6 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
             });
             $http.post(API_BASE_URL + '/register', payload).then(function (response) {
                 Swal.close();
-                console.log("ok", response.data.message)
                 if (response.data.message === "ErrorEmail") {
                     $scope.emailExists = true;
                     return;
@@ -176,24 +173,15 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
                 $scope.registerForm.$setUntouched();
                 $scope.submitted = false;
 
-                Swal.fire({
-                    icon: 'success',
-                    title: 'User registered successfully!',
-                    showConfirmButton: false,
-                    timer: 2000
-                }).then(() => {
+                showToast('User registered successfully!', 'success');
+                setTimeout(() => {
                     location.reload();
-                });
+                }, 3000);
+
 
             }, function (error) {
                 Swal.close();
-                console.error("Registration failed:", error);
-                showToast("Password confirmation does not match.", "error");
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Registration failed',
-                    text: error.data?.message || 'An unexpected error occurred'
-                });
+                showToast("Registration failed", "error");
             });
         }
     };
@@ -253,12 +241,8 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
         };
         $http.post(API_BASE_URL + '/update-user', payload)
             .then(function (response) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'User updated successfully!',
-                    showConfirmButton: false,
-                    timer: 2000
-                }).then(() => {
+                showToast('User updated successfully!', 'success');
+                setTimeout(() => {
                     loadUsers();
                     $scope.loadRoles();
                     $scope.clearForm();
@@ -267,11 +251,9 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
                     if (modalInstance) {
                         modalInstance.hide();
                     }
-
-                });
+                }, 3000);
             })
             .catch(function (error) {
-                console.error('Update failed:', error);
                 showToast("An error occurred while updating the user.", "error");
             });
     };
@@ -308,27 +290,15 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
             if (result.isConfirmed) {
                 $http.delete(API_BASE_URL + '/delete-by-user-id/' + userId)
                     .then(function (response) {
-                        Swal.fire(
-                            'Deleted!',
-                            'The user has been deleted.',
-                            'success'
-                        );
+                        showToast("The user has been deleted.", "success");
                         loadUsers();
                         $scope.loadRoles();
                     })
                     .catch(function (error) {
-                        Swal.fire(
-                            'Error!',
-                            'There was an issue deleting the user.',
-                            'error'
-                        );
+                        showToast("There was an issue deleting the user.", "error");
                     });
             } else {
-                Swal.fire(
-                    'Cancelled',
-                    'The user was not deleted.',
-                    'info'
-                );
+                showToast("The user was not deleted.", "info");
             }
         });
     };
@@ -349,7 +319,6 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
         $scope.filterWard = null;
         if (!provinceCode) return;
         $http.get(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`).then(function (response) {
-            console.log("ok rồi nhé", response.data.districts)
             $scope.districts = response.data.districts;
             $scope.newUser.district = null;
             $scope.wards = [];
@@ -377,11 +346,11 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
     $scope.resetUser = function () {
         $scope.newUser = {};
     };
-
     function showToast(message, type = 'info') {
+        const duration = 3000;
         Toastify({
             text: message,
-            duration: 3000,
+            duration: duration,
             close: true,
             gravity: "top",
             position: "right",
@@ -392,7 +361,10 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
                 info: "#2196f3"
             }[type] || "#333"
         }).showToast();
+
+        return new Promise(resolve => setTimeout(resolve, duration));
     }
+
 
     // Load dữ liệu ban đầu
     loadUsers();

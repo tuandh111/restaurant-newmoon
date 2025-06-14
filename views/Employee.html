@@ -131,12 +131,12 @@
 
                                                   <!-- Email -->
                                                   <div class="col-12 col-md-6 mb-3">
-                                                       <label class="form-label">Email <span
+                                                       <label class="form-label">Email<span
                                                                  style="color: red;">*</span></label>
                                                        <input type="email" class="form-control" name="email"
                                                             ng-model="newUser.email" required
                                                             ng-change="resetEmailError();registerForm.email.$setTouched()"
-                                                            ng-pattern="/^[a-zA-Z0-9._%+-]+@gmail\.com$/"
+                                                            ng-pattern="/^[a-zA-Z0-9._%+-]+@newmoon\.vn$/"
                                                             ng-class="{'is-invalid': (submitted || registerForm.email.$touched) && registerForm.email.$invalid} || emailExists"
                                                             placeholder="e.g example@newmoon.vn">
                                                        <div class="invalid-feedback"
