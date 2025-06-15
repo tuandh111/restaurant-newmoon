@@ -112,7 +112,7 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
                 const data = response.data;
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
-sessionStorage.setItem('justLoggedIn', 'true'); 
+                sessionStorage.setItem('justLoggedIn', 'true');
                 if ($scope.user.rememberMe) {
                     localStorage.setItem('email', $scope.user.email);
                     localStorage.setItem('password', $scope.user.password);
@@ -123,11 +123,27 @@ sessionStorage.setItem('justLoggedIn', 'true');
                     localStorage.setItem('rememberMe', 'false');
                 }
 
-                $scope.showToast("✅ Login successful!", "success");
-
+                Toastify({
+                    text: `<div style="display: flex; align-items: center; justify-content: center; white-space: nowrap;">
+           <span class="spinner-border spinner-border-sm text-light me-2" role="status" aria-hidden="true"></span>
+           <span>Login successful! Redirecting...</span>
+         </div>`,
+                    duration: 2000,
+                    gravity: "top",
+                    position: "center",
+                    escapeMarkup: false,
+                    style: {
+                        background: "#28a745",
+                        color: "#fff",
+                        padding: "12px 16px",
+                        borderRadius: "8px",
+                        minWidth: "250px",
+                        textAlign: "center"
+                    }
+                }).showToast();
                 setTimeout(() => {
                     $window.location.href = 'index.html';
-                }, 1500);
+                }, 2300);
             })
             .catch(error => {
                 const message = error?.data?.message;
