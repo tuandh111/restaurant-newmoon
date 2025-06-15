@@ -139,4 +139,133 @@ app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL)
         }
         $scope.showToast('ℹ️ All permissions have been reset.', 'info');
     };
+
+
+// Export to PDF (Không có cột Setting)
+$scope.exportRolesToPDF = function () {
+    const body = [
+        [
+            { text: 'STT', bold: true },
+            { text: 'Name', bold: true },
+            { text: 'Description', bold: true },
+            { text: 'Status', bold: true }
+        ]
+    ];
+
+    $scope.roles.forEach((role, index) => {
+        body.push([
+            index + 1,
+            role.roleName,
+            role.description,
+            role.deleted ? 'Inactive' : 'Active'
+        ]);
+    });
+
+    const docDefinition = {
+        content: [
+            { text: 'Role List', style: 'header' },
+            {
+                table: {
+                    headerRows: 1,
+                    widths: [30, 100, '*', 60],
+                    body: body
+                },
+                layout: {
+                    fillColor: (rowIndex) => rowIndex === 0 ? '#CCCCCC' : null
+                }
+            }
+        ],
+        styles: {
+            header: {
+                fontSize: 16,
+                bold: true,
+                marginBottom: 10
+            }
+        },
+        defaultStyle: {
+            fontSize: 9
+        },
+        pageOrientation: 'landscape'
+    };
+
+    pdfMake.createPdf(docDefinition).download('Role_List.pdf');
+};
+
+// Export to Excel (Không có cột Setting)
+$scope.exportRolesToExcel = function () {
+    const ws_data = [
+        ['STT', 'Name', 'Description', 'Status']
+    ];
+
+    $scope.roles.forEach((role, index) => {
+        ws_data.push([
+            index + 1,
+            role.roleName,
+            role.description,
+            role.deleted ? 'Inactive' : 'Active'
+        ]);
+    });
+
+    const worksheet = XLSX.utils.aoa_to_sheet(ws_data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Roles');
+    XLSX.writeFile(workbook, 'Role_List.xlsx');
+};
+$scope.printRoleTable = function () {
+    const roles = $scope.roles; // Dữ liệu đầy đủ
+
+    let tableHtml = `
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    roles.forEach((role, index) => {
+        tableHtml += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${role.roleName}</td>
+                <td>${role.description}</td>
+                <td>${role.deleted ? 'Ngưng hoạt động' : 'Đang hoạt động'}</td>
+            </tr>
+        `;
+    });
+
+    tableHtml += `
+            </tbody>
+        </table>
+    `;
+
+    const win = window.open('', '', 'width=1024,height=768');
+    win.document.write(`
+        <html>
+        <head>
+            <title>Role Table</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <style>
+                body { padding: 20px; font-family: Arial, sans-serif; }
+                table { width: 100%; border-collapse: collapse; }
+                th, td { border: 1px solid #dee2e6; padding: 8px; text-align: left; }
+                th { background-color: #f8f9fa; }
+            </style>
+        </head>
+        <body>
+            <h3 class="text-center">Role List</h3>
+            ${tableHtml}
+        </body>
+        </html>
+    `);
+    win.document.close();
+    win.print();
+};
+
+
+
 });
