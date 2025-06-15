@@ -92,86 +92,98 @@
                                              <label class="form-label">First Name <span
                                                        style="color: red;">*</span></label>
                                              <input type="text" class="form-control" name="firstname"
-                                                  ng-model="newUser.firstname" ng-model-options="{ updateOn: 'input' }"
-                                                  ng-change="registerForm.firstname.$setTouched()"
+                                                  ng-model="newUser.firstname"
+                                                  ng-model-options="{ updateOn: 'default blur', debounce: { default: 0, blur: 0 } }"
+                                                  ng-keyup="registerForm.firstname.$setTouched()"
                                                   ng-pattern="/^[a-zA-ZÀ-ỹà-ỹ\s]+$/" required placeholder="First name"
                                                   ng-class="{
-           'is-invalid': (submitted || registerForm.firstname.$touched) && registerForm.firstname.$invalid,
-           'is-valid': (submitted || registerForm.firstname.$touched) && registerForm.firstname.$valid
-         }">
+            'is-invalid': registerForm.firstname.$touched && registerForm.firstname.$invalid,
+            'is-valid': registerForm.firstname.$touched && registerForm.firstname.$valid
+        }">
+
                                              <div class="invalid-feedback"
-                                                  ng-show="(submitted || registerForm.firstname.$touched) && registerForm.firstname.$error.required">
+                                                  ng-show="registerForm.firstname.$touched && registerForm.firstname.$error.required">
                                                   First Name is required.
                                              </div>
                                              <div class="invalid-feedback"
-                                                  ng-show="(submitted || registerForm.firstname.$touched) && registerForm.firstname.$error.pattern">
+                                                  ng-show="registerForm.firstname.$touched && registerForm.firstname.$error.pattern">
                                                   Only letters and spaces are allowed.
                                              </div>
                                         </div>
+
 
                                         <!-- Last Name -->
                                         <div class="col-12 col-md-6 mb-3">
                                              <label class="form-label">Last Name <span
                                                        style="color: red;">*</span></label>
                                              <input type="text" class="form-control" name="lastname"
-                                                  ng-model="newUser.lastname" ng-model-options="{ updateOn: 'input' }"
-                                                  ng-change="registerForm.lastname.$setTouched()"
+                                                  ng-model="newUser.lastname"
+                                                  ng-model-options="{ updateOn: 'default blur', debounce: { default: 0, blur: 0 } }"
+                                                  ng-keyup="registerForm.lastname.$setTouched()"
                                                   ng-pattern="/^[a-zA-ZÀ-ỹà-ỹ\s]+$/" required placeholder="Last name"
                                                   ng-class="{
-           'is-invalid': (submitted || registerForm.lastname.$touched) && registerForm.lastname.$invalid,
-           'is-valid': (submitted || registerForm.lastname.$touched) && registerForm.lastname.$valid
-         }">
+            'is-invalid': registerForm.lastname.$touched && registerForm.lastname.$invalid,
+            'is-valid': registerForm.lastname.$touched && registerForm.lastname.$valid
+        }">
+
                                              <div class="invalid-feedback"
-                                                  ng-show="(submitted || registerForm.lastname.$touched) && registerForm.lastname.$error.required">
+                                                  ng-show="registerForm.lastname.$touched && registerForm.lastname.$error.required">
                                                   Last Name is required.
                                              </div>
                                              <div class="invalid-feedback"
-                                                  ng-show="(submitted || registerForm.lastname.$touched) && registerForm.lastname.$error.pattern">
+                                                  ng-show="registerForm.lastname.$touched && registerForm.lastname.$error.pattern">
                                                   Only letters and spaces are allowed.
                                              </div>
                                         </div>
+
 
                                         <!-- Email -->
                                         <div class="col-12 col-md-6 mb-3">
                                              <label class="form-label">Email <span style="color: red;">*</span></label>
                                              <input type="email" class="form-control" name="email"
-                                                  ng-model="newUser.email" ng-model-options="{ updateOn: 'input' }"
-                                                  ng-change="registerForm.email.$setTouched(); checkEmailExists(newUser.email)"
+                                                  ng-model="newUser.email"
+                                                  ng-model-options="{ updateOn: 'default blur', debounce: { default: 0, blur: 0 } }"
+                                                  ng-keyup="registerForm.email.$setTouched(); checkEmailExists(newUser.email)"
                                                   ng-pattern="/^[a-zA-Z0-9._%+-]+@newmoon\.vn$/" required
                                                   placeholder="e.g. example@newmoon.vn" ng-class="{
-           'is-invalid': (submitted || registerForm.email.$touched) && (registerForm.email.$invalid || emailExists),
-           'is-valid': (submitted || registerForm.email.$touched) && registerForm.email.$valid && !emailExists
-         }">
+            'is-invalid': (registerForm.email.$touched) && (registerForm.email.$invalid || emailExists),
+            'is-valid': (registerForm.email.$touched) && registerForm.email.$valid && !emailExists
+        }">
+
                                              <div class="invalid-feedback"
-                                                  ng-show="(submitted || registerForm.email.$touched) && registerForm.email.$error.required">
+                                                  ng-show="registerForm.email.$touched && registerForm.email.$error.required">
                                                   Email is required.
                                              </div>
                                              <div class="invalid-feedback"
-                                                  ng-show="(submitted || registerForm.email.$touched) && registerForm.email.$error.pattern">
+                                                  ng-show="registerForm.email.$touched && registerForm.email.$error.pattern">
                                                   Email must end with @newmoon.vn.
                                              </div>
-                                             <div class="text-danger" ng-show="emailExists">
+                                             <div class="text-danger"
+                                                  ng-show="registerForm.email.$touched && emailExists">
                                                   Email already exists or belongs to a staff member.
                                              </div>
                                         </div>
+
 
                                         <!-- Phone -->
                                         <div class="col-12 col-md-6 mb-3">
                                              <label class="form-label">Phone <span style="color: red;">*</span></label>
                                              <input type="text" class="form-control" name="phone"
-                                                  ng-model="newUser.phone" ng-model-options="{ updateOn: 'input' }"
-                                                  ng-change="registerForm.phone.$setTouched()"
+                                                  ng-model="newUser.phone"
+                                                  ng-model-options="{ updateOn: 'default blur', debounce: { default: 0, blur: 0 } }"
+                                                  ng-keyup="registerForm.phone.$setTouched()"
                                                   ng-pattern="/^(0)(3|5|7|8|9)[0-9]{8}$/" required placeholder="Phone"
                                                   ng-class="{
-           'is-invalid': (submitted || registerForm.phone.$touched) && registerForm.phone.$invalid,
-           'is-valid': (submitted || registerForm.phone.$touched) && registerForm.phone.$valid
-         }">
+            'is-invalid': registerForm.phone.$touched && registerForm.phone.$invalid,
+            'is-valid': registerForm.phone.$touched && registerForm.phone.$valid
+        }">
+
                                              <div class="invalid-feedback"
-                                                  ng-show="(submitted || registerForm.phone.$touched) && registerForm.phone.$error.required">
+                                                  ng-show="registerForm.phone.$touched && registerForm.phone.$error.required">
                                                   Phone number is required.
                                              </div>
                                              <div class="invalid-feedback"
-                                                  ng-show="(submitted || registerForm.phone.$touched) && registerForm.phone.$error.pattern">
+                                                  ng-show="registerForm.phone.$touched && registerForm.phone.$error.pattern">
                                                   Invalid Vietnamese phone number.
                                              </div>
                                         </div>

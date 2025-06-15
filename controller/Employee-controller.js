@@ -183,7 +183,13 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
                 Swal.close();
                 showToast("Registration failed", "error");
             });
-        }else{
+        } else {
+            angular.forEach($scope.registerForm.$error.required, function (field) {
+                field.$setTouched();
+            });
+            angular.forEach($scope.registerForm.$error.pattern, function (field) {
+                field.$setTouched();
+            });
             showToast("Please fill in all required fields.", "error");
         }
     };
