@@ -48,7 +48,7 @@ app.controller('TopbarController', function ($scope, $window, $timeout) {
 
     // ✅ Mặc định không hiện gì cả
     $scope.showUserHint = false;
-    $scope.zIndexTooltip = -1;
+    $scope.zIndexTooltip = -10;
 
     // ✅ Kiểm tra trạng thái đăng nhập
     const justLoggedIn = sessionStorage.getItem('justLoggedIn') === 'true';
@@ -65,7 +65,7 @@ app.controller('TopbarController', function ($scope, $window, $timeout) {
     $scope.hideUserHint = function () {
         console.log("ok nè")
         $scope.showUserHint = false;
-        $scope.zIndexTooltip = -1;
+        $scope.zIndexTooltip = -10;
         localStorage.setItem('userHintDismissed', 'true');
         showGreeting();
     };
