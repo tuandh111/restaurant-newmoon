@@ -22,6 +22,31 @@ app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL)
         roleName: '',
         description: ''
     };
+    $scope.filterRole = function (role) {
+        if (!$scope.searchText) return true;
+
+        const keyword = $scope.searchText.toLowerCase();
+
+        return (
+            role.roleName?.toLowerCase().includes(keyword) ||
+            role.description?.toLowerCase().includes(keyword) ||
+            (role.deleted ? 'đã xoá' : 'đang hoạt động').toLowerCase().includes(keyword)
+        );
+    };
+    $scope.getFilteredRoles = function () {
+        if (!$scope.searchText) return $scope.roles;
+
+        const keyword = $scope.searchText.toLowerCase();
+
+        return $scope.roles.filter(role =>
+            role.roleName?.toLowerCase().includes(keyword) ||
+            role.description?.toLowerCase().includes(keyword) ||
+            (role.deleted ? 'đã xoá' : 'đang hoạt động').toLowerCase().includes(keyword)
+        );
+    };
+
+
+
 
     $scope.submitForm = function () {
         $scope.userForm.roleName.$setTouched();
@@ -35,11 +60,11 @@ app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL)
 
         $http.post(API_BASE_URL + '/role', $scope.role).then(function (response) {
             $scope.showToast('✅ Role added successfully!', 'success');
-               $scope.role = {}; // Clear input model
+            $scope.role = {}; // Clear input model
 
-        // ✅ Reset trạng thái của form
-        $scope.userForm.$setPristine();
-        $scope.userForm.$setUntouched();
+            // ✅ Reset trạng thái của form
+            $scope.userForm.$setPristine();
+            $scope.userForm.$setUntouched();
             $scope.loadRoles();
         }, function () {
             $scope.showToast('❌ Failed to add role.', 'error');
@@ -141,8 +166,10 @@ app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL)
     };
 
 
-// Export to PDF (Không có cột Setting)
-$scope.exportRolesToPDF = function () {
+    // Export to PDF (Không có cột Setting)
+ $scope.exportRolesToPDF = function () {
+    const filteredRoles = $scope.getFilteredRoles();
+
     const body = [
         [
             { text: 'STT', bold: true },
@@ -152,7 +179,7 @@ $scope.exportRolesToPDF = function () {
         ]
     ];
 
-    $scope.roles.forEach((role, index) => {
+    filteredRoles.forEach((role, index) => {
         body.push([
             index + 1,
             role.roleName,
@@ -191,13 +218,14 @@ $scope.exportRolesToPDF = function () {
     pdfMake.createPdf(docDefinition).download('Role_List.pdf');
 };
 
-// Export to Excel (Không có cột Setting)
-$scope.exportRolesToExcel = function () {
-    const ws_data = [
-        ['STT', 'Name', 'Description', 'Status']
-    ];
 
-    $scope.roles.forEach((role, index) => {
+    // Export to Excel (Không có cột Setting)
+  $scope.exportRolesToExcel = function () {
+    const filteredRoles = $scope.getFilteredRoles();
+
+    const ws_data = [['STT', 'Name', 'Description', 'Status']];
+
+    filteredRoles.forEach((role, index) => {
         ws_data.push([
             index + 1,
             role.roleName,
@@ -211,8 +239,9 @@ $scope.exportRolesToExcel = function () {
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Roles');
     XLSX.writeFile(workbook, 'Role_List.xlsx');
 };
-$scope.printRoleTable = function () {
-    const roles = $scope.roles; // Dữ liệu đầy đủ
+
+  $scope.printRoleTable = function () {
+    const filteredRoles = $scope.getFilteredRoles();
 
     let tableHtml = `
         <table class="table table-bordered">
@@ -227,7 +256,7 @@ $scope.printRoleTable = function () {
             <tbody>
     `;
 
-    roles.forEach((role, index) => {
+    filteredRoles.forEach((role, index) => {
         tableHtml += `
             <tr>
                 <td>${index + 1}</td>
@@ -265,6 +294,7 @@ $scope.printRoleTable = function () {
     win.document.close();
     win.print();
 };
+
 
 
 
