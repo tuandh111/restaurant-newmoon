@@ -1,19 +1,4 @@
 app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL) {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-
-    if (!token || !userData) {
-        $window.location.href = 'index.html';
-        return;
-    }
-
-    $scope.currentUser = JSON.parse(userData);
-    $scope.userRole = $scope.currentUser.role.roleName.toLowerCase();
-
-    $scope.canAccess = function (department) {
-        return $scope.userRole === 'admin' || $scope.userRole === department;
-    };
-
     // Toastify helper
     $scope.showToast = function (text, type = 'info') {
         let bgColor = '#17a2b8'; // info
@@ -33,16 +18,6 @@ app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL)
             }
         }).showToast();
     };
-
-    $scope.logout = function () {
-        $scope.showToast('Logging out...', 'info');
-        setTimeout(() => {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            $window.location.href = 'index.html';
-        }, 1200);
-    };
-
     $scope.role = {
         roleName: '',
         description: ''

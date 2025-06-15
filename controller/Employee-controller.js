@@ -17,37 +17,6 @@ app.directive('onModalHide', function () {
 
 
 app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE_URL) {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-    if (!token || !userData) {
-        $window.location.href = 'login.html'; // Redirect nếu chưa đăng nhập
-        return;
-    }
-
-    $scope.currentUser = JSON.parse(userData);
-    $scope.userRole = $scope.currentUser.role.roleName.toLowerCase();
-    $scope.canAccess = function (department) {
-        return $scope.userRole === 'admin' || $scope.userRole === department;
-    };
-
-
-    $scope.logout = function () {
-        Swal.fire({
-            title: 'Logging out...',
-            didOpen: () => {
-                Swal.showLoading();
-            },
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            allowEnterKey: false
-        });
-
-        setTimeout(() => {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            $window.location.href = 'login.html';
-        }, 1200); // Đợi 1.2 giây rồi chuyển trang cho mượt
-    };
     $scope.users = [];
     $scope.roles = [];
     $scope.newUser = {};
