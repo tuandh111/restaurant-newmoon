@@ -315,6 +315,108 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
         });
     };
 
+    $scope.exportToExcel = function () {
+    // Chuyển danh sách thành sheet
+    var ws_data = [
+        ['STT', 'First name', 'Last name', 'Email', 'Position', 'Phone', 'Role', 'Status']
+    ];
+
+    $scope.filteredList.forEach((user, index) => {
+        ws_data.push([
+            index + 1,
+            user.firstname,
+            user.lastname,
+            user.email,
+            `${user.ward} - ${user.district} - ${user.province}`,
+            user.phone,
+            user.role.roleName,
+            user.status ? 'Active' : 'Inactive'
+        ]);
+    });
+
+    var wb = XLSX.utils.book_new();
+    var ws = XLSX.utils.aoa_to_sheet(ws_data);
+    XLSX.utils.book_append_sheet(wb, ws, "User List");
+    XLSX.writeFile(wb, "User_List.xlsx");
+};
+
+$scope.exportToPDF = function () {
+    var body = [
+        [
+            { text: 'STT', bold: true },
+            { text: 'First name', bold: true },
+            { text: 'Last name', bold: true },
+            { text: 'Email', bold: true },
+            { text: 'Position', bold: true },
+            { text: 'Phone', bold: true },
+            { text: 'Role', bold: true },
+            { text: 'Status', bold: true }
+        ]
+    ];
+
+    $scope.filteredList.forEach((user, index) => {
+        body.push([
+            index + 1,
+            user.firstname,
+            user.lastname,
+            user.email,
+            `${user.ward} - ${user.district} - ${user.province}`,
+            user.phone,
+            user.role.roleName,
+            user.status ? 'Active' : 'Inactive'
+        ]);
+    });
+
+    const docDefinition = {
+        content: [
+            { text: 'User List', style: 'header' },
+            {
+                table: {
+                    headerRows: 1,
+                    widths: [25, 50, 50, 120, 120, 70, 60, 50],
+                    body: body
+                },
+                layout: {
+                    fillColor: (rowIndex) => rowIndex === 0 ? '#CCCCCC' : null
+                }
+            }
+        ],
+        styles: {
+            header: {
+                fontSize: 18,
+                bold: true,
+                marginBottom: 10
+            }
+        },
+        defaultStyle: {
+            fontSize: 9
+        },
+        pageOrientation: 'landscape'
+    };
+
+    pdfMake.createPdf(docDefinition).download("User_List.pdf");
+};
+
+$scope.printTable = function () {
+    const printContent = document.getElementById('userTable').outerHTML;
+    const win = window.open('', '', 'width=1024,height=768');
+    win.document.write(`
+        <html>
+        <head>
+            <title>User Table</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        </head>
+        <body>
+            <h3 class="text-center mt-3">User List</h3>
+            ${printContent}
+        </body>
+        </html>
+    `);
+    win.document.close();
+    win.print();
+};
+
+
 
 
 
