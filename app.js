@@ -17,6 +17,10 @@ app.config(function ($routeProvider) {
             templateUrl: "views/Calendar.html",
             controller: "CalendarController"
         })
+          .when("/Profile", {
+            templateUrl: "views/Profile.html",
+            controller: "ProfileController"
+        })
         // Marketing
         .when("/MarketingCampaigns", {
             templateUrl: "views/MarketingCampaigns.html",
