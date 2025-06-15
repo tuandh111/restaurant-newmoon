@@ -42,15 +42,15 @@ app.controller('MenuController', function ($scope, $window, $timeout) {
     const userRole = currentUser.role.roleName.toLowerCase();
 
     // Chỉ chào khi vừa đăng nhập
-    if (sessionStorage.getItem('justLoggedIn')) {
-        $timeout(function () {
-            const greeting = getGreetingMessage();
-            const fullName = `${currentUser.lastname} ${currentUser.firstname}`;
-            const role = currentUser.role.roleName;
-            $scope.showToast(`👋 ${greeting}, ${fullName} (Role: ${role})`, 'success');
-        }, 200);
-        sessionStorage.removeItem('justLoggedIn');
-    }
+    // if (sessionStorage.getItem('justLoggedIn')) {
+    //     $timeout(function () {
+    //         const greeting = getGreetingMessage();
+    //         const fullName = `${currentUser.lastname} ${currentUser.firstname}`;
+    //         const role = currentUser.role.roleName;
+    //         $scope.showToast(`👋 ${greeting}, ${fullName} (Role: ${role})`, 'success');
+    //     }, 200);
+    //     sessionStorage.removeItem('justLoggedIn');
+    // }
 
     // Hàm kiểm tra quyền truy cập
     $scope.canAccess = function (...departments) {
@@ -58,20 +58,20 @@ app.controller('MenuController', function ($scope, $window, $timeout) {
     };
 
     // Đăng xuất
-    $scope.logout = function () {
-        Swal.fire({
-            title: 'Logging out...',
-            didOpen: () => Swal.showLoading(),
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            allowEnterKey: false
-        });
+    // $scope.logout = function () {
+    //     Swal.fire({
+    //         title: 'Logging out...',
+    //         didOpen: () => Swal.showLoading(),
+    //         allowOutsideClick: false,
+    //         allowEscapeKey: false,
+    //         allowEnterKey: false
+    //     });
 
-        setTimeout(() => {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            sessionStorage.removeItem('justLoggedIn');
-            $window.location.href = 'login.html';
-        }, 1200);
-    };
+    //     setTimeout(() => {
+    //         localStorage.removeItem('token');
+    //         localStorage.removeItem('user');
+    //         sessionStorage.removeItem('justLoggedIn');
+    //         $window.location.href = 'login.html';
+    //     }, 1200);
+    // };
 });
