@@ -224,22 +224,24 @@
 
                               <!-- User -->
                               <div class="dropdown topbar-item">
-                                   <a type="button" class="topbar-button" id="page-header-user-dropdown" style="z-index: 1060;"
-                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                   <a type="button" class="topbar-button" id="page-header-user-dropdown"
+                                        style="z-index: 1060;" data-bs-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
                                         <span class="d-flex align-items-center">
                                              <img class="rounded-circle" width="32"
                                                   src="assets/images/users/avatar-1.jpg" alt="avatar-3">
                                         </span>
                                    </a>
                                    <div class="user-tooltip" ng-show="showUserHint"
-                                        style="position: absolute; top: 60px; right: 20px; z-index: 1060;">
+                                        ng-style="{'position': 'absolute', 'top': '60px', 'right': '20px', 'z-index': showUserHint ? 1060 : -1}">
                                         <div class="card shadow p-3" style="width: 250px;">
                                              <strong>Đây là thông tin tài khoản của bạn.</strong>
                                              <p>Bạn có thể xem vai trò, đổi mật khẩu,...</p>
-                                          <button class="btn btn-primary btn-sm" ng-click="hideUserHint()">Đã hiểu</button>
-
+                                             <button class="btn btn-primary btn-sm" ng-click="hideUserHint()">Đã
+                                                  hiểu</button>
                                         </div>
                                    </div>
+
 
                                    <div class="dropdown-menu dropdown-menu-end">
                                         <!-- item-->

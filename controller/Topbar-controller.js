@@ -48,6 +48,7 @@ app.controller('TopbarController', function ($scope, $window, $timeout) {
 
     // ✅ Mặc định không hiện gì cả
     $scope.showUserHint = false;
+    $scope.zIndexTooltip = -1;
 
     // ✅ Kiểm tra trạng thái đăng nhập
     const justLoggedIn = sessionStorage.getItem('justLoggedIn') === 'true';
@@ -55,7 +56,7 @@ app.controller('TopbarController', function ($scope, $window, $timeout) {
 
     if (justLoggedIn && !hintDismissed) {
         $scope.showUserHint = true;
-
+        $scope.zIndexTooltip = 1060;
         // ✅ Xóa flag luôn để không hiện lại sau khi F5
         sessionStorage.removeItem('justLoggedIn');
     }
@@ -64,6 +65,7 @@ app.controller('TopbarController', function ($scope, $window, $timeout) {
     $scope.hideUserHint = function () {
         console.log("ok nè")
         $scope.showUserHint = false;
+        $scope.zIndexTooltip = -1;
         localStorage.setItem('userHintDismissed', 'true');
         showGreeting();
     };
@@ -86,8 +88,8 @@ app.controller('TopbarController', function ($scope, $window, $timeout) {
         setTimeout(() => {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-             sessionStorage.removeItem('justLoggedIn');       // 👈 xóa flag vừa đăng nhập
-        localStorage.removeItem('userHintDismissed');
+            sessionStorage.removeItem('justLoggedIn');       // 👈 xóa flag vừa đăng nhập
+            localStorage.removeItem('userHintDismissed');
             $window.location.href = 'login.html';
         }, 1200);
     };
