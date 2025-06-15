@@ -13,6 +13,8 @@
      <!-- App favicon -->
      <link rel="shortcut icon" href="assets/images/favicon.ico">
 
+     <!-- Fullcalendar css -->
+     <link href="assets/vendor/fullcalendar/main.min.css" rel="stylesheet" type="text/css" />
      <!-- Vendor css (Require in all Page) -->
      <link href="assets/css/vendor.min.css" rel="stylesheet" type="text/css" />
 
@@ -249,7 +251,7 @@
                                              {{currentUser.firstname}}!</h6>
                                         <h6 class="dropdown-header">Role: {{currentUser.role.roleName}}
                                         </h6>
-                                        <a class="dropdown-item" href="pages-calendar.html">
+                                        <a class="dropdown-item" href="#!/Calendar">
                                              <iconify-icon icon="solar:calendar-bold-duotone"
                                                   class="align-middle me-2 fs-18"></iconify-icon><span
                                                   class="align-middle">My Schedules</span>
@@ -658,6 +660,11 @@
      <script src="assets/js/pages/dashboard.js"></script>
 
      <!-- <script src="assets/js/admin/admin-dashboard-controller.js"></script> -->
+     <!-- Full Calendar -->
+     <script src="assets/vendor/fullcalendar/main.min.js"></script>
+
+     <!-- Page Js -->
+     <script src="assets/js/pages/app-calendar.js"></script>
      <!-- SCRIPT -->
 
      <script src="assets/vendor/gridjs/gridjs.umd.js"></script>
@@ -669,7 +676,7 @@
      <script src="controller/Setting-controller.js"></script>
      <script src="controller/Employee-controller.js"></script>
      <script src="controller/Role-controller.js"></script>
-
+     <script src="controller/Calandar-controller.js"></script>
      <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
      <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css" />
 
@@ -682,6 +689,8 @@
      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
      <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
+
 </body>
 
 </html>

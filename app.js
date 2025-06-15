@@ -2,7 +2,7 @@ var app = angular.module("myApp", ["ngRoute"]);
 app.constant('API_BASE_URL', 'http://125.253.113.76/api/v1/auth');
 
 // Cấu hình routing
-app.config(function($routeProvider) {
+app.config(function ($routeProvider) {
     $routeProvider
         // Dashboards
         .when("/", {
@@ -13,7 +13,10 @@ app.config(function($routeProvider) {
             templateUrl: "views/Dashboard-analytics.html",
             controller: "AnalyticsController"
         })
-
+        .when("/Calendar", {
+            templateUrl: "views/Calendar.html",
+            controller: "CalendarController"
+        })
         // Marketing
         .when("/MarketingCampaigns", {
             templateUrl: "views/MarketingCampaigns.html",
