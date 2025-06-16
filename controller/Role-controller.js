@@ -81,7 +81,17 @@ app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL)
 
     $scope.loadRoles();
 
-    $scope.deleteRole = function (id) {
+    $scope.deleteRole = function (role) {
+        const id = role.roleId
+        const roleName = role.roleName.toLowerCase();
+
+        // Các role không được phép xóa
+        const protectedRoles = ['admin', 'marketing', 'it', 'hr', 'accounting', 'operations'];
+
+        if (protectedRoles.includes(roleName)) {
+            $scope.showToast(`❌ "${roleName}" is a system default role and cannot be deleted.`, 'error');
+            return;
+        }
         Swal.fire({
             title: 'Are you sure?',
             text: "Do you really want to delete this role? This action cannot be undone.",
@@ -134,12 +144,30 @@ app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL)
     $scope.editRole = function (role) {
         $scope.editedRole = angular.copy(role);
     };
+    $scope.isProtectedRole = function (roleName) {
+        const protectedRoles = ['admin', 'marketing', 'it', 'hr', 'accounting', 'operations'];
+        return protectedRoles.includes(roleName?.toLowerCase());
+    };
 
     $scope.saveEdit = function () {
+        const protectedRoles = ['admin', 'marketing', 'it', 'hr', 'accounting', 'operations'];
+        const originalRole = $scope.roles.find(r => r.roleId === $scope.editedRole.roleId);
+
+        // Nếu là role mặc định và roleName bị thay đổi
+        if (protectedRoles.includes(originalRole.roleName.toLowerCase()) &&
+            $scope.editedRole.roleName.toLowerCase() !== originalRole.roleName.toLowerCase()) {
+            $scope.showToast('❌ You cannot rename a system default role.', 'error');
+            return;
+        }
         $http.put(API_BASE_URL + '/role/' + $scope.editedRole.roleId, $scope.editedRole)
             .then(function () {
                 $scope.showToast('✅ Role updated successfully!', 'success');
-                $('#editModal').modal('hide');
+                const modalElement = document.getElementById('editModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+
                 $scope.loadRoles();
             })
             .catch(function () {
@@ -167,83 +195,83 @@ app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL)
 
 
     // Export to PDF (Không có cột Setting)
- $scope.exportRolesToPDF = function () {
-    const filteredRoles = $scope.getFilteredRoles();
+    $scope.exportRolesToPDF = function () {
+        const filteredRoles = $scope.getFilteredRoles();
 
-    const body = [
-        [
-            { text: 'STT', bold: true },
-            { text: 'Name', bold: true },
-            { text: 'Description', bold: true },
-            { text: 'Status', bold: true }
-        ]
-    ];
+        const body = [
+            [
+                { text: 'STT', bold: true },
+                { text: 'Name', bold: true },
+                { text: 'Description', bold: true },
+                { text: 'Status', bold: true }
+            ]
+        ];
 
-    filteredRoles.forEach((role, index) => {
-        body.push([
-            index + 1,
-            role.roleName,
-            role.description,
-            role.deleted ? 'Inactive' : 'Active'
-        ]);
-    });
+        filteredRoles.forEach((role, index) => {
+            body.push([
+                index + 1,
+                role.roleName,
+                role.description,
+                role.deleted ? 'Inactive' : 'Active'
+            ]);
+        });
 
-    const docDefinition = {
-        content: [
-            { text: 'Role List', style: 'header' },
-            {
-                table: {
-                    headerRows: 1,
-                    widths: [30, 100, '*', 60],
-                    body: body
-                },
-                layout: {
-                    fillColor: (rowIndex) => rowIndex === 0 ? '#CCCCCC' : null
+        const docDefinition = {
+            content: [
+                { text: 'Role List', style: 'header' },
+                {
+                    table: {
+                        headerRows: 1,
+                        widths: [30, 100, '*', 60],
+                        body: body
+                    },
+                    layout: {
+                        fillColor: (rowIndex) => rowIndex === 0 ? '#CCCCCC' : null
+                    }
                 }
-            }
-        ],
-        styles: {
-            header: {
-                fontSize: 16,
-                bold: true,
-                marginBottom: 10
-            }
-        },
-        defaultStyle: {
-            fontSize: 9
-        },
-        pageOrientation: 'landscape'
-    };
+            ],
+            styles: {
+                header: {
+                    fontSize: 16,
+                    bold: true,
+                    marginBottom: 10
+                }
+            },
+            defaultStyle: {
+                fontSize: 9
+            },
+            pageOrientation: 'landscape'
+        };
 
-    pdfMake.createPdf(docDefinition).download('Role_List.pdf');
-};
+        pdfMake.createPdf(docDefinition).download('Role_List.pdf');
+    };
 
 
     // Export to Excel (Không có cột Setting)
-  $scope.exportRolesToExcel = function () {
-    const filteredRoles = $scope.getFilteredRoles();
+    $scope.exportRolesToExcel = function () {
+        const filteredRoles = $scope.getFilteredRoles();
 
-    const ws_data = [['STT', 'Name', 'Description', 'Status']];
+        const ws_data = [['STT', 'Name', 'Description', 'Status']];
 
-    filteredRoles.forEach((role, index) => {
-        ws_data.push([
-            index + 1,
-            role.roleName,
-            role.description,
-            role.deleted ? 'Inactive' : 'Active'
-        ]);
-    });
+        filteredRoles.forEach((role, index) => {
+            ws_data.push([
+                index + 1,
+                role.roleName,
+                role.description,
+                role.deleted ? 'Inactive' : 'Active'
+            ]);
+        });
 
-    const worksheet = XLSX.utils.aoa_to_sheet(ws_data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Roles');
-    XLSX.writeFile(workbook, 'Role_List.xlsx');
-};
+        const worksheet = XLSX.utils.aoa_to_sheet(ws_data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Roles');
+        XLSX.writeFile(workbook, 'Role_List.xlsx');
+    };
 
-  $scope.printRoleTable = function () {
-    const filteredRoles = $scope.getFilteredRoles();
+    $scope.printRoleTable = function () {
+        const filteredRoles = $scope.getFilteredRoles();
 
-    let tableHtml = `
+        let tableHtml = `
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -256,8 +284,8 @@ app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL)
             <tbody>
     `;
 
-    filteredRoles.forEach((role, index) => {
-        tableHtml += `
+        filteredRoles.forEach((role, index) => {
+            tableHtml += `
             <tr>
                 <td>${index + 1}</td>
                 <td>${role.roleName}</td>
@@ -265,15 +293,15 @@ app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL)
                 <td>${role.deleted ? 'Ngưng hoạt động' : 'Đang hoạt động'}</td>
             </tr>
         `;
-    });
+        });
 
-    tableHtml += `
+        tableHtml += `
             </tbody>
         </table>
     `;
 
-    const win = window.open('', '', 'width=1024,height=768');
-    win.document.write(`
+        const win = window.open('', '', 'width=1024,height=768');
+        win.document.write(`
         <html>
         <head>
             <title>Role Table</title>
@@ -291,9 +319,9 @@ app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL)
         </body>
         </html>
     `);
-    win.document.close();
-    win.print();
-};
+        win.document.close();
+        win.print();
+    };
 
 
 

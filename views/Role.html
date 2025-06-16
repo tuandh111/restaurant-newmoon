@@ -9,7 +9,7 @@
                     <div class="page-title-box">
                          <h4 class="mb-0">Role</h4>
                          <ol class="breadcrumb mb-0">
-                             <li class="breadcrumb-item"><a href="#!/">Home</a></li>
+                              <li class="breadcrumb-item"><a href="#!/">Home</a></li>
                               <li class="breadcrumb-item active">Role</li>
                          </ol>
                     </div>
@@ -138,7 +138,7 @@
                                                                            class="me-1"></iconify-icon> Edit
                                                                  </button>
                                                                  <button class="btn btn-sm btn-danger"
-                                                                      ng-click="deleteRole(role.roleId)">
+                                                                      ng-click="deleteRole(role)">
                                                                       <iconify-icon icon="mdi:trash-can"
                                                                            class="me-1"></iconify-icon> Delete
                                                                  </button>
@@ -483,7 +483,10 @@
                                                                       <div class="mb-3">
                                                                            <label class="form-label">Name</label>
                                                                            <input type="text" class="form-control"
-                                                                                ng-model="editedRole.roleName" required>
+                                                                                ng-model="editedRole.roleName"
+                                                                                ng-disabled="isProtectedRole(editedRole.roleName)"
+                                                                                required>
+
                                                                       </div>
                                                                       <div class="mb-3">
                                                                            <label class="form-label">Description</label>
