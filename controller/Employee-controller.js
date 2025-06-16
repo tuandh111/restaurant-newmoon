@@ -256,7 +256,13 @@ app.controller('EmployeeController', function ($scope, $http, $timeout, API_BASE
 
     //cập nhật userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
     //delete userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-    $scope.deleteUser = function (userId) {
+    $scope.deleteUser = function (user) {
+        const userId = user.id
+     if (user.role.roleName.toLowerCase() === 'admin') {
+    showToast("You cannot delete an admin user.", "warning");
+    return;
+}
+
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
