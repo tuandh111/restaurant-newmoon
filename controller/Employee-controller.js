@@ -398,7 +398,23 @@ $scope.exportToPDF = function () {
 };
 
 $scope.printTable = function () {
-    const printContent = document.getElementById('userTable').outerHTML;
+    const table = document.getElementById('userTable').cloneNode(true); // Clone bảng để chỉnh sửa
+
+    const actionColumnIndex = 8; // Cột "Actions" là cột thứ 8, bắt đầu từ 0
+
+    // Xóa tiêu đề cột "Actions"
+    const headerRow = table.querySelector('thead tr');
+    if (headerRow) {
+        headerRow.deleteCell(actionColumnIndex);
+    }
+
+    // Xóa ô dữ liệu "Actions" trong từng dòng
+    const bodyRows = table.querySelectorAll('tbody tr');
+    bodyRows.forEach(row => {
+        row.deleteCell(actionColumnIndex);
+    });
+
+    // Mở cửa sổ mới để in
     const win = window.open('', '', 'width=1024,height=768');
     win.document.write(`
         <html>
@@ -408,13 +424,14 @@ $scope.printTable = function () {
         </head>
         <body>
             <h3 class="text-center mt-3">User List</h3>
-            ${printContent}
+            ${table.outerHTML}
         </body>
         </html>
     `);
     win.document.close();
     win.print();
 };
+
 
 
 
