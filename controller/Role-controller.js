@@ -56,7 +56,14 @@ app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL)
             $scope.showToast('❌ Please enter a role name.', 'error');
             return;
         }
+        const protectedRoles = ['admin', 'marketing', 'it', 'hr', 'accounting', 'operations'];
+        const roleName = $scope.role.roleName.trim().toLowerCase();
 
+        // Kiểm tra nếu roleName trùng với role mặc định
+        if (protectedRoles.includes(roleName)) {
+            $scope.showToast(`❌ The role "${$scope.role.roleName}" already exists and cannot be added.`, 'error');
+            return;
+        }
 
         $http.post(API_BASE_URL + '/role', $scope.role).then(function (response) {
             $scope.showToast('✅ Role added successfully!', 'success');
