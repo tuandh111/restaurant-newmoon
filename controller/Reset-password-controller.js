@@ -2,7 +2,7 @@ var app = angular.module('app', []);
 
 app.controller('ChangePasswordCtrl', ['$scope', '$http', function ($scope, $http) {
     $scope.user = {};
-    const apiBaseUrl = 'http://125.253.113.76/api/v1/auth';
+    const apiBaseUrl = 'https://api.newmoon.vn/api/v1/auth';
 
     // ===== Validation Functions =====
     $scope.isMinLength = pw => pw && pw.length >= 8;

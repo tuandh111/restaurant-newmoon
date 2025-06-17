@@ -1,5 +1,5 @@
 var app = angular.module("myApp", ["ngRoute"]);
-app.constant('API_BASE_URL', 'http://125.253.113.76/api/v1/auth');
+app.constant('API_BASE_URL', 'https://api.newmoon.vn/api/v1/auth');
 
 // Cấu hình routing
 app.config(function ($routeProvider) {
@@ -17,7 +17,7 @@ app.config(function ($routeProvider) {
             templateUrl: "views/Calendar.html",
             controller: "CalendarController"
         })
-          .when("/Profile", {
+        .when("/Profile", {
             templateUrl: "views/Profile.html",
             controller: "ProfileController"
         })
