@@ -1,6 +1,6 @@
 var app = angular.module("myApp", ["ngRoute"]);
-// app.constant('API_BASE_URL', 'https://api.newmoon.vn/api/v1/auth');
-app.constant('API_BASE_URL', 'http://localhost:8080/api/v1/auth');
+app.constant('API_BASE_URL', 'https://api.newmoon.vn/api/v1/auth');
+//app.constant('API_BASE_URL', 'http://localhost:8080/api/v1/auth');
 
 app.factory('ApiService', function ($http, API_BASE_URL) {
     return {
@@ -17,6 +17,32 @@ app.factory('ApiService', function ($http, API_BASE_URL) {
                 console.error('API error:', error);
                 throw error;
             }
+        }
+    };
+});
+app.factory('ToastService', function () {
+    return {
+        show: function (message, type = 'info') {
+            const duration = 3000;
+            let bgColor = '#17a2b8'; // info
+            if (type === 'success') bgColor = '#28a745';
+            if (type === 'error') bgColor = '#dc3545';
+            if (type === 'warning') bgColor = '#ffc107';
+
+            Toastify({
+                text: message,
+                duration: duration,
+                close: true,
+                gravity: "top",
+                position: "center",
+                style: {
+                    background: bgColor,
+                    color: type === 'warning' ? 'black' : 'white',
+                    fontWeight: 'bold'
+                }
+            }).showToast();
+
+            return new Promise(resolve => setTimeout(resolve, duration));
         }
     };
 });

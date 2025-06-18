@@ -22,4 +22,14 @@ app.controller('MainController', function ($scope, $http, $window, API_BASE_URL)
     //     };
     // });
 
+
+    // $scope.saveData = async function () {
+    //     try {
+    //         const result = await ApiService.call('/save', 'POST', { name: $scope.name });
+    //         await ToastService.show("Saved successfully!", "success");
+    //     } catch (err) {
+    //         await ToastService.show("Failed to save!", "error");
+    //     }
+    // };
+
 });

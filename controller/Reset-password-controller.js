@@ -2,8 +2,8 @@ var app = angular.module('app', []);
 
 app.controller('ChangePasswordCtrl', ['$scope', '$http', function ($scope, $http) {
     $scope.user = {};
-    //const apiBaseUrl = 'https://api.newmoon.vn/api/v1/auth';
-    const apiBaseUrl = 'http://localhost:8080/api/v1/auth';
+    const apiBaseUrl = 'https://api.newmoon.vn/api/v1/auth';
+    //const apiBaseUrl = 'http://localhost:8080/api/v1/auth';
     // ===== Validation Functions =====
     $scope.isMinLength = pw => pw && pw.length >= 8;
     $scope.hasUpperCase = pw => /[A-Z]/.test(pw);
