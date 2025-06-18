@@ -73,6 +73,7 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
             text: text,
             duration: 3000,
             gravity: "top",
+            close: true,
             position: "center",
             style: {
                 background: bgColor,
@@ -143,7 +144,12 @@ app.controller('LoginController', function ($scope, $http, $window, API_BASE_URL
                     }
                 }).showToast();
                 setTimeout(() => {
-                    $window.location.href = 'index.html';
+                    // 👇 Kiểm tra nếu là lần đầu đăng nhập thì chuyển qua đổi mật khẩu
+                    if (data.user.firstLogin === true) {
+                        $window.location.href = 'update-password.html';
+                    } else {
+                        $window.location.href = 'index.html';
+                    }
                 }, 2300);
             })
             .catch(error => {

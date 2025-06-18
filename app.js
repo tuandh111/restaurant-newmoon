@@ -1,6 +1,26 @@
 var app = angular.module("myApp", ["ngRoute"]);
 // app.constant('API_BASE_URL', 'https://api.newmoon.vn/api/v1/auth');
 app.constant('API_BASE_URL', 'http://localhost:8080/api/v1/auth');
+
+app.factory('ApiService', function ($http, API_BASE_URL) {
+    return {
+        call: async function (endpoint, method = 'GET', data = null) {
+            try {
+                const config = {
+                    method: method,
+                    url: `${API_BASE_URL}${endpoint}`,
+                    data: data
+                };
+                const response = await $http(config);
+                return response.data;
+            } catch (error) {
+                console.error('API error:', error);
+                throw error;
+            }
+        }
+    };
+});
+
 // Cấu hình routing
 app.config(function ($routeProvider) {
     $routeProvider

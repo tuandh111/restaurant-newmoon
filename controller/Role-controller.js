@@ -10,6 +10,7 @@ app.controller('RoleController', function ($scope, $http, $window, API_BASE_URL)
             text: text,
             duration: 3000,
             gravity: "top",
+            close: true,
             position: "center",
             style: {
                 background: bgColor,

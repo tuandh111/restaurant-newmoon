@@ -26,16 +26,24 @@ app.controller('ChangePasswordCtrl', ['$scope', '$http', function ($scope, $http
             text: message,
             duration: 3000,
             close: true,
-            gravity: "top",
-            position: "right",
+            gravity: "top",         // hoặc "bottom" tùy bạn
+            position: "center",     // hiển thị chính giữa
             backgroundColor: {
                 success: "#4caf50",
                 error: "#f44336",
                 warning: "#ff9800",
                 info: "#2196f3"
-            }[type] || "#333"
+            }[type] || "#333",
+            style: {
+                padding: "12px 20px",
+                borderRadius: "8px",
+                color: "#fff",
+                minWidth: "250px",
+                textAlign: "center"
+            }
         }).showToast();
     }
+
 
     // ===== Update Password =====
     $scope.updatePassword = function () {

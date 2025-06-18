@@ -22,6 +22,7 @@ app.controller('TopbarController', function ($scope, $window, $timeout) {
             duration: 3500,
             gravity: "top",
             position: "center",
+            close: true,
             style: {
                 background: bgColor,
                 color: type === 'warning' ? 'black' : 'white',
